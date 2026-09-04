@@ -333,7 +333,7 @@ message or linked report rather than replacing criteria with a subjective note.
 | CM3 - HTML | Complete | 64/64 selected | Seven block types, inline HTML and safe-policy regressions |
 | CM4 - Containers | Complete | 99/99 selected | Mixed nesting, lazy continuation and tight/loose regressions |
 | CM5 - Inline primitives | Complete | 108/108 selected | Escapes, entities, code, breaks, autolinks, raw HTML and UTF-8 validation |
-| CM6 - Emphasis | Not started | - | Delimiter stack |
+| CM6 - Emphasis | Complete | 132/132 selected | Delimiter-stack behavior plus four 30k-run complexity guards |
 | CM7 - Links/images | Not started | - | References and brackets |
 | CM8 - Rendering/extensions | Not started | - | Strict profile isolation |
 | CM9 - Full corpus | Not started | 0/652 closed | No expected failures |

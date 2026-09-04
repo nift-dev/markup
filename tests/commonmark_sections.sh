@@ -26,6 +26,9 @@ case "$checkpoint" in
             "Soft line breaks"
         )
         ;;
+    cm6)
+        sections=("Emphasis and strong emphasis")
+        ;;
     *)
         echo "commonmark sections: unknown checkpoint '$checkpoint'" >&2
         exit 2

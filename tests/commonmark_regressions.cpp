@@ -75,5 +75,16 @@ int main() {
     expect("invalid UTF-8 replacement", std::string("bad \xFF byte\n", 11),
            "<p>bad \xEF\xBF\xBD byte</p>\n");
 
+    // CM6 - emphasis delimiter behavior.
+    expect("intraword underscore", "foo_bar_\n", "<p>foo_bar_</p>\n");
+    expect("punctuation flanking", "a**\"foo\"**\n",
+           "<p>a**&quot;foo&quot;**</p>\n");
+    expect("nested emphasis", "*foo **bar** baz*\n",
+           "<p><em>foo <strong>bar</strong> baz</em></p>\n");
+    expect("escaped delimiter content", "foo **\\***\n",
+           "<p>foo <strong>*</strong></p>\n");
+    expect("autolink delimiter precedence", "__a<https://foo.bar/?q=__>\n",
+           "<p>__a<a href=\"https://foo.bar/?q=__\">https://foo.bar/?q=__</a></p>\n");
+
     std::cout << checks << " CommonMark checkpoint regressions passed\n";
 }
