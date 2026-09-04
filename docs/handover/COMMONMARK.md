@@ -327,7 +327,7 @@ message or linked report rather than replacing criteria with a subjective note.
 
 | Checkpoint | Status | Official examples | Notes |
 |---|---|---:|---|
-| CM0 - Harness | Not started | Baseline pending | Pin 0.31.2 first |
+| CM0 - Harness | Complete | 198/652 baseline | Corpus SHA-256 pinned; strict extensions-off adapter |
 | CM1 - Model | Not started | - | AST and invariants |
 | CM2 - Leaf blocks | Not started | - | Block precedence |
 | CM3 - HTML | Not started | - | Seven block types |

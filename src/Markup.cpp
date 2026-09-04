@@ -168,7 +168,7 @@ std::string inline_html(const std::string& text, const Options& options) {
         struct Delimiter { const char* marker; const char* open; const char* close; };
         static const Delimiter delimiters[] = {
             {"**", "<strong>", "</strong>"}, {"__", "<strong>", "</strong>"},
-            {"~~", "<del>", "</del>"}, {"*", "<em>", "</em>"}, {"_", "<em>", "</em>"},
+            {"*", "<em>", "</em>"}, {"_", "<em>", "</em>"},
         };
         bool matched = false;
         for (const auto& delimiter : delimiters) {
@@ -191,6 +191,15 @@ std::string inline_html(const std::string& text, const Options& options) {
             break;
         }
         if (matched) continue;
+
+        if (options.enable_extensions && text.compare(i, 2, "~~") == 0) {
+            const auto end = text.find("~~", i + 2);
+            if (end != std::string::npos && end != i + 2) {
+                out += "<del>" + inline_html(text.substr(i + 2, end - i - 2), options) + "</del>";
+                i = end + 2;
+                continue;
+            }
+        }
 
         if (text[i] == '<') {
             const auto end = text.find('>', i + 1);
@@ -459,7 +468,7 @@ std::string markdown_fragment(const std::string& input, const Options& options) 
                     if (source[i].size() < 2 || (source[i][0] != ' ' && source[i][0] != '\t')) break;
                     item += '\n' + trim(source[i++]);
                 }
-                bool task = item.size() >= 3 && item[0] == '[' && item[2] == ']' &&
+                bool task = options.enable_extensions && item.size() >= 3 && item[0] == '[' && item[2] == ']' &&
                             (item[1] == ' ' || item[1] == 'x' || item[1] == 'X');
                 out += "<li>";
                 if (task) {
@@ -475,7 +484,7 @@ std::string markdown_fragment(const std::string& input, const Options& options) 
             continue;
         }
 
-        if (i + 1 < source.size() && source[i].find('|') != std::string::npos) {
+        if (options.enable_extensions && i + 1 < source.size() && source[i].find('|') != std::string::npos) {
             std::vector<std::string> alignments;
             if (table_delimiter(source[i + 1], alignments)) {
                 const auto header = table_cells(source[i]);

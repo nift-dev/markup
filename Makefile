@@ -44,6 +44,12 @@ test-fuzz: $(FUZZ)
 
 test: test-smoke test-adversarial test-cli test-fuzz
 
+commonmark-report: $(TARGET)
+	python3 tests/commonmark_runner.py --program ./$(TARGET) --allow-failures
+
+test-commonmark: $(TARGET)
+	python3 tests/commonmark_runner.py --program ./$(TARGET)
+
 test-sanitize:
 	mkdir -p $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) -std=c++17 -Wall -Wextra -pedantic $(SANITIZER_FLAGS) tests/markdown_smoke.cpp $(LIBSRC) -o $(BUILD_DIR)/markup-smoke-san
@@ -54,4 +60,4 @@ test-sanitize:
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET)
 
-.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-sanitize clean
+.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-sanitize commonmark-report test-commonmark clean

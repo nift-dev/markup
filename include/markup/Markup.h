@@ -15,6 +15,8 @@ struct Options {
     // --standalone flag opts into a complete HTML document.
     bool standalone = false;
     bool allow_raw_html = true;
+    // Disable Markup++ extensions when measuring CommonMark conformance.
+    bool enable_extensions = true;
     std::string title;
 };
 
