@@ -29,10 +29,21 @@ assumptions are not.
 
 ## Markdown pipeline
 
-The current implementation normalizes CRLF while splitting lines, recognizes
+Strict CommonMark conversion uses the vendored cmark 0.31.1 block tree, inline
+delimiter/bracket stacks and HTML renderer through its in-process C API. cmark
+is source-vendored under its BSD 2-Clause license; it is not a runtime or system
+dependency. Markup++ retains ownership of format dispatch, profiles, safe/raw
+selection, standalone wrapping, diagnostics and the public C++ API.
+
+The extension-enabled compatibility path currently normalizes CRLF while splitting lines, recognizes
 block constructs in precedence order, and then applies inline conversion to text
 containers. Code blocks bypass inline parsing. Block quotes recursively invoke
 the Markdown fragment converter on stripped quote content.
+
+The two paths are deliberate during the conformance program: strict mode has an
+uncontaminated standards oracle while the extension path preserves the initial
+public behavior. CM8 will replace the transitional split with explicit
+extensions layered around the conforming parse model.
 
 Output is deterministic and ends block elements with newlines. Fragment mode is
 the library default. Standalone mode wraps the fragment in a minimal HTML5

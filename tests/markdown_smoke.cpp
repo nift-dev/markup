@@ -70,6 +70,13 @@ int main() {
     expect("safe raw html", "<script>alert(1)</script>", "<p>&lt;script&gt;alert(1)&lt;/script&gt;</p>\n", safe);
     expect("safe active link", "[bad](javascript:alert(1))", "<p><a href=\"\">bad</a></p>\n", safe);
 
+    markup::Options strict;
+    strict.enable_extensions = false;
+    expect("strict nul replacement", std::string("a\0b", 3), "<p>a\xEF\xBF\xBD" "b</p>\n", strict);
+    expect("strict lone carriage return", "one\rtwo", "<p>one\ntwo</p>\n", strict);
+    expect("strict tab indentation", "\tcode\n", "<pre><code>code\n</code></pre>\n", strict);
+    expect("strict extensions disabled", "~~text~~", "<p>~~text~~</p>\n", strict);
+
     markup::Options standalone;
     standalone.standalone = true;
     standalone.title = "A & B";

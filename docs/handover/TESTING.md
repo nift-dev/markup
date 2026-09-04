@@ -18,9 +18,16 @@ Some sandboxed runners prevent LeakSanitizer from inspecting `/proc`; use
 `make test-sanitize ASAN_OPTIONS=detect_leaks=0:halt_on_error=1` there and record
 that leak detection was unavailable rather than describing it as LSan evidence.
 
+## CommonMark evidence
+
+`make test-commonmark` runs all 652 examples from the pinned CommonMark 0.31.2
+corpus through the public conversion API and strict extensions-off profile.
+The original CM0 baseline was 198/652; the vendored strict engine reaches
+652/652. Section-level checkpoint tests and broader release evidence remain in
+progress through CM10.
+
 ## Missing evidence
 
-- Official CommonMark spec-example corpus.
 - Differential comparison against established converters with a precisely
   declared extension profile.
 - Cross-platform CI on Linux, macOS and Windows.

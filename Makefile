@@ -1,11 +1,18 @@
 CXX ?= g++
+CC ?= cc
 CXXFLAGS ?= -std=c++17 -O2 -Wall -Wextra -pedantic
-CPPFLAGS ?= -Iinclude
+CFLAGS ?= -std=c99 -O2 -Wall -Wextra -pedantic
+CPPFLAGS ?= -Iinclude -Ivendor/cmark
 LDFLAGS ?=
 
 TARGET := markup
 LIBSRC := src/Markup.cpp
 BUILD_DIR := .build
+CMARK_DIR := vendor/cmark
+CMARK_NAMES := blocks buffer cmark cmark_ctype houdini_href_e houdini_html_e houdini_html_u html inlines iterator node references render scanners utf8
+CMARK_SRC := $(addprefix $(CMARK_DIR)/,$(addsuffix .c,$(CMARK_NAMES)))
+CMARK_OBJ := $(addprefix $(BUILD_DIR)/cmark/,$(addsuffix .o,$(CMARK_NAMES)))
+CMARK_SAN_OBJ := $(addprefix $(BUILD_DIR)/cmark-san/,$(addsuffix .o,$(CMARK_NAMES)))
 SMOKE := $(BUILD_DIR)/markup-smoke
 ADVERSARIAL := $(BUILD_DIR)/markup-adversarial
 FUZZ := $(BUILD_DIR)/markup-fuzz
@@ -15,20 +22,28 @@ UBSAN_OPTIONS ?= halt_on_error=1
 
 all: $(TARGET)
 
-$(TARGET): cli/main.cpp $(LIBSRC) include/markup/Markup.h
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) cli/main.cpp $(LIBSRC) $(LDFLAGS) -o $@
+$(TARGET): cli/main.cpp $(LIBSRC) include/markup/Markup.h $(CMARK_OBJ)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) cli/main.cpp $(LIBSRC) $(CMARK_OBJ) $(LDFLAGS) -o $@
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-$(SMOKE): tests/markdown_smoke.cpp $(LIBSRC) include/markup/Markup.h | $(BUILD_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/markdown_smoke.cpp $(LIBSRC) -o $@
+$(BUILD_DIR)/cmark/%.o: $(CMARK_DIR)/%.c
+	mkdir -p $(BUILD_DIR)/cmark
+	$(CC) -I$(CMARK_DIR) $(CFLAGS) -c $< -o $@
 
-$(ADVERSARIAL): tests/markdown_adversarial.cpp $(LIBSRC) include/markup/Markup.h | $(BUILD_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/markdown_adversarial.cpp $(LIBSRC) -o $@
+$(BUILD_DIR)/cmark-san/%.o: $(CMARK_DIR)/%.c
+	mkdir -p $(BUILD_DIR)/cmark-san
+	$(CC) -I$(CMARK_DIR) -std=c99 -Wall -Wextra -pedantic $(SANITIZER_FLAGS) -c $< -o $@
 
-$(FUZZ): tests/fuzz_smoke.cpp $(LIBSRC) include/markup/Markup.h | $(BUILD_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/fuzz_smoke.cpp $(LIBSRC) -o $@
+$(SMOKE): tests/markdown_smoke.cpp $(LIBSRC) include/markup/Markup.h $(CMARK_OBJ) | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/markdown_smoke.cpp $(LIBSRC) $(CMARK_OBJ) -o $@
+
+$(ADVERSARIAL): tests/markdown_adversarial.cpp $(LIBSRC) include/markup/Markup.h $(CMARK_OBJ) | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/markdown_adversarial.cpp $(LIBSRC) $(CMARK_OBJ) -o $@
+
+$(FUZZ): tests/fuzz_smoke.cpp $(LIBSRC) include/markup/Markup.h $(CMARK_OBJ) | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/fuzz_smoke.cpp $(LIBSRC) $(CMARK_OBJ) -o $@
 
 test-smoke: $(SMOKE)
 	./$(SMOKE)
@@ -52,9 +67,10 @@ test-commonmark: $(TARGET)
 
 test-sanitize:
 	mkdir -p $(BUILD_DIR)
-	$(CXX) $(CPPFLAGS) -std=c++17 -Wall -Wextra -pedantic $(SANITIZER_FLAGS) tests/markdown_smoke.cpp $(LIBSRC) -o $(BUILD_DIR)/markup-smoke-san
+	$(MAKE) $(CMARK_SAN_OBJ)
+	$(CXX) $(CPPFLAGS) -std=c++17 -Wall -Wextra -pedantic $(SANITIZER_FLAGS) tests/markdown_smoke.cpp $(LIBSRC) $(CMARK_SAN_OBJ) -o $(BUILD_DIR)/markup-smoke-san
 	ASAN_OPTIONS=$(ASAN_OPTIONS) UBSAN_OPTIONS=$(UBSAN_OPTIONS) ./$(BUILD_DIR)/markup-smoke-san
-	$(CXX) $(CPPFLAGS) -std=c++17 -Wall -Wextra -pedantic $(SANITIZER_FLAGS) tests/markdown_adversarial.cpp $(LIBSRC) -o $(BUILD_DIR)/markup-adversarial-san
+	$(CXX) $(CPPFLAGS) -std=c++17 -Wall -Wextra -pedantic $(SANITIZER_FLAGS) tests/markdown_adversarial.cpp $(LIBSRC) $(CMARK_SAN_OBJ) -o $(BUILD_DIR)/markup-adversarial-san
 	ASAN_OPTIONS=$(ASAN_OPTIONS) UBSAN_OPTIONS=$(UBSAN_OPTIONS) ./$(BUILD_DIR)/markup-adversarial-san
 
 clean:

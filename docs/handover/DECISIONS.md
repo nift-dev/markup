@@ -3,8 +3,9 @@
 ## Settled
 
 - Product name is Markup++; executable name is `markup`.
-- Implementation language is dependency-free C++17 for straightforward Nift
-  embedding and portable standalone builds.
+- The public layer is C++17. Strict CommonMark parsing vendors the BSD-licensed
+  cmark C99 source for exact behavior, straightforward Nift embedding and
+  portable builds without a system-library dependency.
 - The public boundary is string-in/string-out with explicit format and options.
 - Fragment HTML is the default; complete documents are opt-in.
 - CLI output defaults to stdout. `-o` is explicit and atomic.
@@ -19,7 +20,7 @@
 
 ## Deliberately deferred
 
-- CommonMark version/extension profile.
+- The post-CM10 public compatibility wording and extension defaults.
 - Reference links, nested and loose lists, footnotes and heading identifiers.
 - Whether GFM tables/tasks/strikethrough remain defaults or become extensions.
 - Source-position maps and structured diagnostics.

@@ -2,7 +2,7 @@
 
 **Executable:** `markup`
 
-Markup++ is a small dependency-free C++17 library and CLI for converting markup
+Markup++ is a small, self-contained C++17 library and CLI for converting markup
 formats to HTML. It is designed to work standalone and, after its format
 implementations mature, to be embedded by Nift behind the same kind of narrow
 library boundary used for Minify++ and Jsonic++.
@@ -10,6 +10,9 @@ library boundary used for Minify++ and Jsonic++.
 The first development checkpoint implements Markdown. AsciiDoc and
 reStructuredText are recognized by the format-neutral API and CLI but return a
 clear not-implemented error until their converters land.
+
+The strict CommonMark engine vendors cmark source under its BSD 2-Clause
+license. There is no separately installed library or runtime dependency.
 
 ```sh
 make

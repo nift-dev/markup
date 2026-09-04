@@ -11,7 +11,8 @@ claims, Nift synchronization or product boundaries change.
 - Executable: `markup`.
 - Current development version: `0.1.0`.
 - Public API version: `markup::api_version == 1`.
-- Language/toolchain: dependency-free C++17 and Make.
+- Language/toolchain: self-contained C++17/C99 and Make; cmark source is
+  vendored under BSD 2-Clause with no system-library dependency.
 - Implemented format: Markdown.
 - Planned formats already represented in the API: AsciiDoc and
   reStructuredText.
