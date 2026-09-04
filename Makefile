@@ -17,6 +17,7 @@ SMOKE := $(BUILD_DIR)/markup-smoke
 ADVERSARIAL := $(BUILD_DIR)/markup-adversarial
 FUZZ := $(BUILD_DIR)/markup-fuzz
 COMMONMARK_REGRESSIONS := $(BUILD_DIR)/commonmark-regressions
+PROFILE_MATRIX := $(BUILD_DIR)/profile-matrix
 SANITIZER_FLAGS ?= -O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined
 ASAN_OPTIONS ?= detect_leaks=1:halt_on_error=1
 UBSAN_OPTIONS ?= halt_on_error=1
@@ -49,6 +50,9 @@ $(FUZZ): tests/fuzz_smoke.cpp $(LIBSRC) include/markup/Markup.h $(CMARK_OBJ) | $
 $(COMMONMARK_REGRESSIONS): tests/commonmark_regressions.cpp $(LIBSRC) include/markup/Markup.h $(CMARK_OBJ) | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/commonmark_regressions.cpp $(LIBSRC) $(CMARK_OBJ) -o $@
 
+$(PROFILE_MATRIX): tests/profile_matrix.cpp $(LIBSRC) include/markup/Markup.h $(CMARK_OBJ) | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/profile_matrix.cpp $(LIBSRC) $(CMARK_OBJ) -o $@
+
 test-smoke: $(SMOKE)
 	./$(SMOKE)
 
@@ -64,7 +68,10 @@ test-fuzz: $(FUZZ)
 test-commonmark-regressions: $(COMMONMARK_REGRESSIONS)
 	./$(COMMONMARK_REGRESSIONS)
 
-test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions
+test-profile-matrix: $(PROFILE_MATRIX)
+	./$(PROFILE_MATRIX)
+
+test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix
 
 commonmark-report: $(TARGET)
 	python3 tests/commonmark_runner.py --program ./$(TARGET) --allow-failures
@@ -92,6 +99,8 @@ test-commonmark-cm7: $(TARGET)
 	bash tests/commonmark_sections.sh cm7 ./$(TARGET)
 	python3 tests/commonmark_complexity.py --program ./$(TARGET) --family links
 
+test-commonmark-cm8: test-commonmark test-profile-matrix
+
 test-sanitize:
 	mkdir -p $(BUILD_DIR)
 	$(MAKE) $(CMARK_SAN_OBJ)
@@ -103,4 +112,4 @@ test-sanitize:
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET)
 
-.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 clean
+.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 test-commonmark-cm8 clean

@@ -15,12 +15,15 @@ struct Options {
     // --standalone flag opts into a complete HTML document.
     bool standalone = false;
     bool allow_raw_html = true;
-    // Disable Markup++ extensions when measuring CommonMark conformance.
-    bool enable_extensions = true;
+    enum class MarkdownProfile {
+        CommonMark,
+        Extended,
+    };
+    MarkdownProfile markdown_profile = MarkdownProfile::CommonMark;
     std::string title;
 };
 
-inline constexpr unsigned api_version = 1;
+inline constexpr unsigned api_version = 2;
 
 bool format_for_extension(const std::string& extension, Format& format);
 const char* format_name(Format format);

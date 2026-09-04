@@ -10,7 +10,7 @@ int checks = 0;
 void expect(const std::string& name, const std::string& markdown,
             const std::string& expected, bool allow_raw_html = true) {
     markup::Options options;
-    options.enable_extensions = false;
+    options.markdown_profile = markup::Options::MarkdownProfile::CommonMark;
     options.allow_raw_html = allow_raw_html;
     std::string html, error;
     if (!markup::convert(markup::Format::Markdown, markdown, html, error, options) ||

@@ -114,6 +114,7 @@ bool parse_link_target(const std::string& text, std::size_t open, std::size_t& c
 }
 
 std::string inline_html(const std::string& text, const Options& options) {
+    const bool extensions = options.markdown_profile == Options::MarkdownProfile::Extended;
     std::string out;
     for (std::size_t i = 0; i < text.size();) {
         if (text[i] == '\\' && i + 1 < text.size() &&
@@ -194,7 +195,7 @@ std::string inline_html(const std::string& text, const Options& options) {
         }
         if (matched) continue;
 
-        if (options.enable_extensions && text.compare(i, 2, "~~") == 0) {
+        if (extensions && text.compare(i, 2, "~~") == 0) {
             const auto end = text.find("~~", i + 2);
             if (end != std::string::npos && end != i + 2) {
                 out += "<del>" + inline_html(text.substr(i + 2, end - i - 2), options) + "</del>";
@@ -364,7 +365,8 @@ bool table_delimiter(const std::string& line, std::vector<std::string>& alignmen
 }
 
 std::string markdown_fragment(const std::string& input, const Options& options) {
-    if (!options.enable_extensions) {
+    const bool extensions = options.markdown_profile == Options::MarkdownProfile::Extended;
+    if (!extensions) {
         const int cmark_options = CMARK_OPT_VALIDATE_UTF8 |
             (options.allow_raw_html ? CMARK_OPT_UNSAFE : CMARK_OPT_DEFAULT);
         char* rendered = cmark_markdown_to_html(input.data(), input.size(), cmark_options);
@@ -479,7 +481,7 @@ std::string markdown_fragment(const std::string& input, const Options& options) 
                     if (source[i].size() < 2 || (source[i][0] != ' ' && source[i][0] != '\t')) break;
                     item += '\n' + trim(source[i++]);
                 }
-                bool task = options.enable_extensions && item.size() >= 3 && item[0] == '[' && item[2] == ']' &&
+                bool task = extensions && item.size() >= 3 && item[0] == '[' && item[2] == ']' &&
                             (item[1] == ' ' || item[1] == 'x' || item[1] == 'X');
                 out += "<li>";
                 if (task) {
@@ -495,7 +497,7 @@ std::string markdown_fragment(const std::string& input, const Options& options) 
             continue;
         }
 
-        if (options.enable_extensions && i + 1 < source.size() && source[i].find('|') != std::string::npos) {
+        if (extensions && i + 1 < source.size() && source[i].find('|') != std::string::npos) {
             std::vector<std::string> alignments;
             if (table_delimiter(source[i + 1], alignments)) {
                 const auto header = table_cells(source[i]);

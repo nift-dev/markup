@@ -10,7 +10,7 @@ claims, Nift synchronization or product boundaries change.
 - Repository/extraction directory: `markup`.
 - Executable: `markup`.
 - Current development version: `0.1.0`.
-- Public API version: `markup::api_version == 1`.
+- Public API version: `markup::api_version == 2`.
 - Language/toolchain: self-contained C++17/C99 and Make; cmark source is
   vendored under BSD 2-Clause with no system-library dependency.
 - Implemented format: Markdown.
@@ -49,9 +49,9 @@ Markup++ must not learn Nift's parser, project model, tracked state or CLI.
 
 ## Current behavior and evidence
 
-The initial Markdown converter covers ordinary headings, paragraphs, inline
-formatting, links/images/autolinks, lists/tasks, block quotes, fenced/indented
-code, thematic breaks, pipe tables, raw HTML, safe mode and CRLF input.
+The default Markdown profile uses the strict CommonMark engine. The explicitly
+selected `Extended` profile preserves the initial converter's tables, tasks and
+strikethrough behavior.
 
 It is not yet CommonMark compliant. Important gaps are documented in
 `docs/handover/COMMONMARK.md`; do not hide them behind broad “Markdown support”

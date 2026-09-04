@@ -22,7 +22,8 @@ void help() {
         << "      --standalone      Emit a complete HTML document\n"
         << "      --title <text>    Set the standalone document title\n"
         << "      --safe            Escape raw HTML and reject active URLs\n"
-        << "      --commonmark      Disable non-CommonMark extensions\n"
+        << "      --commonmark      Use CommonMark 0.31.2 (the default)\n"
+        << "      --extensions      Enable legacy tables/tasks/strikethrough\n"
         << "  -h, --help            Show this help\n"
         << "  -v, --version         Show the version\n\n"
         << "Use '-' as the input to read from stdin. Markdown is implemented in\n"
@@ -135,7 +136,14 @@ int main(int argc, char** argv) {
         if (arg == "-v" || arg == "--version") { std::cout << "Markup++ 0.1.0\n"; return 0; }
         if (arg == "--standalone") { options.standalone = true; continue; }
         if (arg == "--safe") { options.allow_raw_html = false; continue; }
-        if (arg == "--commonmark") { options.enable_extensions = false; continue; }
+        if (arg == "--commonmark") {
+            options.markdown_profile = markup::Options::MarkdownProfile::CommonMark;
+            continue;
+        }
+        if (arg == "--extensions") {
+            options.markdown_profile = markup::Options::MarkdownProfile::Extended;
+            continue;
+        }
         if (arg == "-o" || arg == "--output") {
             if (++i >= argc) { std::cerr << "markup: " << arg << " requires a file\n"; return 2; }
             output_path = argv[i];

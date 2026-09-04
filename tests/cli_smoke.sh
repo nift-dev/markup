@@ -14,7 +14,8 @@ grep -Fx '<p>Convert <strong>Markdown</strong> safely.</p>' "$tmp/stdout.html" >
 grep -Fx '<title>CLI test</title>' "$tmp/output.html" >/dev/null
 printf '# stdin\n' | "$bin" --format md - >"$tmp/stdin.html"
 grep -Fx '<h1>stdin</h1>' "$tmp/stdin.html" >/dev/null
-printf '~~extension~~\n' | "$bin" --format md - | grep -Fx '<p><del>extension</del></p>' >/dev/null
+printf '~~core~~\n' | "$bin" --format md - | grep -Fx '<p>~~core~~</p>' >/dev/null
+printf '~~extension~~\n' | "$bin" --extensions --format md - | grep -Fx '<p><del>extension</del></p>' >/dev/null
 printf '~~core~~\n' | "$bin" --commonmark --format md - | grep -Fx '<p>~~core~~</p>' >/dev/null
 
 if printf '# missing format\n' | "$bin" - >"$tmp/bad" 2>"$tmp/error"; then exit 1; fi

@@ -16,13 +16,15 @@
 - Planned formats may be recognized before implementation only if conversion
   fails clearly and non-destructively.
 - No CommonMark compliance claim is made at checkpoint 0.1.0.
+- CommonMark is the default Markdown profile. The initial tables, tasks and
+  strikethrough converter is available only through the explicit `Extended`
+  profile or CLI `--extensions` flag.
 - Standalone Markup++ will be canonical when Nift embedding starts.
 
 ## Deliberately deferred
 
 - The post-CM10 public compatibility wording and extension defaults.
 - Reference links, nested and loose lists, footnotes and heading identifiers.
-- Whether GFM tables/tasks/strikethrough remain defaults or become extensions.
 - Source-position maps and structured diagnostics.
 - Streaming conversion. The initial embedding contract uses whole strings, like
   Minify++.

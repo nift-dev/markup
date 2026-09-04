@@ -335,6 +335,6 @@ message or linked report rather than replacing criteria with a subjective note.
 | CM5 - Inline primitives | Complete | 108/108 selected | Escapes, entities, code, breaks, autolinks, raw HTML and UTF-8 validation |
 | CM6 - Emphasis | Complete | 132/132 selected | Delimiter-stack behavior plus four 30k-run complexity guards |
 | CM7 - Links/images | Complete | 139/139 selected | References/brackets plus three large-input lookup guards |
-| CM8 - Rendering/extensions | Not started | - | Strict profile isolation |
+| CM8 - Rendering/extensions | Complete | 652/652 default core | API v2 profile, explicit legacy extensions and option matrix |
 | CM9 - Full corpus | Not started | 0/652 closed | No expected failures |
 | CM10 - Release gate | Not started | - | Portability and robustness |

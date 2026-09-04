@@ -40,10 +40,11 @@ block constructs in precedence order, and then applies inline conversion to text
 containers. Code blocks bypass inline parsing. Block quotes recursively invoke
 the Markdown fragment converter on stripped quote content.
 
-The two paths are deliberate during the conformance program: strict mode has an
-uncontaminated standards oracle while the extension path preserves the initial
-public behavior. CM8 will replace the transitional split with explicit
-extensions layered around the conforming parse model.
+The two paths are explicitly isolated by `Options::MarkdownProfile`: CommonMark
+is the default, while `Extended` opts into the original table/task/strikethrough
+converter. This preserves early behavior without contaminating the standards
+claim. Future extension work should migrate individual extensions onto the
+conforming node model before retiring the legacy implementation.
 
 In strict mode, `allow_raw_html=false` uses cmark's safe renderer: raw HTML nodes
 are replaced by omission comments and unsafe link/image destinations are

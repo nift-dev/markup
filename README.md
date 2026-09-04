@@ -22,12 +22,16 @@ make test
 ./markup README.md -o README.html
 ./markup --standalone --title "My document" README.md -o document.html
 printf '# Hello\n' | ./markup --format markdown -
+./markup --extensions notes.md # opt into tables/tasks/strikethrough
 ```
 
 By default, `markup` writes an HTML fragment to standard output. `-o` writes a
 file atomically, and `--standalone` adds a minimal HTML document wrapper.
 Existing regular-file permissions are preserved; output symlinks and attempts
 to overwrite the input are refused.
+
+Markdown defaults to the CommonMark profile. `--extensions` selects the legacy
+Markup++ table, task-list and strikethrough profile explicitly.
 
 ## Library API
 
@@ -49,27 +53,29 @@ CLI or embedding application.
 
 ## Markdown checkpoint
 
-Implemented now:
+The strict default implements the complete CommonMark 0.31.2 syntax model,
+including:
 
 - ATX and Setext headings;
 - paragraphs, soft breaks and hard breaks;
-- emphasis, strong emphasis, strikethrough and code spans;
+- emphasis, strong emphasis and code spans;
 - inline links, images, URL/email autolinks and entities;
-- unordered, ordered and task lists;
+- unordered and ordered lists;
 - block quotes;
 - fenced and indented code blocks;
 - thematic breaks;
-- pipe tables with alignment;
 - raw HTML pass-through by default;
-- `--safe` mode, which escapes raw HTML and rejects active URL schemes;
+- `--safe` mode, which prevents raw HTML pass-through and rejects active URL
+  schemes;
 - CRLF and unterminated-fence handling.
 
-This checkpoint is intentionally **not advertised as CommonMark compliant**.
-The parser is useful for ordinary project documentation, but nested/mixed list
-structures, reference links, footnotes, full delimiter-run semantics, complete
-HTML block rules and CommonMark's complete conformance corpus remain roadmap
-work. Compatibility claims must grow from executable evidence rather than the
-name “Markdown”.
+The optional extended profile additionally supports pipe tables with alignment,
+task-list checkboxes and strikethrough.
+
+All 652 official examples pass locally. The public compliance claim remains
+gated on CM9 reproducibility and the CM10 portability, fuzz, performance and
+release evidence. Compatibility claims grow from executable evidence rather
+than the name “Markdown”.
 
 ## Tests
 

@@ -6,8 +6,13 @@
 
 namespace {
 int checks = 0;
+markup::Options extended() {
+    markup::Options options;
+    options.markdown_profile = markup::Options::MarkdownProfile::Extended;
+    return options;
+}
 void expect(const std::string& name, const std::string& markdown,
-            const std::string& expected, const markup::Options& options = {}) {
+            const std::string& expected, const markup::Options& options = extended()) {
     std::string html, error;
     if (!markup::convert(markup::Format::Markdown, markdown, html, error, options) || html != expected) {
         std::cerr << "FAIL " << name << "\nexpected:\n" << expected << "actual:\n" << html << error << '\n';
@@ -16,7 +21,7 @@ void expect(const std::string& name, const std::string& markdown,
     ++checks;
 }
 void contains(const std::string& name, const std::string& markdown,
-              const std::string& needle, const markup::Options& options = {}) {
+              const std::string& needle, const markup::Options& options = extended()) {
     std::string html, error;
     if (!markup::convert(markup::Format::Markdown, markdown, html, error, options) || html.find(needle) == std::string::npos) {
         std::cerr << "FAIL " << name << ": missing " << needle << "\n" << html << error << '\n';
@@ -67,11 +72,12 @@ int main() {
 
     markup::Options safe;
     safe.allow_raw_html = false;
+    safe.markdown_profile = markup::Options::MarkdownProfile::Extended;
     expect("safe raw html", "<script>alert(1)</script>", "<p>&lt;script&gt;alert(1)&lt;/script&gt;</p>\n", safe);
     expect("safe active link", "[bad](javascript:alert(1))", "<p><a href=\"\">bad</a></p>\n", safe);
 
     markup::Options strict;
-    strict.enable_extensions = false;
+    strict.markdown_profile = markup::Options::MarkdownProfile::CommonMark;
     expect("strict nul replacement", std::string("a\0b", 3), "<p>a\xEF\xBF\xBD" "b</p>\n", strict);
     expect("strict lone carriage return", "one\rtwo", "<p>one\ntwo</p>\n", strict);
     expect("strict tab indentation", "\tcode\n", "<pre><code>code\n</code></pre>\n", strict);
@@ -79,6 +85,7 @@ int main() {
 
     markup::Options standalone;
     standalone.standalone = true;
+    standalone.markdown_profile = markup::Options::MarkdownProfile::Extended;
     standalone.title = "A & B";
     contains("standalone doctype", "# Hello", "<!doctype html>", standalone);
     contains("standalone title", "# Hello", "<title>A &amp; B</title>", standalone);
