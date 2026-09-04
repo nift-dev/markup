@@ -81,6 +81,7 @@ than the name “Markdown”.
 
 ```sh
 make test          # semantic, adversarial, CLI and 10k mutation gates
+make test-release-local # full local CommonMark release candidate gate
 make test-sanitize # ASan + UBSan semantic/adversarial gates
 # Where LeakSanitizer cannot inspect /proc under the runner:
 make test-sanitize ASAN_OPTIONS=detect_leaks=0:halt_on_error=1

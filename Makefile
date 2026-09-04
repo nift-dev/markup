@@ -13,6 +13,7 @@ CMARK_NAMES := blocks buffer cmark cmark_ctype houdini_href_e houdini_html_e hou
 CMARK_SRC := $(addprefix $(CMARK_DIR)/,$(addsuffix .c,$(CMARK_NAMES)))
 CMARK_OBJ := $(addprefix $(BUILD_DIR)/cmark/,$(addsuffix .o,$(CMARK_NAMES)))
 CMARK_SAN_OBJ := $(addprefix $(BUILD_DIR)/cmark-san/,$(addsuffix .o,$(CMARK_NAMES)))
+CMARK_FUZZ_OBJ := $(addprefix $(BUILD_DIR)/cmark-fuzz/,$(addsuffix .o,$(CMARK_NAMES)))
 SMOKE := $(BUILD_DIR)/markup-smoke
 ADVERSARIAL := $(BUILD_DIR)/markup-adversarial
 FUZZ := $(BUILD_DIR)/markup-fuzz
@@ -38,6 +39,10 @@ $(BUILD_DIR)/cmark/%.o: $(CMARK_DIR)/%.c
 $(BUILD_DIR)/cmark-san/%.o: $(CMARK_DIR)/%.c
 	mkdir -p $(BUILD_DIR)/cmark-san
 	$(CC) -I$(CMARK_DIR) -std=c99 -Wall -Wextra -pedantic $(SANITIZER_FLAGS) -c $< -o $@
+
+$(BUILD_DIR)/cmark-fuzz/%.o: $(CMARK_DIR)/%.c
+	mkdir -p $(BUILD_DIR)/cmark-fuzz
+	$(CC) -I$(CMARK_DIR) -std=c99 -O1 -g -fno-omit-frame-pointer -fsanitize=fuzzer-no-link,address,undefined -c $< -o $@
 
 $(SMOKE): tests/markdown_smoke.cpp $(LIBSRC) include/markup/Markup.h $(CMARK_OBJ) | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/markdown_smoke.cpp $(LIBSRC) $(CMARK_OBJ) -o $@
@@ -109,6 +114,15 @@ test-commonmark-cm9: $(TARGET) $(CMARK_REFERENCE)
 	bash tests/commonmark_reproducibility.sh ./$(TARGET)
 	python3 tests/commonmark_differential.py --program ./$(TARGET) --reference ./$(CMARK_REFERENCE)
 
+test-performance: $(TARGET)
+	python3 tests/commonmark_performance.py --program ./$(TARGET)
+
+fuzz-libfuzzer: $(CMARK_FUZZ_OBJ)
+	$(CXX) $(CPPFLAGS) -std=c++17 -O1 -g -fno-omit-frame-pointer -fsanitize=fuzzer,address,undefined tests/fuzz_libfuzzer.cpp $(LIBSRC) $(CMARK_FUZZ_OBJ) -o $(BUILD_DIR)/markup-libfuzzer
+
+test-release-local: test test-commonmark-cm9 test-performance
+	python3 tests/commonmark_complexity.py --program ./$(TARGET) --family all
+
 test-sanitize:
 	mkdir -p $(BUILD_DIR)
 	$(MAKE) $(CMARK_SAN_OBJ)
@@ -116,8 +130,12 @@ test-sanitize:
 	ASAN_OPTIONS=$(ASAN_OPTIONS) UBSAN_OPTIONS=$(UBSAN_OPTIONS) ./$(BUILD_DIR)/markup-smoke-san
 	$(CXX) $(CPPFLAGS) -std=c++17 -Wall -Wextra -pedantic $(SANITIZER_FLAGS) tests/markdown_adversarial.cpp $(LIBSRC) $(CMARK_SAN_OBJ) -o $(BUILD_DIR)/markup-adversarial-san
 	ASAN_OPTIONS=$(ASAN_OPTIONS) UBSAN_OPTIONS=$(UBSAN_OPTIONS) ./$(BUILD_DIR)/markup-adversarial-san
+	$(CXX) $(CPPFLAGS) -std=c++17 -Wall -Wextra -pedantic $(SANITIZER_FLAGS) tests/commonmark_regressions.cpp $(LIBSRC) $(CMARK_SAN_OBJ) -o $(BUILD_DIR)/commonmark-regressions-san
+	ASAN_OPTIONS=$(ASAN_OPTIONS) UBSAN_OPTIONS=$(UBSAN_OPTIONS) ./$(BUILD_DIR)/commonmark-regressions-san
+	$(CXX) $(CPPFLAGS) -std=c++17 -Wall -Wextra -pedantic $(SANITIZER_FLAGS) tests/profile_matrix.cpp $(LIBSRC) $(CMARK_SAN_OBJ) -o $(BUILD_DIR)/profile-matrix-san
+	ASAN_OPTIONS=$(ASAN_OPTIONS) UBSAN_OPTIONS=$(UBSAN_OPTIONS) ./$(BUILD_DIR)/profile-matrix-san
 
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET)
 
-.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 test-commonmark-cm8 test-commonmark-cm9 clean
+.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 test-commonmark-cm8 test-commonmark-cm9 test-performance fuzz-libfuzzer test-release-local clean

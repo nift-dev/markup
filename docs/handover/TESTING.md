@@ -32,14 +32,25 @@ comparisons between the Markup++ public boundary and the pinned cmark boundary
 (the official corpus plus 1,000 generated inputs). This differential gate
 detects wrapper/profile drift; it is not independent-parser evidence.
 
+`make test-release-local` runs the semantic/adversarial/CLI/mutation/profile
+suites, three reproducible corpus passes, differential cases, large-document
+time/RSS budgets and all seven pathological emphasis/link inputs. Run
+`make test-sanitize` separately because sanitizer availability is toolchain
+specific.
+
+The GitHub Actions workflow adds GCC/Linux, Clang/macOS, MSVC/Windows, Linux
+leak-enabled sanitizer and bounded Clang libFuzzer jobs. A workflow file is not
+execution evidence: record the first successful pushed run here before changing
+the CM10 ledger to complete or publishing the compliance claim.
+
 ## Missing evidence
 
 - Differential comparison against established converters with a precisely
   declared extension profile.
-- Cross-platform CI on Linux, macOS and Windows.
+- First successful pushed cross-platform CI run and its immutable commit/run ID.
 - Long-lived RSS and independent Valgrind checkpoints.
 - Large-document performance and complexity guards.
-- Fuzzing with a coverage-guided engine.
+- Successful CI execution evidence for the new coverage-guided libFuzzer gate.
 - A broader Unicode/invalid-UTF-8 corpus beyond the strict-mode replacement
   regressions.
 - AsciiDoc and reStructuredText corpora.

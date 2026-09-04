@@ -13,3 +13,14 @@ Development checkpoint 0.1.0 established that shape and implemented the first
 Markdown subset. The project deliberately began with honest partial-support
 language rather than declaring CommonMark compatibility before running the
 official corpus.
+
+## CommonMark conformance program
+
+CM0 established a pinned CommonMark 0.31.2 harness and measured the original
+converter at 198/652. CM1 embedded cmark 0.31.1 source behind the Markup++ API;
+CM2-CM7 closed individual block, HTML, container, inline, emphasis and link
+gates; CM8 made CommonMark the default API-v2 profile; and CM9 made 652/652
+reproducible with an empty expected-failure manifest and differential boundary
+tests. CM10 added local performance, RSS, pathological, sanitizer and fuzz
+infrastructure plus cross-platform CI. Its final public claim remains gated on
+the first successful pushed CI run.

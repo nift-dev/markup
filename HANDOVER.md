@@ -49,12 +49,14 @@ Markup++ must not learn Nift's parser, project model, tracked state or CLI.
 
 ## Current behavior and evidence
 
-The default Markdown profile uses the strict CommonMark engine. The explicitly
-selected `Extended` profile preserves the initial converter's tables, tasks and
-strikethrough behavior.
+The default Markdown profile is a CommonMark 0.31.2 compatibility candidate and
+passes all 652 pinned examples locally. The explicitly selected `Extended`
+profile preserves the initial converter's tables, tasks and strikethrough
+behavior.
 
-It is not yet CommonMark compliant. Important gaps are documented in
-`docs/handover/COMMONMARK.md`; do not hide them behind broad “Markdown support”
+Do not publish the final compliance claim until the new Linux/macOS/Windows CI
+has passed from the pushed commit. Remaining release evidence is documented in
+`docs/handover/COMMONMARK.md`; do not hide gaps behind broad “Markdown support”
 claims. That document is the executable development plan for reaching and
 maintaining CommonMark conformance. `docs/handover/ROADMAP.md` keeps only the
 higher-level product sequence.
@@ -63,6 +65,7 @@ Run:
 
 ```sh
 make test
+make test-release-local
 make test-sanitize
 ```
 
@@ -102,5 +105,6 @@ corresponding evidence.
 - `docs/handover/DEVELOPMENT.md`
 - `docs/handover/TESTING.md`
 - `docs/handover/COMMONMARK.md`
+- `docs/handover/COMMONMARK-RELEASE.md`
 - `docs/handover/ROADMAP.md`
 - `docs/handover/PROJECT-HISTORY.md`
