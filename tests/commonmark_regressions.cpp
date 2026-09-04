@@ -48,5 +48,18 @@ int main() {
            "<p>before <!-- raw HTML omitted -->x<!-- raw HTML omitted --> after</p>\n",
            false);
 
+    // CM4 - container blocks.
+    expect("mixed nested containers", "> - one\n>   - two\n",
+           "<blockquote>\n<ul>\n<li>one\n<ul>\n<li>two</li>\n</ul>\n</li>\n</ul>\n</blockquote>\n");
+    expect("loose list", "- one\n\n- two\n",
+           "<ul>\n<li>\n<p>one</p>\n</li>\n<li>\n<p>two</p>\n</li>\n</ul>\n");
+    expect("multi-block item", "- one\n\n  continued\n",
+           "<ul>\n<li>\n<p>one</p>\n<p>continued</p>\n</li>\n</ul>\n");
+    expect("lazy quote continuation", "> quote\nlazy\n",
+           "<blockquote>\n<p>quote\nlazy</p>\n</blockquote>\n");
+    expect("bullet change starts list", "- a\n+ b\n",
+           "<ul>\n<li>a</li>\n</ul>\n<ul>\n<li>b</li>\n</ul>\n");
+    expect("empty list item", "*\n* b\n", "<ul>\n<li></li>\n<li>b</li>\n</ul>\n");
+
     std::cout << checks << " CommonMark checkpoint regressions passed\n";
 }
