@@ -329,7 +329,7 @@ message or linked report rather than replacing criteria with a subjective note.
 |---|---|---:|---|
 | CM0 - Harness | Complete | 198/652 baseline | Corpus SHA-256 pinned; strict extensions-off adapter |
 | CM1 - Model | Complete | 652/652 strict engine | Vendored cmark 0.31.1 AST/parser/HTML renderer |
-| CM2 - Leaf blocks | Not started | - | Block precedence |
+| CM2 - Leaf blocks | Complete | 139/139 selected | Named section gate plus ambiguity regressions |
 | CM3 - HTML | Not started | - | Seven block types |
 | CM4 - Containers | Not started | - | Quotes and lists |
 | CM5 - Inline primitives | Not started | - | Escapes through inline HTML |

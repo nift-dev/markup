@@ -16,6 +16,7 @@ CMARK_SAN_OBJ := $(addprefix $(BUILD_DIR)/cmark-san/,$(addsuffix .o,$(CMARK_NAME
 SMOKE := $(BUILD_DIR)/markup-smoke
 ADVERSARIAL := $(BUILD_DIR)/markup-adversarial
 FUZZ := $(BUILD_DIR)/markup-fuzz
+COMMONMARK_REGRESSIONS := $(BUILD_DIR)/commonmark-regressions
 SANITIZER_FLAGS ?= -O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined
 ASAN_OPTIONS ?= detect_leaks=1:halt_on_error=1
 UBSAN_OPTIONS ?= halt_on_error=1
@@ -45,6 +46,9 @@ $(ADVERSARIAL): tests/markdown_adversarial.cpp $(LIBSRC) include/markup/Markup.h
 $(FUZZ): tests/fuzz_smoke.cpp $(LIBSRC) include/markup/Markup.h $(CMARK_OBJ) | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/fuzz_smoke.cpp $(LIBSRC) $(CMARK_OBJ) -o $@
 
+$(COMMONMARK_REGRESSIONS): tests/commonmark_regressions.cpp $(LIBSRC) include/markup/Markup.h $(CMARK_OBJ) | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/commonmark_regressions.cpp $(LIBSRC) $(CMARK_OBJ) -o $@
+
 test-smoke: $(SMOKE)
 	./$(SMOKE)
 
@@ -57,13 +61,19 @@ test-cli: $(TARGET)
 test-fuzz: $(FUZZ)
 	./$(FUZZ) 10000
 
-test: test-smoke test-adversarial test-cli test-fuzz
+test-commonmark-regressions: $(COMMONMARK_REGRESSIONS)
+	./$(COMMONMARK_REGRESSIONS)
+
+test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions
 
 commonmark-report: $(TARGET)
 	python3 tests/commonmark_runner.py --program ./$(TARGET) --allow-failures
 
 test-commonmark: $(TARGET)
 	python3 tests/commonmark_runner.py --program ./$(TARGET)
+
+test-commonmark-cm2: $(TARGET)
+	bash tests/commonmark_sections.sh cm2 ./$(TARGET)
 
 test-sanitize:
 	mkdir -p $(BUILD_DIR)
@@ -76,4 +86,4 @@ test-sanitize:
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET)
 
-.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-sanitize commonmark-report test-commonmark clean
+.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-sanitize commonmark-report test-commonmark test-commonmark-cm2 clean
