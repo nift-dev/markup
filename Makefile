@@ -88,6 +88,10 @@ test-commonmark-cm6: $(TARGET)
 	bash tests/commonmark_sections.sh cm6 ./$(TARGET)
 	python3 tests/commonmark_complexity.py --program ./$(TARGET) --family emphasis
 
+test-commonmark-cm7: $(TARGET)
+	bash tests/commonmark_sections.sh cm7 ./$(TARGET)
+	python3 tests/commonmark_complexity.py --program ./$(TARGET) --family links
+
 test-sanitize:
 	mkdir -p $(BUILD_DIR)
 	$(MAKE) $(CMARK_SAN_OBJ)
@@ -99,4 +103,4 @@ test-sanitize:
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET)
 
-.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 clean
+.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 clean

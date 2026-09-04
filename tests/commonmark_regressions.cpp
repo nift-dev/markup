@@ -86,5 +86,21 @@ int main() {
     expect("autolink delimiter precedence", "__a<https://foo.bar/?q=__>\n",
            "<p>__a<a href=\"https://foo.bar/?q=__\">https://foo.bar/?q=__</a></p>\n");
 
+    // CM7 - links, images and references.
+    expect("full reference", "[foo]: /url \"title\"\n\n[foo]\n",
+           "<p><a href=\"/url\" title=\"title\">foo</a></p>\n");
+    expect("definition inside quote", "[foo]\n\n> [foo]: /url\n",
+           "<p><a href=\"/url\">foo</a></p>\n<blockquote>\n</blockquote>\n");
+    expect("inline destination escaping", "[link](foo\\bar)\n",
+           "<p><a href=\"foo%5Cbar\">link</a></p>\n");
+    expect("no links inside links", "[foo [bar](/uri)][ref]\n\n[ref]: /uri\n",
+           "<p>[foo <a href=\"/uri\">bar</a>]<a href=\"/uri\">ref</a></p>\n");
+    expect("reference precedence", "[foo][bar][baz]\n\n[baz]: /url1\n[foo]: /url2\n",
+           "<p>[foo]<a href=\"/url1\">bar</a></p>\n");
+    expect("image title", "![foo](/url \"title\")\n",
+           "<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>\n");
+    expect("escaped image opener", "\\![foo]\n\n[foo]: /url \"title\"\n",
+           "<p>!<a href=\"/url\" title=\"title\">foo</a></p>\n");
+
     std::cout << checks << " CommonMark checkpoint regressions passed\n";
 }

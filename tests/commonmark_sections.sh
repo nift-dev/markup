@@ -29,6 +29,9 @@ case "$checkpoint" in
     cm6)
         sections=("Emphasis and strong emphasis")
         ;;
+    cm7)
+        sections=("Link reference definitions" "Links" "Images")
+        ;;
     *)
         echo "commonmark sections: unknown checkpoint '$checkpoint'" >&2
         exit 2
