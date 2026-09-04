@@ -336,5 +336,5 @@ message or linked report rather than replacing criteria with a subjective note.
 | CM6 - Emphasis | Complete | 132/132 selected | Delimiter-stack behavior plus four 30k-run complexity guards |
 | CM7 - Links/images | Complete | 139/139 selected | References/brackets plus three large-input lookup guards |
 | CM8 - Rendering/extensions | Complete | 652/652 default core | API v2 profile, explicit legacy extensions and option matrix |
-| CM9 - Full corpus | Not started | 0/652 closed | No expected failures |
+| CM9 - Full corpus | Complete | 652/652 three times | Empty enforced manifest; 1,652 reference differential cases |
 | CM10 - Release gate | Not started | - | Portability and robustness |

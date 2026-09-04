@@ -13,6 +13,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--program", required=True)
     parser.add_argument("--spec", default="tests/fixtures/commonmark-0.31.2.json")
+    parser.add_argument("--expected-failures", default="tests/fixtures/commonmark-expected-failures.json")
     parser.add_argument("--section", action="append", default=[])
     parser.add_argument("--example", action="append", type=int, default=[])
     parser.add_argument("--allow-failures", action="store_true")
@@ -20,6 +21,13 @@ def main() -> int:
     args = parser.parse_args()
 
     cases = json.loads(pathlib.Path(args.spec).read_text(encoding="utf-8"))
+    expected_data = json.loads(pathlib.Path(args.expected_failures).read_text(encoding="utf-8"))
+    expected_failures = {entry["example"] for entry in expected_data}
+    known_examples = {case["example"] for case in cases}
+    unknown = expected_failures - known_examples
+    if unknown:
+        print(f"commonmark: expected-failure manifest has unknown examples: {sorted(unknown)}", file=sys.stderr)
+        return 2
     sections = set(args.section)
     examples = set(args.example)
     selected = [case for case in cases
@@ -48,6 +56,13 @@ def main() -> int:
         print(f"{section}: {section_passed}/{total}")
     print(f"CommonMark 0.31.2: {passed}/{len(selected)} examples passed")
 
+    actual_failures = {case["example"] for case, _ in failures}
+    selected_numbers = {case["example"] for case in selected}
+    stale_expected = (expected_failures & selected_numbers) - actual_failures
+    unexpected = actual_failures - expected_failures
+    if stale_expected:
+        print(f"commonmark: expected failures now pass: {sorted(stale_expected)}", file=sys.stderr)
+
     for case, result in failures[:args.show_failures]:
         print(f"\nExample {case['example']} - {case['section']}", file=sys.stderr)
         if result.stderr:
@@ -58,7 +73,9 @@ def main() -> int:
             fromfile="expected", tofile="actual")
         sys.stderr.writelines(diff)
 
-    return 0 if not failures or args.allow_failures else 1
+    if stale_expected:
+        return 1
+    return 0 if not unexpected or args.allow_failures else 1
 
 
 if __name__ == "__main__":

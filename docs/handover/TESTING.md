@@ -26,6 +26,12 @@ The original CM0 baseline was 198/652; the vendored strict engine reaches
 652/652. Section-level checkpoint tests and broader release evidence remain in
 progress through CM10.
 
+`make test-commonmark-cm9` additionally requires three byte-identical 652/652
+reports, an empty non-stale expected-failure manifest, and 1,652 deterministic
+comparisons between the Markup++ public boundary and the pinned cmark boundary
+(the official corpus plus 1,000 generated inputs). This differential gate
+detects wrapper/profile drift; it is not independent-parser evidence.
+
 ## Missing evidence
 
 - Differential comparison against established converters with a precisely

@@ -18,6 +18,7 @@ ADVERSARIAL := $(BUILD_DIR)/markup-adversarial
 FUZZ := $(BUILD_DIR)/markup-fuzz
 COMMONMARK_REGRESSIONS := $(BUILD_DIR)/commonmark-regressions
 PROFILE_MATRIX := $(BUILD_DIR)/profile-matrix
+CMARK_REFERENCE := $(BUILD_DIR)/cmark-reference
 SANITIZER_FLAGS ?= -O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined
 ASAN_OPTIONS ?= detect_leaks=1:halt_on_error=1
 UBSAN_OPTIONS ?= halt_on_error=1
@@ -52,6 +53,9 @@ $(COMMONMARK_REGRESSIONS): tests/commonmark_regressions.cpp $(LIBSRC) include/ma
 
 $(PROFILE_MATRIX): tests/profile_matrix.cpp $(LIBSRC) include/markup/Markup.h $(CMARK_OBJ) | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/profile_matrix.cpp $(LIBSRC) $(CMARK_OBJ) -o $@
+
+$(CMARK_REFERENCE): tests/cmark_reference.c $(CMARK_OBJ) | $(BUILD_DIR)
+	$(CC) -I$(CMARK_DIR) $(CFLAGS) tests/cmark_reference.c $(CMARK_OBJ) -o $@
 
 test-smoke: $(SMOKE)
 	./$(SMOKE)
@@ -101,6 +105,10 @@ test-commonmark-cm7: $(TARGET)
 
 test-commonmark-cm8: test-commonmark test-profile-matrix
 
+test-commonmark-cm9: $(TARGET) $(CMARK_REFERENCE)
+	bash tests/commonmark_reproducibility.sh ./$(TARGET)
+	python3 tests/commonmark_differential.py --program ./$(TARGET) --reference ./$(CMARK_REFERENCE)
+
 test-sanitize:
 	mkdir -p $(BUILD_DIR)
 	$(MAKE) $(CMARK_SAN_OBJ)
@@ -112,4 +120,4 @@ test-sanitize:
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET)
 
-.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 test-commonmark-cm8 clean
+.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 test-commonmark-cm8 test-commonmark-cm9 clean
