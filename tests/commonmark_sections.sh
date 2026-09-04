@@ -19,6 +19,13 @@ case "$checkpoint" in
     cm4)
         sections=("Block quotes" "List items" "Lists")
         ;;
+    cm5)
+        sections=(
+            "Backslash escapes" "Entity and numeric character references"
+            "Code spans" "Autolinks" "Raw HTML" "Hard line breaks"
+            "Soft line breaks"
+        )
+        ;;
     *)
         echo "commonmark sections: unknown checkpoint '$checkpoint'" >&2
         exit 2

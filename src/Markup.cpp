@@ -365,7 +365,8 @@ bool table_delimiter(const std::string& line, std::vector<std::string>& alignmen
 
 std::string markdown_fragment(const std::string& input, const Options& options) {
     if (!options.enable_extensions) {
-        const int cmark_options = options.allow_raw_html ? CMARK_OPT_UNSAFE : CMARK_OPT_DEFAULT;
+        const int cmark_options = CMARK_OPT_VALIDATE_UTF8 |
+            (options.allow_raw_html ? CMARK_OPT_UNSAFE : CMARK_OPT_DEFAULT);
         char* rendered = cmark_markdown_to_html(input.data(), input.size(), cmark_options);
         if (!rendered) return {};
         std::string result(rendered);

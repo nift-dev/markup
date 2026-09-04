@@ -34,7 +34,8 @@ progress through CM10.
 - Long-lived RSS and independent Valgrind checkpoints.
 - Large-document performance and complexity guards.
 - Fuzzing with a coverage-guided engine.
-- Dedicated UTF-8 validity policy and corpus.
+- A broader Unicode/invalid-UTF-8 corpus beyond the strict-mode replacement
+  regressions.
 - AsciiDoc and reStructuredText corpora.
 - Nift synchronization and integration tests.
 

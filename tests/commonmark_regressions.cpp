@@ -61,5 +61,19 @@ int main() {
            "<ul>\n<li>a</li>\n</ul>\n<ul>\n<li>b</li>\n</ul>\n");
     expect("empty list item", "*\n* b\n", "<ul>\n<li></li>\n<li>b</li>\n</ul>\n");
 
+    // CM5 - inline lexical primitives.
+    expect("punctuation escapes only", "\\*x\\* \\a\n", "<p>*x* \\a</p>\n");
+    expect("entities decode and invalid escapes", "&copy; &#x41; &madeup;\n",
+           "<p>© A &amp;madeup;</p>\n");
+    expect("arbitrary code delimiter", "`` foo ` bar ``\n",
+           "<p><code>foo ` bar</code></p>\n");
+    expect("backslash hard break", "one\\\ntwo\n", "<p>one<br />\ntwo</p>\n");
+    expect("email autolink", "<foo+bar@example.com>\n",
+           "<p><a href=\"mailto:foo+bar@example.com\">foo+bar@example.com</a></p>\n");
+    expect("invalid URI autolink", "<http://foo.bar/baz bim>\n",
+           "<p>&lt;http://foo.bar/baz bim&gt;</p>\n");
+    expect("invalid UTF-8 replacement", std::string("bad \xFF byte\n", 11),
+           "<p>bad \xEF\xBF\xBD byte</p>\n");
+
     std::cout << checks << " CommonMark checkpoint regressions passed\n";
 }

@@ -332,7 +332,7 @@ message or linked report rather than replacing criteria with a subjective note.
 | CM2 - Leaf blocks | Complete | 139/139 selected | Named section gate plus ambiguity regressions |
 | CM3 - HTML | Complete | 64/64 selected | Seven block types, inline HTML and safe-policy regressions |
 | CM4 - Containers | Complete | 99/99 selected | Mixed nesting, lazy continuation and tight/loose regressions |
-| CM5 - Inline primitives | Not started | - | Escapes through inline HTML |
+| CM5 - Inline primitives | Complete | 108/108 selected | Escapes, entities, code, breaks, autolinks, raw HTML and UTF-8 validation |
 | CM6 - Emphasis | Not started | - | Delimiter stack |
 | CM7 - Links/images | Not started | - | References and brackets |
 | CM8 - Rendering/extensions | Not started | - | Strict profile isolation |

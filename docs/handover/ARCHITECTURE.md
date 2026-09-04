@@ -51,6 +51,11 @@ blanked. The transitional extension renderer escapes raw HTML instead. Both
 prevent pass-through, but the output distinction must remain documented until
 CM8 unifies renderer policy.
 
+Strict mode treats input as UTF-8 and enables cmark validation. Invalid byte
+sequences are replaced with `U+FFFD`, matching the parser's existing NUL
+replacement policy and ensuring generated HTML remains valid UTF-8. The
+transitional extension path retains its original byte-preserving behavior.
+
 Output is deterministic and ends block elements with newlines. Fragment mode is
 the library default. Standalone mode wraps the fragment in a minimal HTML5
 document and escapes the supplied title.
