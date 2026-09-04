@@ -13,6 +13,9 @@ case "$checkpoint" in
             "Fenced code blocks" "Paragraphs" "Blank lines"
         )
         ;;
+    cm3)
+        sections=("HTML blocks" "Raw HTML")
+        ;;
     *)
         echo "commonmark sections: unknown checkpoint '$checkpoint'" >&2
         exit 2

@@ -45,6 +45,12 @@ uncontaminated standards oracle while the extension path preserves the initial
 public behavior. CM8 will replace the transitional split with explicit
 extensions layered around the conforming parse model.
 
+In strict mode, `allow_raw_html=false` uses cmark's safe renderer: raw HTML nodes
+are replaced by omission comments and unsafe link/image destinations are
+blanked. The transitional extension renderer escapes raw HTML instead. Both
+prevent pass-through, but the output distinction must remain documented until
+CM8 unifies renderer policy.
+
 Output is deterministic and ends block elements with newlines. Fragment mode is
 the library default. Standalone mode wraps the fragment in a minimal HTML5
 document and escapes the supplied title.

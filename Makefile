@@ -75,6 +75,9 @@ test-commonmark: $(TARGET)
 test-commonmark-cm2: $(TARGET)
 	bash tests/commonmark_sections.sh cm2 ./$(TARGET)
 
+test-commonmark-cm3: $(TARGET)
+	bash tests/commonmark_sections.sh cm3 ./$(TARGET)
+
 test-sanitize:
 	mkdir -p $(BUILD_DIR)
 	$(MAKE) $(CMARK_SAN_OBJ)
@@ -86,4 +89,4 @@ test-sanitize:
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET)
 
-.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-sanitize commonmark-report test-commonmark test-commonmark-cm2 clean
+.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 clean

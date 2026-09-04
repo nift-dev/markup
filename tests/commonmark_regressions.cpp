@@ -8,9 +8,10 @@ namespace {
 int checks = 0;
 
 void expect(const std::string& name, const std::string& markdown,
-            const std::string& expected) {
+            const std::string& expected, bool allow_raw_html = true) {
     markup::Options options;
     options.enable_extensions = false;
+    options.allow_raw_html = allow_raw_html;
     std::string html, error;
     if (!markup::convert(markup::Format::Markdown, markdown, html, error, options) ||
         html != expected) {
@@ -33,6 +34,19 @@ int main() {
            "<p>foo</p>\n<h1>bar</h1>\n");
     expect("indented continuation is paragraph", "foo\n    bar\n",
            "<p>foo\nbar</p>\n");
+
+    // CM3 - HTML blocks and inline HTML.
+    expect("HTML comment block", "<!-- open\nstill -->\n", "<!-- open\nstill -->\n");
+    expect("CDATA block", "<![CDATA[x < y]]>\n", "<![CDATA[x < y]]>\n");
+    expect("inline tags", "before <i>x</i> after\n",
+           "<p>before <i>x</i> after</p>\n");
+    expect("angle bracket text", "2 < 3 and 4 > 1\n",
+           "<p>2 &lt; 3 and 4 &gt; 1</p>\n");
+    expect("strict safe block omission", "<script>bad()</script>\n",
+           "<!-- raw HTML omitted -->\n", false);
+    expect("strict safe inline omission", "before <i>x</i> after\n",
+           "<p>before <!-- raw HTML omitted -->x<!-- raw HTML omitted --> after</p>\n",
+           false);
 
     std::cout << checks << " CommonMark checkpoint regressions passed\n";
 }
