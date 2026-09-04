@@ -10,15 +10,12 @@
 
 ## M1 - Markdown compatibility
 
-- Select and document the exact CommonMark version target.
-- Import the official spec-example corpus as data-driven tests.
-- Replace simplified delimiter parsing with delimiter-run/flanking rules.
-- Implement reference links and images, nested/loose/mixed lists, lazy block
-  continuations, complete HTML blocks and entity rules.
-- Decide and test the extension profile for tables, task lists, strikethrough,
-  autolinks, footnotes and heading IDs.
+- Complete checkpoints CM0 through CM10 in `COMMONMARK.md`.
+- Pass all 652 examples from the pinned CommonMark 0.31.2 corpus in the strict
+  core profile.
+- Keep tables, task lists and strikethrough outside the core conformance claim.
 - Add pathological-input complexity guards, coverage-guided fuzzing and
-  cross-platform CI.
+  cross-platform CI before publishing the compliance claim.
 
 ## M2 - AsciiDoc
 

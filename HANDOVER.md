@@ -53,8 +53,10 @@ formatting, links/images/autolinks, lists/tasks, block quotes, fenced/indented
 code, thematic breaks, pipe tables, raw HTML, safe mode and CRLF input.
 
 It is not yet CommonMark compliant. Important gaps are documented in
-`docs/handover/ROADMAP.md`; do not hide them behind broad “Markdown support”
-claims.
+`docs/handover/COMMONMARK.md`; do not hide them behind broad “Markdown support”
+claims. That document is the executable development plan for reaching and
+maintaining CommonMark conformance. `docs/handover/ROADMAP.md` keeps only the
+higher-level product sequence.
 
 Run:
 
@@ -98,5 +100,6 @@ corresponding evidence.
 - `docs/handover/DECISIONS.md`
 - `docs/handover/DEVELOPMENT.md`
 - `docs/handover/TESTING.md`
+- `docs/handover/COMMONMARK.md`
 - `docs/handover/ROADMAP.md`
 - `docs/handover/PROJECT-HISTORY.md`
