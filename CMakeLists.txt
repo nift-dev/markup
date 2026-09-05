@@ -57,6 +57,7 @@ if(BUILD_TESTING)
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
     add_test(NAME asciidoctor_2_0_26_profile
         COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/asciidoctor_release_gate.py
+                --program $<TARGET_FILE:markup_cli>
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
     set(COMMONMARK_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated)
