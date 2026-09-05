@@ -221,7 +221,8 @@ std::vector<Inline> parse_inlines(const std::string& text, const Range& source) 
         if (simple_macro("kbd:[", InlineKind::Keyboard) ||
             simple_macro("btn:[", InlineKind::Button) ||
             simple_macro("menu:[", InlineKind::Menu) ||
-            simple_macro("footnote:[", InlineKind::Footnote)) continue;
+            simple_macro("footnote:[", InlineKind::Footnote) ||
+            simple_macro("pass:[", InlineKind::Passthrough)) continue;
         if (text.compare(i, 2, "<<") == 0) {
             const auto close = text.find(">>", i + 2);
             if (close != std::string::npos) {
@@ -349,6 +350,7 @@ bool delimited_block(const std::string& line, BlockKind& kind) {
     else if (line == "****") kind = BlockKind::Sidebar;
     else if (line == "____") kind = BlockKind::Quote;
     else if (line == "////") kind = BlockKind::Comment;
+    else if (line == "++++") kind = BlockKind::Passthrough;
     else return false;
     return true;
 }
@@ -356,7 +358,7 @@ bool delimited_block(const std::string& line, BlockKind& kind) {
 bool verbatim_kind(BlockKind kind) {
     return kind == BlockKind::Listing || kind == BlockKind::Literal ||
            kind == BlockKind::Source || kind == BlockKind::Verse ||
-           kind == BlockKind::Comment;
+           kind == BlockKind::Comment || kind == BlockKind::Passthrough;
 }
 
 Block parse_table_cell(const std::string& raw, std::size_t line,
@@ -788,6 +790,8 @@ std::string render_inlines(const std::vector<Inline>& inlines, const Options& op
         case InlineKind::Button: output += "<b class=\"button\">" + escape_html(node.text) + "</b>"; break;
         case InlineKind::Menu: output += "<span class=\"menuseq\">" + escape_html(node.text) + "</span>"; break;
         case InlineKind::Footnote: output += "<span class=\"footnote\">" + escape_html(node.text) + "</span>"; break;
+        case InlineKind::Passthrough:
+            output += options.allow_raw_html ? node.text : escape_html(node.text); break;
         case InlineKind::LineBreak: output += "<br>\n"; break;
         default: output += escape_html(node.text); break;
         }
@@ -823,6 +827,8 @@ std::string render_blocks(const std::vector<Block>& blocks, const Options& optio
             output += "<div class=\"" + role + "\"" + id_attribute(block) + ">\n";
             if (!block.title.empty()) output += "<div class=\"title\">" + escape_html(block.title) + "</div>\n";
             output += "<pre>" + escape_html(block.text) + "</pre>\n</div>\n";
+        } else if (block.kind == BlockKind::Passthrough) {
+            output += options.allow_raw_html ? block.text + "\n" : escape_html(block.text) + "\n";
         } else if (block.kind == BlockKind::Sidebar || block.kind == BlockKind::Example ||
                    block.kind == BlockKind::Open) {
             const std::string role = block.kind == BlockKind::Sidebar ? "sidebarblock" :

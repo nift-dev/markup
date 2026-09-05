@@ -191,6 +191,13 @@ cycle diagnostics; the host owns traversal/root policy.
 
 Exit: hostile inputs are bounded and the safe-mode boundary is documented.
 
+Status: **Complete.** Passthrough blocks and `pass:[]` are raw only in the
+default profile and escaped under `--safe`; active URI schemes are rejected in
+safe mode. Include failures carry stable source identity and line positions.
+Depth, input, expansion, table-cell and output-growth guards are exercised by
+focused hostile-input tests and the shared mutation, ASan/UBSan and performance
+gates.
+
 ## AD11 - Language conformance release gate
 
 - Pass every applicable case in the pinned TCK with no unexplained exclusions.
@@ -215,4 +222,5 @@ conformance claim.
 | AD7 - Tables | Complete | Bounded rows/cells, simple spans/styles, inline cell content and EOF recovery |
 | AD8 - Macros/conditionals | Complete | Pure built-ins and nested attribute conditionals; unknown macros literal |
 | AD9 - Includes/capabilities | Complete | Explicit resolver and dependency observer; cycle/depth/byte bounds; IO-free default |
-| AD10-AD11 | Pending | - |
+| AD10 - Safety/robustness | Complete | Safe passthrough/URI boundary, positioned diagnostics and hostile-input guards |
+| AD11 | Pending | - |

@@ -95,6 +95,8 @@ int main() {
     expect("|===\n|*strong* |a:AsciiDoc _cell_\n|===\n",
            "<table>\n<tr>\n<td><strong>strong</strong></td>\n<td>AsciiDoc <em>cell</em></td>\n"
            "</tr>\n</table>\n");
+    expect("++++\n<span class=\"raw\">kept</span>\n++++\n",
+           "<span class=\"raw\">kept</span>\n");
     expect("= Conditional\n:feature:\n\nifdef::feature[]\nShown\nendif::[]\n"
            "ifndef::feature[]\nHidden\nendif::[]\n",
            "<div id=\"header\">\n<h1>Conditional</h1>\n</div>\n"
@@ -127,6 +129,27 @@ int main() {
                         "<div class=\"paragraph\">\n<p>included <strong>content</strong></p>\n</div>\n"
                         "<div class=\"paragraph\">\n<p>after</p>\n</div>\n" ||
             dependencies != std::vector<std::string>{"docs/part.adoc"}) return 4;
+        ++checks;
+    }
+    {
+        markup::Options safe;
+        safe.allow_raw_html = false;
+        std::string output, safe_error;
+        if (!markup::convert(markup::Format::AsciiDoc,
+                             "++++\n<script>alert(1)</script>\n++++\n\n"
+                             "link:javascript:alert(1)[bad] pass:[<b>raw</b>]",
+                             output, safe_error, safe) ||
+            output.find("<script>") != std::string::npos ||
+            output.find("href=\"javascript:") != std::string::npos ||
+            output.find("<b>raw</b>") != std::string::npos) return 6;
+        ++checks;
+    }
+    {
+        std::string hostile;
+        for (int i = 0; i < 5000; ++i) hostile += "* item **unterminated__ link:http://x[\n";
+        std::string output, hostile_error;
+        if (!markup::convert(markup::Format::AsciiDoc, hostile, output, hostile_error) ||
+            output.size() > hostile.size() * 16U) return 7;
         ++checks;
     }
     {
