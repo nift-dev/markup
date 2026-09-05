@@ -22,5 +22,6 @@ CM2-CM7 closed individual block, HTML, container, inline, emphasis and link
 gates; CM8 made CommonMark the default API-v2 profile; and CM9 made 652/652
 reproducible with an empty expected-failure manifest and differential boundary
 tests. CM10 added local performance, RSS, pathological, sanitizer and fuzz
-infrastructure plus cross-platform CI. Its final public claim remains gated on
-the first successful pushed CI run.
+infrastructure plus cross-platform CI. Actions run `33933214625` passed at
+commit `3cba857` on 2026-09-05, closing the versioned CommonMark 0.31.2 release
+gate; the corrected MSVC job completed in 1m 4s instead of timing out.

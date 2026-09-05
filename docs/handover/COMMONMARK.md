@@ -337,4 +337,4 @@ message or linked report rather than replacing criteria with a subjective note.
 | CM7 - Links/images | Complete | 139/139 selected | References/brackets plus three large-input lookup guards |
 | CM8 - Rendering/extensions | Complete | 652/652 default core | API v2 profile, explicit legacy extensions and option matrix |
 | CM9 - Full corpus | Complete | 652/652 three times | Empty enforced manifest; 1,652 reference differential cases |
-| CM10 - Release gate | Local gates complete; pushed CI pending | 652/652 local | GCC local; Clang/macOS, MSVC/Windows and libFuzzer await Actions |
+| CM10 - Release gate | Complete | 652/652 cross-platform | Actions run 33933214625 passed at commit 3cba857; MSVC harness completed in 1m 4s |

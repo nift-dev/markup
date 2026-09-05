@@ -49,17 +49,15 @@ Markup++ must not learn Nift's parser, project model, tracked state or CLI.
 
 ## Current behavior and evidence
 
-The default Markdown profile is a CommonMark 0.31.2 compatibility candidate and
-passes all 652 pinned examples locally. The explicitly selected `Extended`
+The default Markdown profile is CommonMark 0.31.2 compliant. All 652 pinned
+examples and the pushed Linux/macOS/Windows release gate pass. The explicitly selected `Extended`
 profile preserves the initial converter's tables, tasks and strikethrough
 behavior.
 
-Do not publish the final compliance claim until the new Linux/macOS/Windows CI
-has passed from the pushed commit. Remaining release evidence is documented in
-`docs/handover/COMMONMARK.md`; do not hide gaps behind broad “Markdown support”
-claims. That document is the executable development plan for reaching and
-maintaining CommonMark conformance. `docs/handover/ROADMAP.md` keeps only the
-higher-level product sequence.
+The immutable release evidence is recorded in
+`docs/handover/COMMONMARK-RELEASE.md`. Do not broaden the versioned claim into
+“all Markdown,” and do not conflate the optional extension profile with core
+CommonMark. `docs/handover/COMMONMARK.md` remains the maintenance plan.
 
 Run:
 

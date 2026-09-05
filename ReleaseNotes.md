@@ -22,6 +22,9 @@
   reproducibility/differential checks, performance/RSS limits, a libFuzzer
   harness, CMake/MSVC support and cross-platform CI configuration.
 
-This is an implementation checkpoint, not a tagged public release and not a
-final public compliance claim. That wording remains gated on a successful run
-of the newly added Linux, macOS and Windows CI from the pushed commit.
+- Passed the first pushed cross-platform release gate at commit `3cba857` in
+  Actions run `33933214625`, including GCC/Linux, Clang/macOS, MSVC/Windows and
+  bounded libFuzzer coverage.
+
+This is an implementation checkpoint, not a tagged public release. The evidence
+now supports the versioned CommonMark 0.31.2 compliance claim.

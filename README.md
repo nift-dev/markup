@@ -72,10 +72,10 @@ including:
 The optional extended profile additionally supports pipe tables with alignment,
 task-list checkboxes and strikethrough.
 
-All 652 official examples pass locally. The public compliance claim remains
-gated on CM9 reproducibility and the CM10 portability, fuzz, performance and
-release evidence. Compatibility claims grow from executable evidence rather
-than the name “Markdown”.
+The default Markdown profile is CommonMark 0.31.2 compliant: all 652 official
+examples and the reproducibility, differential, portability, fuzz, performance
+and cross-platform release gates pass. Compatibility claims grow from executable
+evidence rather than the name “Markdown”.
 
 ## Tests
 

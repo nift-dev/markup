@@ -46,12 +46,13 @@ Before publishing “CommonMark 0.31.2 compliant”:
 
 Evidence ledger:
 
-- Candidate commit: pending
-- GitHub Actions run: pending
-- GCC/Linux: pending
-- Clang/macOS: pending
-- MSVC/Windows: pending
-- Linux sanitizer/leak detection: pending
-- Clang libFuzzer: pending
+- Candidate commit: `3cba857cfd9ba90b9013c697be08d53cc5ad0e82`
+- GitHub Actions run: `33933214625` (2026-09-05, success in 1m 9s)
+- GCC/Linux: passed
+- Clang/macOS: passed
+- MSVC/Windows: passed in 1m 4s with the in-process 652-case harness
+- Linux sanitizer/leak detection: passed in the Unix/Linux job
+- Clang libFuzzer: passed in 26s
 
-Do not fill this ledger from planned workflow configuration or local results.
+The first pushed release gate is complete. Keep the immutable commit and run ID
+with future claims; a later passing run does not erase this baseline.

@@ -40,8 +40,10 @@ specific.
 
 The GitHub Actions workflow adds GCC/Linux, Clang/macOS, MSVC/Windows, Linux
 leak-enabled sanitizer and bounded Clang libFuzzer jobs. A workflow file is not
-execution evidence: record the first successful pushed run here before changing
-the CM10 ledger to complete or publishing the compliance claim.
+execution evidence. The first successful pushed gate was Actions run
+`33933214625` at `3cba857cfd9ba90b9013c697be08d53cc5ad0e82`: GCC/Linux,
+Clang/macOS, MSVC/Windows and libFuzzer all passed. The complete immutable ledger
+lives in `COMMONMARK-RELEASE.md`.
 
 The CMake/CTest conformance gate generates a C++ fixture from the pinned JSON
 corpus and executes all 652 conversions in one process linked to `markup_core`.
@@ -54,10 +56,8 @@ continues to test the standalone executable contract directly.
 
 - Differential comparison against established converters with a precisely
   declared extension profile.
-- First successful pushed cross-platform CI run and its immutable commit/run ID.
 - Long-lived RSS and independent Valgrind checkpoints.
 - Large-document performance and complexity guards.
-- Successful CI execution evidence for the new coverage-guided libFuzzer gate.
 - A broader Unicode/invalid-UTF-8 corpus beyond the strict-mode replacement
   regressions.
 - AsciiDoc and reStructuredText corpora.
