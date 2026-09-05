@@ -15,7 +15,7 @@ set(CMARK_SOURCES
     vendor/cmark/node.c vendor/cmark/references.c vendor/cmark/render.c
     vendor/cmark/scanners.c vendor/cmark/utf8.c)
 
-add_library(markup_core STATIC src/Markup.cpp src/AsciiDoc.cpp ${CMARK_SOURCES})
+add_library(markup_core STATIC src/Markup.cpp src/AsciiDoc.cpp src/ReStructuredText.cpp ${CMARK_SOURCES})
 target_include_directories(markup_core PUBLIC include PRIVATE vendor/cmark)
 if(MSVC)
     target_compile_options(markup_core PRIVATE /W4)
@@ -45,6 +45,9 @@ if(BUILD_TESTING)
     add_executable(markup-asciidoctor-compat tests/asciidoctor_compat.cpp)
     target_link_libraries(markup-asciidoctor-compat PRIVATE markup_core)
     add_test(NAME asciidoctor_2_0_26_compat COMMAND markup-asciidoctor-compat)
+    add_executable(markup-rst tests/restructuredtext.cpp)
+    target_link_libraries(markup-rst PRIVATE markup_core)
+    add_test(NAME restructuredtext COMMAND markup-rst)
     add_test(NAME asciidoctor_2_0_26_profile
         COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/asciidoctor_release_gate.py
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})

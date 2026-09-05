@@ -9,6 +9,7 @@
 
 #include "../vendor/cmark/cmark.h"
 #include "AsciiDoc.h"
+#include "ReStructuredText.h"
 
 namespace markup {
 namespace {
@@ -586,7 +587,8 @@ const char* format_name(Format format) {
 }
 
 bool is_supported(Format format) {
-    return format == Format::Markdown || format == Format::AsciiDoc;
+    return format == Format::Markdown || format == Format::AsciiDoc ||
+           format == Format::ReStructuredText;
 }
 
 bool convert(Format format, const std::string& input, std::string& output,
@@ -601,10 +603,14 @@ bool convert(Format format, const std::string& input, std::string& output,
     std::string fragment;
     if (format == Format::Markdown) {
         fragment = markdown_fragment(input, options);
-    } else {
+    } else if (format == Format::AsciiDoc) {
         asciidoc::Document document;
         if (!asciidoc::parse(input, document, error, options)) return false;
         fragment = asciidoc::render_html(document, options);
+    } else {
+        rst::Document document;
+        if (!rst::parse(input, document, error, options)) return false;
+        fragment = rst::render_html(document, options);
     }
     if (!options.standalone) {
         output = std::move(fragment);

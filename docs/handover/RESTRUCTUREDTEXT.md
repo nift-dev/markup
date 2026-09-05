@@ -50,6 +50,11 @@ doctrees, fragments and diagnostics for offline use.
 
 Exit: empty, Unicode, malformed and deeply nested inputs behave deterministically.
 
+Status: **Complete.** A format-specific neutral document/block/inline model,
+source ranges, CRLF/CR normalization, tab expansion, embedded-NUL replacement,
+UTF-8 preservation, 64 MiB input bound and deterministic IO-free public
+conversion path are established.
+
 ## RST2 - Sections, paragraphs and transitions
 
 - Implement adornment-based section discovery and hierarchy.

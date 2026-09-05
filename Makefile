@@ -6,7 +6,7 @@ CPPFLAGS ?= -Iinclude -Ivendor/cmark
 LDFLAGS ?=
 
 TARGET := markup
-LIBSRC := src/Markup.cpp src/AsciiDoc.cpp
+LIBSRC := src/Markup.cpp src/AsciiDoc.cpp src/ReStructuredText.cpp
 BUILD_DIR := .build
 CMARK_DIR := vendor/cmark
 CMARK_NAMES := blocks buffer cmark cmark_ctype houdini_href_e houdini_html_e houdini_html_u html inlines iterator node references render scanners utf8
@@ -21,6 +21,7 @@ COMMONMARK_REGRESSIONS := $(BUILD_DIR)/commonmark-regressions
 PROFILE_MATRIX := $(BUILD_DIR)/profile-matrix
 ASCIIDOC := $(BUILD_DIR)/asciidoc
 ASCIIDOCTOR_COMPAT := $(BUILD_DIR)/asciidoctor-compat
+RST := $(BUILD_DIR)/restructuredtext
 CMARK_REFERENCE := $(BUILD_DIR)/cmark-reference
 SANITIZER_FLAGS ?= -O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined
 ASAN_OPTIONS ?= detect_leaks=1:halt_on_error=1
@@ -67,6 +68,9 @@ $(ASCIIDOC): tests/asciidoc.cpp $(LIBSRC) include/markup/Markup.h src/AsciiDoc.h
 $(ASCIIDOCTOR_COMPAT): tests/asciidoctor_compat.cpp $(LIBSRC) include/markup/Markup.h src/AsciiDoc.h $(CMARK_OBJ) | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/asciidoctor_compat.cpp $(LIBSRC) $(CMARK_OBJ) -o $@
 
+$(RST): tests/restructuredtext.cpp $(LIBSRC) include/markup/Markup.h src/ReStructuredText.h $(CMARK_OBJ) | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/restructuredtext.cpp $(LIBSRC) $(CMARK_OBJ) -o $@
+
 $(CMARK_REFERENCE): tests/cmark_reference.c $(CMARK_OBJ) | $(BUILD_DIR)
 	$(CC) -I$(CMARK_DIR) $(CFLAGS) tests/cmark_reference.c $(CMARK_OBJ) -o $@
 
@@ -100,7 +104,10 @@ test-asciidoctor-compat: $(ASCIIDOCTOR_COMPAT)
 test-asciidoctor-release: test-asciidoctor-compat
 	python3 tests/asciidoctor_release_gate.py
 
-test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-release
+test-rst: $(RST)
+	./$(RST)
+
+test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-release test-rst
 	python3 tests/asciidoc_fixture_inventory.py
 
 commonmark-report: $(TARGET)
