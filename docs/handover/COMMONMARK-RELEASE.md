@@ -12,7 +12,7 @@ make test-sanitize
 
 Expected evidence at this checkpoint:
 
-- 48 Markdown smoke checks;
+- 47 Markdown smoke checks;
 - 75 adversarial checks;
 - CLI smoke suite;
 - 10,000 deterministic mutation cases;

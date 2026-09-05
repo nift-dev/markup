@@ -12,7 +12,7 @@ immutable commit rather than following a mutable branch.
 - Specification/TCK license: EPL-2.0
 
 The upstream README explicitly says releases are not available yet. The current
-TCK contains twelve language cases and validates an Abstract Semantic Graph,
+TCK contains thirteen language cases and validates an Abstract Semantic Graph,
 not HTML. `cases.json` preserves every upstream input and its classification so
 the baseline is reproducible offline. Expected upstream ASG output will be
 consumed by the adapter gate as the internal AsciiDoc document model matures;

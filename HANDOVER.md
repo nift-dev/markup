@@ -69,6 +69,10 @@ AsciiDoc AC0-AC9 and reStructuredText RST0-RST14 have now passed their pushed
 Linux/macOS/Windows candidate gate at commit `ee0ec00` in Actions run
 `33938717946`. Their exact, bounded compatibility wording may be published only
 with the pinned profiles and limitations recorded in the release handovers.
+Both release gates compare normalized Markup++ output against pinned reference
+output (Docutils 0.23 fragments and a genuine Asciidoctor 2.0.26 reference),
+and fail on unexpected differences; reviewed differences are recorded with
+reasons in each `differences.json`.
 
 Run:
 

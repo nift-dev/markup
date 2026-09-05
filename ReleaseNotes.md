@@ -40,7 +40,24 @@
   0.23 oracle: neutral syntax model, roles/directives, tables, references,
   substitutions, host-controlled resources, diagnostics and release gates.
 - Added 39 focused RST checks, a large/adversarial robustness suite, all-format
-  mutation coverage and a 24-case deterministic Docutils profile gate.
+  mutation coverage and a 24-case Docutils profile gate that now compares
+  normalized output against the pinned fragments and fails on unexpected
+  differences.
+- Fixed four reStructuredText parser defects surfaced by the frozen oracle:
+  inline literals are no longer swallowed into a following hyperlink label,
+  grid-table separators accept `=` runs, simple tables use border column
+  boundaries (single- or double-space), and `contents` emits a real table of
+  contents with section anchors and backreferences.
+- Rendered RST comments as HTML comments, title-cased admonition labels, and
+  aligned topic/sidebar output with the Docutils HTML5 writer.
+- Generated and pinned a genuine Asciidoctor 2.0.26 `reference.json`; the AC9
+  gate now compares normalized Markup++ output against it. Fixed `. ` (single
+  dot + space) ordered lists, which the block-title grammar previously
+  consumed.
+- Clamped AsciiDoc include `indent=` and enforced the 64 MiB expansion budget
+  on the selected output; added hostile AsciiDoc include cycle/depth/size and
+  table-cell tests; duplicate-anchor diagnostics now use the configured source
+  identity.
 - Passed the combined AsciiDoc/Asciidoctor and reStructuredText/Docutils pushed
   release gate at commit `ee0ec00` in Actions run `33938717946`; GCC/Linux,
   Clang/macOS, MSVC/Windows and bounded libFuzzer jobs all passed.
@@ -48,4 +65,5 @@
   subtree. Standalone Markup++ remains the source of truth.
 
 This is an implementation checkpoint, not a tagged public release. The evidence
-now supports the versioned CommonMark 0.31.2 compliance claim.
+now supports the versioned CommonMark 0.31.2 compliance claim and the bounded
+Asciidoctor 2.0.26 and Docutils 0.23 core compatibility claims.
