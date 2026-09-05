@@ -104,6 +104,11 @@ does not parse inline syntax; unclosed delimiters consume safely to EOF.
 
 Exit: all applicable list TCK cases and deep mixed-list regressions pass.
 
+Status: **Complete.** Unordered, ordered, description and checklist lists have
+distinct nodes and renderers. Marker depth drives nested list structure;
+explicit ordered starts, mixed nested families, checked state and continuation-
+owned blocks are preserved rather than flattened into paragraph text.
+
 ## AD5 - Inline substitutions
 
 - Implement constrained/unconstrained emphasis, strong, monospace and mark.
@@ -174,6 +179,6 @@ conformance claim.
 | AD1 - Model/invariants | Complete | Neutral model; LF/CRLF/CR, NUL, UTF-8, escaping, determinism and 64 MiB boundary |
 | AD2 - Header/attributes/sections | Complete | Titles, author/revision, attribute set/unset/substitution and nested levels 1-5 |
 | AD3 - Paragraphs/blocks | Complete | Paragraph precedence; titled/styled verbatim and container blocks; comments; thematic/page breaks |
-| AD4 - Lists | Pending | - |
+| AD4 - Lists | Complete | Unordered/ordered/description/checklist nodes, nesting, starts and continuation blocks |
 | AD5 - Inline substitutions | Pending | - |
 | AD6-AD11 | Pending | - |

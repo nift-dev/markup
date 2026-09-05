@@ -137,6 +137,118 @@ void parse_block_attributes(const std::string& line, std::string& style) {
     style = trim(inside.substr(0, comma));
 }
 
+struct ListInfo {
+    BlockKind kind = BlockKind::Paragraph;
+    std::size_t depth = 0;
+    unsigned start = 1;
+    std::string marker;
+    std::string principal;
+};
+
+bool list_info(const std::string& value, ListInfo& info) {
+    std::size_t count = 0;
+    while (count < value.size() && value[count] == '*') ++count;
+    if (count && count < value.size() && value[count] == ' ') {
+        info.kind = BlockKind::UnorderedList;
+        info.depth = count;
+        info.marker = value.substr(0, count);
+        info.principal = value.substr(count + 1);
+        return true;
+    }
+    count = 0;
+    while (count < value.size() && value[count] == '.') ++count;
+    if (count && count < value.size() && value[count] == ' ') {
+        info.kind = BlockKind::OrderedList;
+        info.depth = count;
+        info.marker = value.substr(0, count);
+        info.principal = value.substr(count + 1);
+        return true;
+    }
+    std::size_t digits = 0;
+    while (digits < value.size() && std::isdigit(static_cast<unsigned char>(value[digits]))) ++digits;
+    if (digits && digits + 1 < value.size() && value[digits] == '.' && value[digits + 1] == ' ') {
+        info.kind = BlockKind::OrderedList;
+        info.depth = 1;
+        info.start = static_cast<unsigned>(std::stoul(value.substr(0, digits)));
+        info.marker = value.substr(0, digits + 1);
+        info.principal = value.substr(digits + 2);
+        return true;
+    }
+    const auto description = value.find("::");
+    if (description != std::string::npos && description > 0 &&
+        (description + 2 == value.size() || value[description + 2] == ' ')) {
+        info.kind = BlockKind::DescriptionList;
+        info.depth = 1;
+        info.marker = "::";
+        info.principal = value.substr(0, description);
+        if (description + 2 < value.size()) {
+            info.principal += '\n';
+            info.principal += value.substr(description + 3);
+        }
+        return true;
+    }
+    return false;
+}
+
+void parse_list(const std::vector<std::string>& lines, std::size_t& line,
+                std::size_t depth, BlockKind kind, Block& list,
+                const std::map<std::string, std::string>& attributes) {
+    list.kind = kind;
+    list.source.begin = {line + 1, 1};
+    while (line < lines.size()) {
+        ListInfo info;
+        if (!list_info(lines[line], info) || info.kind != kind || info.depth != depth) break;
+        if (list.items.empty()) {
+            list.marker = info.marker;
+            list.start = info.start;
+        }
+        const std::size_t first = line++;
+        Block item;
+        item.kind = BlockKind::Paragraph;
+        item.marker = info.marker;
+        item.start = info.start;
+        std::string principal = info.principal;
+        if (kind == BlockKind::DescriptionList) {
+            const auto newline = principal.find('\n');
+            item.title = principal.substr(0, newline);
+            principal = newline == std::string::npos ? "" : principal.substr(newline + 1);
+        }
+        if (principal.size() >= 3 && principal.front() == '[' && principal[2] == ']' &&
+            (principal[1] == ' ' || principal[1] == 'x' || principal[1] == 'X')) {
+            item.checklist = true;
+            item.checked = principal[1] != ' ';
+            list.checklist = true;
+            principal = trim(principal.substr(3));
+        }
+        add_text_inline(item, principal, first, first, attributes);
+
+        while (line < lines.size()) {
+            ListInfo nested;
+            if (!list_info(lines[line], nested) || nested.depth <= depth) break;
+            Block child;
+            parse_list(lines, line, nested.depth, nested.kind, child, attributes);
+            item.blocks.push_back(std::move(child));
+        }
+        if (line < lines.size() && lines[line] == "+") {
+            ++line;
+            while (line < lines.size() && lines[line].empty()) ++line;
+            if (line < lines.size()) {
+                const std::size_t continuation_line = line++;
+                Block continuation;
+                add_text_inline(continuation, lines[continuation_line], continuation_line,
+                                continuation_line, attributes);
+                item.blocks.push_back(std::move(continuation));
+            }
+        }
+        item.source.begin = {first + 1, 1};
+        const std::size_t last = line ? line - 1 : first;
+        item.source.end = {last + 1, lines[last].size()};
+        list.items.push_back(std::move(item));
+    }
+    const std::size_t last = line ? line - 1 : 0;
+    list.source.end = {last + 1, lines[last].size()};
+}
+
 void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
                   unsigned parent_level, std::vector<Block>& blocks,
                   const std::map<std::string, std::string>& attributes,
@@ -225,6 +337,17 @@ void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
             continue;
         }
 
+        ListInfo first_item;
+        if (list_info(lines[line], first_item)) {
+            Block list;
+            list.title = pending_title;
+            list.style = pending_style;
+            parse_list(lines, line, first_item.depth, first_item.kind, list, attributes);
+            blocks.push_back(std::move(list));
+            pending_title.clear(); pending_style.clear();
+            continue;
+        }
+
         if (!lines[line].empty() && (lines[line][0] == ' ' || lines[line][0] == '\t')) {
             const std::size_t first = line;
             Block literal;
@@ -253,6 +376,8 @@ void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
                 lines[line] == "<<<" || (!end_delimiter.empty() && lines[line] == end_delimiter) ||
                 (lines[line].size() > 1 && lines[line].front() == '[' && lines[line].back() == ']') ||
                 (lines[line].size() > 1 && lines[line].front() == '.' && lines[line][1] != '.')) break;
+            ListInfo next_list;
+            if (list_info(lines[line], next_list)) break;
             text += '\n';
             text += lines[line++];
         }
@@ -320,6 +445,33 @@ std::string render_blocks(const std::vector<Block>& blocks) {
             output += "<hr>\n";
         } else if (block.kind == BlockKind::PageBreak) {
             output += "<div class=\"pagebreak\"></div>\n";
+        } else if (block.kind == BlockKind::UnorderedList || block.kind == BlockKind::OrderedList) {
+            const bool ordered = block.kind == BlockKind::OrderedList;
+            output += ordered ? "<ol" : "<ul";
+            if (ordered && block.start != 1) output += " start=\"" + std::to_string(block.start) + "\"";
+            if (block.checklist) output += " class=\"checklist\"";
+            output += ">\n";
+            for (const auto& item : block.items) {
+                output += "<li>";
+                if (item.checklist) {
+                    output += "<input type=\"checkbox\" disabled";
+                    if (item.checked) output += " checked";
+                    output += "> ";
+                }
+                output += render_inlines(item.inlines);
+                if (!item.blocks.empty()) output += '\n' + render_blocks(item.blocks);
+                output += "</li>\n";
+            }
+            output += ordered ? "</ol>\n" : "</ul>\n";
+        } else if (block.kind == BlockKind::DescriptionList) {
+            output += "<dl>\n";
+            for (const auto& item : block.items) {
+                output += "<dt>" + escape_html(item.title) + "</dt>\n<dd>" +
+                          render_inlines(item.inlines);
+                if (!item.blocks.empty()) output += '\n' + render_blocks(item.blocks);
+                output += "</dd>\n";
+            }
+            output += "</dl>\n";
         }
     }
     return output;

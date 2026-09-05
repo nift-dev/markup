@@ -39,6 +39,8 @@ struct Block {
     std::string marker;
     unsigned level = 0;
     unsigned start = 1;
+    bool checklist = false;
+    bool checked = false;
     std::vector<Inline> inlines;
     std::vector<Block> blocks;
     std::vector<Block> items;

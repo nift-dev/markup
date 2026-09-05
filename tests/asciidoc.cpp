@@ -50,6 +50,20 @@ int main() {
            "<hr>\n<div class=\"pagebreak\"></div>\n");
     expect("----\nunclosed & literal\n",
            "<div class=\"listingblock\">\n<pre>unclosed &amp; literal</pre>\n</div>\n");
+    expect("* water\n* earth\n** stone\n* air\n",
+           "<ul>\n<li>water</li>\n<li>earth\n<ul>\n<li>stone</li>\n</ul>\n</li>\n"
+           "<li>air</li>\n</ul>\n");
+    expect("3. third\n4. fourth\n",
+           "<ol start=\"3\">\n<li>third</li>\n<li>fourth</li>\n</ol>\n");
+    expect("* [ ] pending\n* [x] complete\n",
+           "<ul class=\"checklist\">\n<li><input type=\"checkbox\" disabled> pending</li>\n"
+           "<li><input type=\"checkbox\" disabled checked> complete</li>\n</ul>\n");
+    expect("Term:: definition\nOther:: another\n",
+           "<dl>\n<dt>Term</dt>\n<dd>definition</dd>\n"
+           "<dt>Other</dt>\n<dd>another</dd>\n</dl>\n");
+    expect("* principal\n+\ncontinued block\n* next\n",
+           "<ul>\n<li>principal\n<div class=\"paragraph\">\n<p>continued block</p>\n</div>\n"
+           "</li>\n<li>next</li>\n</ul>\n");
 
     std::string output, error;
     if (!markup::is_supported(markup::Format::AsciiDoc) ||
