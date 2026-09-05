@@ -75,6 +75,12 @@ state and performs no IO. The public AsciiDoc conversion path is now enabled.
 
 Exit: applicable header, attribute and section TCK cases pass structurally.
 
+Status: **Complete.** Document titles, optional author/revision lines, header
+attribute assignment/unsetting, escaped and ordinary attribute references, and
+levels 1-5 nested sections are represented before rendering. Header/body
+boundaries and the three current upstream header/section inputs have focused
+neighbors in `tests/asciidoc.cpp`.
+
 ## AD3 - Paragraphs and block boundaries
 
 - Implement paragraphs, hard line breaks, thematic breaks and page breaks.
@@ -160,7 +166,7 @@ conformance claim.
 |---|---|---|
 | AD0 - Target/TCK harness | Complete | 13/13 upstream inputs inventoried at immutable spec/TCK commits |
 | AD1 - Model/invariants | Complete | Neutral model; LF/CRLF/CR, NUL, UTF-8, escaping, determinism and 64 MiB boundary |
-| AD2 - Header/attributes/sections | Pending | - |
+| AD2 - Header/attributes/sections | Complete | Titles, author/revision, attribute set/unset/substitution and nested levels 1-5 |
 | AD3 - Paragraphs/blocks | Pending | - |
 | AD4 - Lists | Pending | - |
 | AD5 - Inline substitutions | Pending | - |

@@ -47,6 +47,8 @@ struct Block {
 
 struct Document {
     std::string title;
+    std::string author;
+    std::string revision;
     std::map<std::string, std::string> attributes;
     std::vector<Block> blocks;
     Range source;

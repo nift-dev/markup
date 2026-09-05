@@ -27,6 +27,19 @@ int main() {
     expect("caf\xc3\xa9", "<div class=\"paragraph\">\n<p>caf\xc3\xa9</p>\n</div>\n");
     expect(std::string("a\0b", 3), "<div class=\"paragraph\">\n<p>a\xef\xbf\xbd" "b</p>\n</div>\n");
     expect("<tag> & text", "<div class=\"paragraph\">\n<p>&lt;tag&gt; &amp; text</p>\n</div>\n");
+    expect("= Document Title\n\nbody\n",
+           "<div id=\"header\">\n<h1>Document Title</h1>\n</div>\n"
+           "<div class=\"paragraph\">\n<p>body</p>\n</div>\n");
+    expect("= {project} Guide\nAda Example <ada@example.test>\nv1.2, 2026-09-05\n"
+           ":project: Markup++\n:unused: gone\n:unused!:\n\nWelcome to {project}.\n",
+           "<div id=\"header\">\n<h1>Markup++ Guide</h1>\n"
+           "<div class=\"details\">Ada Example &lt;ada@example.test&gt;</div>\n</div>\n"
+           "<div class=\"paragraph\">\n<p>Welcome to Markup++.</p>\n</div>\n");
+    expect("== Parent\n\nparent body\n\n=== Child {name}\n\nchild body\n",
+           "<div class=\"sect1\">\n<h2>Parent</h2>\n"
+           "<div class=\"paragraph\">\n<p>parent body</p>\n</div>\n"
+           "<div class=\"sect2\">\n<h3>Child {name}</h3>\n"
+           "<div class=\"paragraph\">\n<p>child body</p>\n</div>\n</div>\n</div>\n");
 
     std::string output, error;
     if (!markup::is_supported(markup::Format::AsciiDoc) ||
