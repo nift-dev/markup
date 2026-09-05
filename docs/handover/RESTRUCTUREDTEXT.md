@@ -206,6 +206,13 @@ highlight execution remain disabled unless an embedding host opts in.
 
 Exit: doctree parity and Markup++ HTML contracts both pass independently.
 
+Status: **Complete for the stable fragment/standalone contract and declared
+transform subset.** IDs, named references, substitutions and footnotes resolve
+before rendering; fragments remain deterministic and standalone titles escape.
+Unknown roles/directives and disabled raw/includes report positioned diagnostics.
+Raw content never reaches HTML, while writer decoration is deliberately not
+treated as parser structure.
+
 ## RST13 - Robustness and real-document compatibility
 
 - Differential-test licensed READMEs, Python documentation and standalone manuals.
