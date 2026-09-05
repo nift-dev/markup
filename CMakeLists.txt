@@ -59,6 +59,10 @@ if(BUILD_TESTING)
         COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/asciidoctor_release_gate.py
                 --program $<TARGET_FILE:markup_cli>
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+    add_test(NAME difference_gate_self_test
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/difference_gate_self_test.py
+                --program $<TARGET_FILE:markup_cli>
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
     set(COMMONMARK_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated)
     set(COMMONMARK_GENERATED_CASES ${COMMONMARK_GENERATED_DIR}/commonmark_cases.inc)

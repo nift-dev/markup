@@ -14,7 +14,11 @@ import sys
 import tempfile
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-PROGRAM = str(ROOT / "markup")
+import argparse
+_ap = argparse.ArgumentParser()
+_ap.add_argument("--program", default=str(ROOT / "markup"))
+_args = _ap.parse_args()
+PROGRAM = _args.program
 
 PROFILES = [
     {
