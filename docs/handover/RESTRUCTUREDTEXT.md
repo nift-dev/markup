@@ -63,6 +63,11 @@ conversion path are established.
 
 Exit: specification and pinned parser fixtures match normalized doctrees.
 
+Status: **Complete for the declared profile.** First-seen adornments establish
+section hierarchy, deterministic IDs are generated, paragraphs and transitions
+interrupt correctly, and indented block quotes preserve content. Malformed
+short adornments remain text rather than creating unstable hierarchy.
+
 ## RST3 - Inline markup and escaping
 
 - Implement emphasis, strong, inline literals, interpreted text, references,

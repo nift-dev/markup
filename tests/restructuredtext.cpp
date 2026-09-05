@@ -10,6 +10,9 @@ int main(){
  expect("caf\xc3\xa9","<p>caf\xc3\xa9</p>\n");
  expect(std::string("a\0b",3),"<p>a\xef\xbf\xbd" "b</p>\n");
  expect("<tag> & text","<p>&lt;tag&gt; &amp; text</p>\n");
+ expect("Title\n=====\n\nSection\n-------\n\nBody.\n","<section id=\"title\">\n<h1>Title</h1>\n<section id=\"section\">\n<h2>Section</h2>\n<p>Body.</p>\n</section>\n</section>\n");
+ expect("Before.\n\n----\n\nAfter.\n","<p>Before.</p>\n<hr>\n<p>After.</p>\n");
+ expect("   quoted line\n   second\n","<blockquote>\n<p>quoted line\nsecond</p>\n</blockquote>\n");
  std::string o,e;if(!markup::is_supported(markup::Format::ReStructuredText)||!markup::convert(markup::Format::ReStructuredText,"repeat",o,e))return 2;auto first=o;if(!markup::convert(markup::Format::ReStructuredText,"repeat",o,e)||o!=first)return 3;checks+=2;
  std::cout<<checks<<" reStructuredText checks passed\n";
 }
