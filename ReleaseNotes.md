@@ -30,7 +30,7 @@
 - Implemented AsciiDoc checkpoints AD1-AD5: a neutral source-positioned model,
   normalization and bounds, headers/attributes/sections, structural and
   verbatim blocks, list families and ordered inline substitutions.
-- Added 25 focused AsciiDoc checks while retaining the CommonMark release gate.
+- Added 26 focused AsciiDoc checks while retaining the CommonMark release gate.
 
 This is an implementation checkpoint, not a tagged public release. The evidence
 now supports the versioned CommonMark 0.31.2 compliance claim.
