@@ -53,7 +53,7 @@ if(BUILD_TESTING)
     add_test(NAME rst_robustness COMMAND markup-rst-robustness)
     add_test(NAME docutils_0_23_profile
         COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/docutils_release_gate.py
-                --program $<TARGET_FILE:markup>
+                --program $<TARGET_FILE:markup_cli>
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
     add_test(NAME asciidoctor_2_0_26_profile
         COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/asciidoctor_release_gate.py
