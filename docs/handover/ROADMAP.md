@@ -27,13 +27,15 @@
 - Keep extensions and resource access outside either claim unless explicitly
   implemented and capability-gated.
 
-## M3 - reStructuredText
+## M3 - reStructuredText (RST0-RST14 implementation complete)
 
-- Complete RST0 through RST14 in `RESTRUCTUREDTEXT.md` against the specification
+- Maintain RST0 through RST14 in `RESTRUCTUREDTEXT.md` against the specification
   and pinned Docutils 0.23 core parser behavior.
 - Compare normalized doctrees independently from stable Markup++ fragment HTML.
 - Treat directives, roles, includes and raw content as explicit registries and
   capability/security boundaries.
+- Record a clean Linux/macOS/Windows candidate before publishing the exact
+  Docutils compatibility wording.
 
 ## M4 - Nift embedding
 

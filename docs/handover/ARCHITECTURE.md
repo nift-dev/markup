@@ -7,7 +7,7 @@ Markup++ has three intentionally separate layers:
 1. `include/markup/Markup.h` defines formats, options and the string conversion
    contract.
 2. `src/Markup.cpp` owns format dispatch and standalone wrapping. Markdown and
-   AsciiDoc parsing remain isolated format implementations.
+   AsciiDoc and reStructuredText parsing remain isolated format implementations.
 3. `cli/main.cpp` owns argument parsing, extension inference, streams and atomic
    file replacement.
 
@@ -18,10 +18,9 @@ filesystem behavior.
 
 `markup::Format` represents Markdown, AsciiDoc and reStructuredText.
 `format_for_extension` recognizes all extensions, while `is_supported` and
-`convert` truthfully reject converters that have not landed. Markdown and
-AsciiDoc are enabled; reStructuredText is not. This avoids
-redesigning the API while preventing placeholder formats from silently producing
-incorrect HTML.
+`convert` dispatches to three enabled implementations. Each converter retains
+its own parser model while sharing only the public conversion and wrapper
+boundary.
 
 Each future converter should be isolated behind the same dispatch boundary.
 Avoid a single parser with format conditionals scattered through tokenization.
@@ -43,6 +42,13 @@ delimiter/bracket stacks and HTML renderer through its in-process C API. cmark
 is source-vendored under its BSD 2-Clause license; it is not a runtime or system
 dependency. Markup++ retains ownership of format dispatch, profiles, safe/raw
 selection, standalone wrapping, diagnostics and the public C++ API.
+
+## reStructuredText pipeline
+
+`src/ReStructuredText.h` defines neutral source-positioned document, block and
+inline nodes. `src/ReStructuredText.cpp` owns normalization, parsing, transforms
+and stable fragment rendering. Includes cross an explicit host resolver with
+canonical dependency identities; ambient IO and raw execution remain disabled.
 
 The extension-enabled compatibility path currently normalizes CRLF while splitting lines, recognizes
 block constructs in precedence order, and then applies inline conversion to text

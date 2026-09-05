@@ -34,6 +34,13 @@
   host-resolved includes, safe passthrough/URI behavior and a pinned alpha gate.
 - Added 39 focused AsciiDoc checks and deterministic coverage of all 13 current
   upstream TCK inputs while retaining the CommonMark release gate.
+- Completed Asciidoctor compatibility checkpoints AC0-AC9 against a pinned
+  2.0.26 profile, with the public claim awaiting cross-platform evidence.
+- Completed reStructuredText checkpoints RST0-RST14 against a frozen Docutils
+  0.23 oracle: neutral syntax model, roles/directives, tables, references,
+  substitutions, host-controlled resources, diagnostics and release gates.
+- Added 39 focused RST checks, a large/adversarial robustness suite, all-format
+  mutation coverage and a 24-case deterministic Docutils profile gate.
 
 This is an implementation checkpoint, not a tagged public release. The evidence
 now supports the versioned CommonMark 0.31.2 compliance claim.

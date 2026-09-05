@@ -15,6 +15,10 @@
 - `asciidoc_release_gate.py`: three-run deterministic AD11 gate over 13/13 pinned alpha TCK inputs;
 - `asciidoc_fixture_inventory.py`: validates all 13 inputs in the pinned
   Eclipse TCK alpha snapshot offline.
+- `restructuredtext.cpp`: 39 focused RST0-RST12 behavior and capability checks;
+- `rst_robustness.cpp`: large mixed, delimiter and malformed-input coverage;
+- `docutils_release_gate.py`: validates the frozen 24-case Docutils 0.23 oracle
+  inventory and three-run CLI determinism.
 
 `make test-sanitize` rebuilds Markdown semantic/adversarial and AsciiDoc AD1-AD10
 gates under ASan/UBSan.
@@ -65,7 +69,8 @@ continues to test the standalone executable contract directly.
 - Large-document performance and complexity guards.
 - A broader Unicode/invalid-UTF-8 corpus beyond the strict-mode replacement
   regressions.
-- Complete AsciiDoc expected-ASG adapter gate and reStructuredText corpora.
+- Complete AsciiDoc expected-ASG adapter evidence when upstream publishes it.
+- Record pushed cross-platform AC9 and RST14 candidate evidence.
 - Nift synchronization and integration tests.
 
 These are roadmap gates, not reasons to overstate the initial test counts.

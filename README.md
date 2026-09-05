@@ -9,9 +9,10 @@ library boundary used for Minify++ and Jsonic++.
 
 Markdown is CommonMark 0.31.2 compliant. AsciiDoc conversion is implemented
 through checkpoints AD0-AD11 against pinned Eclipse language/TCK development
-snapshots; links, media, tables, macros, includes and the final conformance gate
-remain. reStructuredText is recognized but still returns a clear
-not-implemented error.
+snapshots, with the independent Asciidoctor 2.0.26 profile implemented through
+AC9. reStructuredText is implemented through RST14 against a frozen Docutils
+0.23 oracle. The exact processor-compatibility claims remain gated on a pushed
+Linux/macOS/Windows candidate run.
 
 The strict CommonMark engine vendors cmark source under its BSD 2-Clause
 license. There is no separately installed library or runtime dependency.
@@ -26,6 +27,7 @@ make test
 printf '# Hello\n' | ./markup --format markdown -
 ./markup --extensions notes.md # opt into tables/tasks/strikethrough
 ./markup guide.adoc -o guide.html
+./markup manual.rst -o manual.html
 ```
 
 By default, `markup` writes an HTML fragment to standard output. `-o` writes a
@@ -105,3 +107,13 @@ The target pins Eclipse specification commit `68ed0b22` and TCK commit
 the exact claim is pinned-development-profile completion rather than stable
 language conformance because the alpha TCK has not published its expected ASG oracle. See
 `docs/handover/ASCIIDOC.md` for the exact evidence and remaining work.
+
+## reStructuredText checkpoint
+
+RST0-RST14 provide a source-positioned parser, core blocks/inlines, lists,
+references, substitutions, tables, standard role/directive registries,
+host-resolved includes, diagnostics, deterministic rendering and robustness and
+release gates. The reference profile pins Docutils 0.23's standalone reader,
+reStructuredText parser and HTML5 writer with raw/file insertion disabled.
+See `docs/handover/RESTRUCTUREDTEXT.md` for documented subsets and the remaining
+cross-platform publication gate.

@@ -10,11 +10,11 @@ claims, Nift synchronization or product boundaries change.
 - Repository/extraction directory: `markup`.
 - Executable: `markup`.
 - Current development version: `0.1.0`.
-- Public API version: `markup::api_version == 2`.
+- Public API version: `markup::api_version == 4`.
 - Language/toolchain: self-contained C++17/C99 and Make; cmark source is
   vendored under BSD 2-Clause with no system-library dependency.
-- Implemented formats: Markdown and the AD0-AD11 AsciiDoc development profile.
-- Planned format already represented in the API: reStructuredText.
+- Implemented formats: Markdown, the AD0-AD11/AC0-AC9 AsciiDoc profiles and the
+  RST0-RST14 reStructuredText/Docutils 0.23 profile.
 
 Current source and tests define behavior. README and ReleaseNotes describe the
 public checkpoint. These handovers preserve rationale and future constraints.
@@ -64,6 +64,11 @@ not stable language conformance: the upstream alpha TCK's expected ASG oracle
 and a future stable-spec upgrade gate remain. `docs/handover/ASCIIDOC.md`
 is authoritative for its completed behavior and limitations.
 
+reStructuredText RST0-RST14 implementation and local evidence are complete
+against the frozen Docutils 0.23 profile. Do not publish the exact compatibility
+claim until a pushed Linux/macOS/Windows run is recorded in
+`docs/handover/RESTRUCTUREDTEXT-RELEASE.md`.
+
 Run:
 
 ```sh
@@ -112,5 +117,6 @@ corresponding evidence.
 - `docs/handover/ASCIIDOC.md`
 - `docs/handover/ASCIIDOCTOR.md`
 - `docs/handover/RESTRUCTUREDTEXT.md`
+- `docs/handover/RESTRUCTUREDTEXT-RELEASE.md`
 - `docs/handover/ROADMAP.md`
 - `docs/handover/PROJECT-HISTORY.md`
