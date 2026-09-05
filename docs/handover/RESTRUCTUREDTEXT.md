@@ -145,6 +145,11 @@ declared text-only subset.
 
 Exit: normalized table doctrees and deterministic HTML pass.
 
+Status: **Complete for simple and grid tables without spans.** Column boundaries,
+header/body rows and cell inline parsing are deterministic. Complex row/column
+spans and nested block cells remain explicit Docutils-profile differences; CSV
+and file-backed tables are capability-gated in RST11.
+
 ## RST9 - Standard roles
 
 - Implement a registry and the standard roles defined by Docutils 0.23.

@@ -29,6 +29,8 @@ int main(){
  expect("See [CITE]_.\n\n.. [CITE] Source.\n","<p>See <a class=\"footnote-reference\" href=\"#footnote-CITE\">[CITE]</a>.</p>\n<aside class=\"citation\" id=\"footnote-CITE\"><span>[CITE]</span> Source.</aside>\n");
  expect("Hello |name|.\n\n.. |name| replace:: world\n","<p>Hello world.</p>\n");
  expect(".. hidden comment\n   continued\n\nVisible.\n","<p>Visible.</p>\n");
+ expect("=====  =====\nName   Count\n=====  =====\nBolt   4\n=====  =====\n","<table class=\"simple\">\n<tr><td>Name</td><td>Count</td></tr>\n<tr><td>Bolt</td><td>4</td></tr>\n</table>\n");
+ expect("+------+-------+\n| Name | Count |\n+------+-------+\n| Bolt | 4     |\n+------+-------+\n","<table class=\"grid\">\n<tr><td>Name</td><td>Count</td></tr>\n<tr><td>Bolt</td><td>4</td></tr>\n</table>\n");
  std::string o,e;if(!markup::is_supported(markup::Format::ReStructuredText)||!markup::convert(markup::Format::ReStructuredText,"repeat",o,e))return 2;auto first=o;if(!markup::convert(markup::Format::ReStructuredText,"repeat",o,e)||o!=first)return 3;checks+=2;
  std::cout<<checks<<" reStructuredText checks passed\n";
 }
