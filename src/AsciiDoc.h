@@ -14,7 +14,7 @@ struct Range { Position begin; Position end; };
 
 enum class InlineKind {
     Text, Emphasis, Strong, Monospace, Mark, Superscript, Subscript,
-    Link, Image, CrossReference, LineBreak,
+    Link, Image, CrossReference, Keyboard, Button, Menu, Footnote, LineBreak,
 };
 
 struct Inline {

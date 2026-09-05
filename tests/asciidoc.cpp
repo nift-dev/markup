@@ -95,6 +95,14 @@ int main() {
     expect("|===\n|*strong* |a:AsciiDoc _cell_\n|===\n",
            "<table>\n<tr>\n<td><strong>strong</strong></td>\n<td>AsciiDoc <em>cell</em></td>\n"
            "</tr>\n</table>\n");
+    expect("= Conditional\n:feature:\n\nifdef::feature[]\nShown\nendif::[]\n"
+           "ifndef::feature[]\nHidden\nendif::[]\n",
+           "<div id=\"header\">\n<h1>Conditional</h1>\n</div>\n"
+           "<div class=\"paragraph\">\n<p>Shown</p>\n</div>\n");
+    expect("Press kbd:[Ctrl+C], choose btn:[Save], then menu:[File > Open]. footnote:[A note]\n",
+           "<div class=\"paragraph\">\n<p>Press <kbd>Ctrl+C</kbd>, choose <b class=\"button\">Save</b>, "
+           "then <span class=\"menuseq\">File &gt; Open</span>. "
+           "<span class=\"footnote\">A note</span></p>\n</div>\n");
 
     std::string output, error;
     if (!markup::is_supported(markup::Format::AsciiDoc) ||

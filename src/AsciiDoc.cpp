@@ -146,6 +146,23 @@ std::vector<Inline> parse_inlines(const std::string& text, const Range& source) 
             i = macro_next;
             continue;
         }
+        const auto simple_macro = [&](const std::string& prefix, InlineKind kind) {
+            if (!starts_with(text.substr(i), prefix)) return false;
+            const auto close = text.find(']', i + prefix.size());
+            if (close == std::string::npos) return false;
+            flush();
+            Inline node;
+            node.kind = kind;
+            node.text = text.substr(i + prefix.size(), close - i - prefix.size());
+            node.source = source;
+            output.push_back(std::move(node));
+            i = close + 1;
+            return true;
+        };
+        if (simple_macro("kbd:[", InlineKind::Keyboard) ||
+            simple_macro("btn:[", InlineKind::Button) ||
+            simple_macro("menu:[", InlineKind::Menu) ||
+            simple_macro("footnote:[", InlineKind::Footnote)) continue;
         if (text.compare(i, 2, "<<") == 0) {
             const auto close = text.find(">>", i + 2);
             if (close != std::string::npos) {
@@ -708,6 +725,10 @@ std::string render_inlines(const std::vector<Inline>& inlines, const Options& op
                            escape_attribute(node.text) + "\">";
             break;
         }
+        case InlineKind::Keyboard: output += "<kbd>" + escape_html(node.text) + "</kbd>"; break;
+        case InlineKind::Button: output += "<b class=\"button\">" + escape_html(node.text) + "</b>"; break;
+        case InlineKind::Menu: output += "<span class=\"menuseq\">" + escape_html(node.text) + "</span>"; break;
+        case InlineKind::Footnote: output += "<span class=\"footnote\">" + escape_html(node.text) + "</span>"; break;
         case InlineKind::LineBreak: output += "<br>\n"; break;
         default: output += escape_html(node.text); break;
         }
@@ -816,7 +837,7 @@ bool parse(const std::string& input, Document& document, std::string& error) {
         return false;
     }
 
-    const auto input_lines = split_lines(normalize(input));
+    auto input_lines = split_lines(normalize(input));
     std::size_t line = 0;
     if (!input_lines.empty() && input_lines[0].rfind("= ", 0) == 0) {
         document.title = trim(input_lines[0].substr(2));
@@ -839,6 +860,32 @@ bool parse(const std::string& input, Document& document, std::string& error) {
         document.title = substitute_attributes(document.title, document.attributes);
         document.attributes["doctitle"] = document.title;
     }
+    std::vector<std::string> filtered(input_lines.begin(), input_lines.begin() + static_cast<std::ptrdiff_t>(line));
+    std::vector<bool> conditions;
+    bool active = true;
+    for (std::size_t index = line; index < input_lines.size(); ++index) {
+        const std::string& value = input_lines[index];
+        const bool ifdef = starts_with(value, "ifdef::");
+        const bool ifndef = starts_with(value, "ifndef::");
+        if (ifdef || ifndef) {
+            const auto bracket = value.find('[');
+            const auto close = value.rfind(']');
+            if (bracket != std::string::npos && close == value.size() - 1) {
+                const std::string name = value.substr(ifdef ? 7 : 8, bracket - (ifdef ? 7 : 8));
+                conditions.push_back(active);
+                const bool defined = document.attributes.find(name) != document.attributes.end();
+                active = active && (ifdef ? defined : !defined);
+                continue;
+            }
+        }
+        if (starts_with(value, "endif::") && !conditions.empty()) {
+            active = conditions.back();
+            conditions.pop_back();
+            continue;
+        }
+        if (active) filtered.push_back(value);
+    }
+    input_lines = std::move(filtered);
     parse_blocks(input_lines, line, 0, document.blocks, document.attributes);
     if (!input_lines.empty()) {
         document.source.begin = {1, 1};

@@ -161,6 +161,11 @@ cells and malformed/unclosed tables recover deterministically at EOF.
 
 Exit: pure string transformations pass; capability-dependent cases are explicit.
 
+Status: **Complete.** Keyboard, button, menu and footnote macros have explicit
+inline nodes; unknown macros remain literal. Nested `ifdef`/`ifndef`/`endif`
+directives are evaluated only from the document's deterministic attribute map.
+No macro invokes a process, filesystem or network capability.
+
 ## AD9 - Includes and resource capabilities
 
 - Add an optional host resolver callback returning content plus canonical identity.
@@ -201,4 +206,5 @@ conformance claim.
 | AD5 - Inline substitutions | Complete | Constrained/unconstrained spans, nesting, escapes, replacements and explicit breaks |
 | AD6 - References/media | Complete | Anchors, xrefs, links, mail, bare URLs, images and icons; no implicit IO |
 | AD7 - Tables | Complete | Bounded rows/cells, simple spans/styles, inline cell content and EOF recovery |
-| AD8-AD11 | Pending | - |
+| AD8 - Macros/conditionals | Complete | Pure built-ins and nested attribute conditionals; unknown macros literal |
+| AD9-AD11 | Pending | - |
