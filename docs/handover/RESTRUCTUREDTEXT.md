@@ -174,6 +174,12 @@ visible as code and emit a stable positioned host diagnostic.
 
 Exit: every claimed Docutils core directive matches doctree and diagnostics.
 
+Status: **Complete for the declared capability-free directive registry.** Core
+admonitions, topic/sidebar, rubric, quotation, container, contents, code and
+parsed-literal families have stable nodes and HTML. Unknown application
+directives emit positioned diagnostics; resource and raw families proceed only
+through the RST11 capability boundary.
+
 ## RST11 - Resource and execution capabilities
 
 - Add host callbacks for include/image/resource resolution; default library use
