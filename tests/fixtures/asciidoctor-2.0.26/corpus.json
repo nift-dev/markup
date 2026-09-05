@@ -6,5 +6,6 @@
   {"id":"lists","checkpoint":"AC4","input":"* one\n* two\n"},
   {"id":"table","checkpoint":"AC4","input":"|===\n|A |B\n|1 |2\n|===\n"},
   {"id":"reference","checkpoint":"AC4","input":"[[start]]\n== Start\n\nSee <<start>>.\n"},
-  {"id":"conditional","checkpoint":"AC5","input":"= Conditional\n:show:\n\nifdef::show[]\nVisible.\nendif::[]\n"}
+  {"id":"conditional","checkpoint":"AC5","input":"= Conditional\n:show:\n\nifdef::show[]\nVisible.\nendif::[]\n"},
+  {"id":"deployment-guide","checkpoint":"AC8","input":"= Deployment Guide\n:product: Relay\n\n== Install\n\n. Download the archive\n. Verify the checksum\n. Start `{product}`\n\n[source,sh]\n----\nrelay serve\n----\n"}
 ]

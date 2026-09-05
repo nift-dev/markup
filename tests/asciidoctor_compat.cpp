@@ -52,6 +52,17 @@ int main() {
             html.find("one\ntwo") == std::string::npos || html.find("zero") != std::string::npos) return 10;
         ++checks;
     }
+    contains("= Deployment Guide\n:product: Relay\n\n== Install\n\n. Download the archive\n. Verify the checksum\n. Start `{product}`\n\n[source,sh]\n----\nrelay serve\n----\n",
+             "<pre>relay serve</pre>");
+    {
+        std::string source;
+        for (int index = 0; index < 3000; ++index)
+            source += "* item " + std::to_string(index) + " with *strong* and link:https://example.test[x]\n";
+        std::string html, error;
+        if (!markup::convert(markup::Format::AsciiDoc, source, html, error) ||
+            html.size() > source.size() * 12U) return 12;
+        ++checks;
+    }
     {
         markup::Options options;
         std::vector<std::string> diagnostics;

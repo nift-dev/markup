@@ -131,6 +131,11 @@ application layers that Markup++ never executes or claims.
 
 Exit: the compatibility claim is supported beyond hand-picked examples.
 
+Status: **Complete for the bundled corpus.** An original deployment-guide
+fixture combines metadata, sections, lists, attributes and source blocks.
+Large mixed-list/link/span input is bounded, while shared deterministic
+mutation, sanitizer and pathological suites cover both implemented formats.
+
 ## AC9 - Compatibility release gate
 
 - Pass language conformance independently.

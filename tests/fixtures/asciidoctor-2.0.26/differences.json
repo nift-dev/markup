@@ -6,5 +6,6 @@
   "lists": [],
   "table": ["table-wrapper", "table-body"],
   "reference": ["section-wrapper", "xref-label"],
-  "conditional": ["header-wrapper"]
+  "conditional": ["header-wrapper"],
+  "deployment-guide": ["header-wrapper", "section-wrapper", "source-wrapper"]
 }
