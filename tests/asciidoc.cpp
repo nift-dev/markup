@@ -40,6 +40,16 @@ int main() {
            "<div class=\"paragraph\">\n<p>parent body</p>\n</div>\n"
            "<div class=\"sect2\">\n<h3>Child {name}</h3>\n"
            "<div class=\"paragraph\">\n<p>child body</p>\n</div>\n</div>\n</div>\n");
+    expect(".Program\n[source,cpp]\n----\nint main() {\n  return 0;\n}\n----\n",
+           "<div class=\"source\">\n<div class=\"title\">Program</div>\n"
+           "<pre>int main() {\n  return 0;\n}</pre>\n</div>\n");
+    expect("****\nsidebar text\n****\n",
+           "<div class=\"sidebarblock\">\n<div class=\"paragraph\">\n"
+           "<p>sidebar text</p>\n</div>\n</div>\n");
+    expect("////\nnot rendered\n////\n\n'''\n<<<\n",
+           "<hr>\n<div class=\"pagebreak\"></div>\n");
+    expect("----\nunclosed & literal\n",
+           "<div class=\"listingblock\">\n<pre>unclosed &amp; literal</pre>\n</div>\n");
 
     std::string output, error;
     if (!markup::is_supported(markup::Format::AsciiDoc) ||

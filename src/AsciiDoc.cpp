@@ -112,12 +112,53 @@ void add_text_inline(Block& block, const std::string& text,
     block.inlines.push_back(std::move(inline_text));
 }
 
+bool delimited_block(const std::string& line, BlockKind& kind) {
+    if (line == "----") kind = BlockKind::Listing;
+    else if (line == "....") kind = BlockKind::Literal;
+    else if (line == "--") kind = BlockKind::Open;
+    else if (line == "====") kind = BlockKind::Example;
+    else if (line == "****") kind = BlockKind::Sidebar;
+    else if (line == "____") kind = BlockKind::Quote;
+    else if (line == "////") kind = BlockKind::Comment;
+    else return false;
+    return true;
+}
+
+bool verbatim_kind(BlockKind kind) {
+    return kind == BlockKind::Listing || kind == BlockKind::Literal ||
+           kind == BlockKind::Source || kind == BlockKind::Verse ||
+           kind == BlockKind::Comment;
+}
+
+void parse_block_attributes(const std::string& line, std::string& style) {
+    if (line.size() < 2 || line.front() != '[' || line.back() != ']') return;
+    const std::string inside = line.substr(1, line.size() - 2);
+    const auto comma = inside.find(',');
+    style = trim(inside.substr(0, comma));
+}
+
 void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
                   unsigned parent_level, std::vector<Block>& blocks,
-                  const std::map<std::string, std::string>& attributes) {
+                  const std::map<std::string, std::string>& attributes,
+                  const std::string& end_delimiter = {}) {
+    std::string pending_title;
+    std::string pending_style;
     while (line < lines.size()) {
         while (line < lines.size() && lines[line].empty()) ++line;
         if (line == lines.size()) return;
+        if (!end_delimiter.empty() && lines[line] == end_delimiter) {
+            ++line;
+            return;
+        }
+
+        if (lines[line].size() > 1 && lines[line].front() == '.' && lines[line][1] != '.') {
+            pending_title = substitute_attributes(lines[line++].substr(1), attributes);
+            continue;
+        }
+        if (lines[line].size() > 1 && lines[line].front() == '[' && lines[line].back() == ']') {
+            parse_block_attributes(lines[line++], pending_style);
+            continue;
+        }
 
         std::string title;
         const unsigned level = section_level(lines[line], title);
@@ -129,10 +170,76 @@ void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
             section.level = level;
             section.title = substitute_attributes(title, attributes);
             section.source.begin = {first + 1, 1};
-            parse_blocks(lines, line, level, section.blocks, attributes);
+            parse_blocks(lines, line, level, section.blocks, attributes, end_delimiter);
             const std::size_t last = line ? line - 1 : first;
             section.source.end = {last + 1, lines[last].size()};
+            section.title = substitute_attributes(section.title, attributes);
             blocks.push_back(std::move(section));
+            continue;
+        }
+
+        if (lines[line] == "'''" || lines[line] == "<<<") {
+            Block separator;
+            separator.kind = lines[line] == "'''" ? BlockKind::ThematicBreak : BlockKind::PageBreak;
+            separator.source.begin = separator.source.end = {line + 1, lines[line].size()};
+            ++line;
+            blocks.push_back(std::move(separator));
+            pending_title.clear(); pending_style.clear();
+            continue;
+        }
+
+        BlockKind delimiter_kind;
+        if (delimited_block(lines[line], delimiter_kind)) {
+            const std::string delimiter = lines[line];
+            const std::size_t first = line++;
+            Block block;
+            block.kind = delimiter_kind;
+            block.title = pending_title;
+            block.style = pending_style;
+            if (pending_style == "source" && delimiter_kind == BlockKind::Listing) block.kind = BlockKind::Source;
+            if (pending_style == "verse" && delimiter_kind == BlockKind::Quote) block.kind = BlockKind::Verse;
+            block.source.begin = {first + 1, 1};
+            if (verbatim_kind(block.kind)) {
+                std::string text;
+                const std::size_t content_first = line;
+                while (line < lines.size() && lines[line] != delimiter) {
+                    if (!text.empty()) text += '\n';
+                    text += lines[line++];
+                }
+                block.text = substitute_attributes(text, attributes);
+                if (!block.text.empty()) {
+                    Inline literal;
+                    literal.text = block.text;
+                    literal.source.begin = {content_first + 1, 1};
+                    literal.source.end = {line, lines[line - 1].size()};
+                    block.inlines.push_back(std::move(literal));
+                }
+                if (line < lines.size()) ++line;
+            } else {
+                parse_blocks(lines, line, parent_level, block.blocks, attributes, delimiter);
+            }
+            const std::size_t last = line ? line - 1 : first;
+            block.source.end = {last + 1, lines[last].size()};
+            blocks.push_back(std::move(block));
+            pending_title.clear(); pending_style.clear();
+            continue;
+        }
+
+        if (!lines[line].empty() && (lines[line][0] == ' ' || lines[line][0] == '\t')) {
+            const std::size_t first = line;
+            Block literal;
+            literal.kind = BlockKind::Literal;
+            literal.title = pending_title;
+            while (line < lines.size() && (lines[line].empty() || lines[line][0] == ' ' || lines[line][0] == '\t')) {
+                if (!literal.text.empty()) literal.text += '\n';
+                literal.text += lines[line].empty() ? "" :
+                    (lines[line][0] == '\t' ? lines[line].substr(1) : lines[line].substr(1));
+                ++line;
+            }
+            literal.source.begin = {first + 1, 1};
+            literal.source.end = {line, lines[line - 1].size()};
+            blocks.push_back(std::move(literal));
+            pending_title.clear(); pending_style.clear();
             continue;
         }
 
@@ -141,12 +248,20 @@ void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
         while (line < lines.size() && !lines[line].empty()) {
             std::string next_title;
             if (section_level(lines[line], next_title)) break;
+            BlockKind next_kind;
+            if (delimited_block(lines[line], next_kind) || lines[line] == "'''" ||
+                lines[line] == "<<<" || (!end_delimiter.empty() && lines[line] == end_delimiter) ||
+                (lines[line].size() > 1 && lines[line].front() == '[' && lines[line].back() == ']') ||
+                (lines[line].size() > 1 && lines[line].front() == '.' && lines[line][1] != '.')) break;
             text += '\n';
             text += lines[line++];
         }
         Block paragraph;
         add_text_inline(paragraph, text, first, line - 1, attributes);
+        paragraph.title = pending_title;
+        paragraph.style = pending_style;
         blocks.push_back(std::move(paragraph));
+        pending_title.clear(); pending_style.clear();
     }
 }
 
@@ -174,6 +289,7 @@ std::string render_blocks(const std::vector<Block>& blocks) {
     std::string output;
     for (const auto& block : blocks) {
         if (block.kind == BlockKind::Paragraph) {
+            if (!block.title.empty()) output += "<div class=\"title\">" + escape_html(block.title) + "</div>\n";
             output += "<div class=\"paragraph\">\n<p>" + render_inlines(block.inlines) +
                       "</p>\n</div>\n";
         } else if (block.kind == BlockKind::Section) {
@@ -182,6 +298,28 @@ std::string render_blocks(const std::vector<Block>& blocks) {
                       std::to_string(block.level + 1) + ">\n";
             output += render_blocks(block.blocks);
             output += "</div>\n";
+        } else if (block.kind == BlockKind::Listing || block.kind == BlockKind::Literal ||
+                   block.kind == BlockKind::Source) {
+            const std::string role = block.kind == BlockKind::Source ? "source" :
+                                     block.kind == BlockKind::Listing ? "listingblock" : "literalblock";
+            output += "<div class=\"" + role + "\">\n";
+            if (!block.title.empty()) output += "<div class=\"title\">" + escape_html(block.title) + "</div>\n";
+            output += "<pre>" + escape_html(block.text) + "</pre>\n</div>\n";
+        } else if (block.kind == BlockKind::Sidebar || block.kind == BlockKind::Example ||
+                   block.kind == BlockKind::Open) {
+            const std::string role = block.kind == BlockKind::Sidebar ? "sidebarblock" :
+                                     block.kind == BlockKind::Example ? "exampleblock" : "openblock";
+            output += "<div class=\"" + role + "\">\n";
+            if (!block.title.empty()) output += "<div class=\"title\">" + escape_html(block.title) + "</div>\n";
+            output += render_blocks(block.blocks) + "</div>\n";
+        } else if (block.kind == BlockKind::Quote || block.kind == BlockKind::Verse) {
+            output += "<blockquote";
+            if (block.kind == BlockKind::Verse) output += " class=\"verse\"";
+            output += ">\n" + render_blocks(block.blocks) + "</blockquote>\n";
+        } else if (block.kind == BlockKind::ThematicBreak) {
+            output += "<hr>\n";
+        } else if (block.kind == BlockKind::PageBreak) {
+            output += "<div class=\"pagebreak\"></div>\n";
         }
     }
     return output;

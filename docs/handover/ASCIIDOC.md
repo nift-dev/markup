@@ -90,6 +90,12 @@ neighbors in `tests/asciidoc.cpp`.
 
 Exit: block recognition and ambiguous delimiter neighbors pass.
 
+Status: **Complete.** Paragraph fallback now follows section, metadata,
+separator, delimited-block and indented-literal recognition. Listing, literal,
+source, open, example, sidebar, quote, verse and comment blocks have distinct
+nodes; titles/styles attach before parsing; containers recurse; verbatim content
+does not parse inline syntax; unclosed delimiters consume safely to EOF.
+
 ## AD4 - Lists
 
 - Implement unordered, ordered, description and checklist lists.
@@ -167,7 +173,7 @@ conformance claim.
 | AD0 - Target/TCK harness | Complete | 13/13 upstream inputs inventoried at immutable spec/TCK commits |
 | AD1 - Model/invariants | Complete | Neutral model; LF/CRLF/CR, NUL, UTF-8, escaping, determinism and 64 MiB boundary |
 | AD2 - Header/attributes/sections | Complete | Titles, author/revision, attribute set/unset/substitution and nested levels 1-5 |
-| AD3 - Paragraphs/blocks | Pending | - |
+| AD3 - Paragraphs/blocks | Complete | Paragraph precedence; titled/styled verbatim and container blocks; comments; thematic/page breaks |
 | AD4 - Lists | Pending | - |
 | AD5 - Inline substitutions | Pending | - |
 | AD6-AD11 | Pending | - |
