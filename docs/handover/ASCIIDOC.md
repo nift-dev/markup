@@ -182,7 +182,9 @@ capability accepting the including identity and requested target and returning
 content plus a canonical identity. The default is IO-free and errors on include.
 Canonical identities expose dependencies to an observer callback. Expansion is
 bounded to 32 levels and 64 MiB with deterministic missing, empty-identity and
-cycle diagnostics; the host owns traversal/root policy.
+cycle diagnostics; the size budget is enforced on the selected output after
+`lines=`/`tag=`/`indent=` selection (indentation is clamped), not only on the
+raw resolver input. The host owns traversal/root policy.
 
 ## AD10 - Safe rendering, diagnostics and robustness
 
@@ -197,8 +199,9 @@ Status: **Complete.** Passthrough blocks and `pass:[]` are raw only in the
 default profile and escaped under `--safe`; active URI schemes are rejected in
 safe mode. Include failures carry stable source identity and line positions.
 Depth, input, expansion, table-cell and output-growth guards are exercised by
-focused hostile-input tests and the shared mutation, ASan/UBSan and performance
-gates.
+focused hostile-input tests (include cycles, the 32-level depth bound, post-
+selection expansion sizing, indentation clamping and the table-cell limit) and
+the shared mutation, ASan/UBSan and performance gates.
 
 ## AD11 - Language conformance release gate
 

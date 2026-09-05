@@ -1,0 +1,47 @@
+[
+  {
+    "id": "paragraph",
+    "html": "<div class=\"paragraph\">\n<p>A paragraph.</p>\n</div>\n",
+    "stderr": ""
+  },
+  {
+    "id": "header-section",
+    "html": "<div class=\"sect1\">\n<h2 id=\"_start\">Start</h2>\n<div class=\"sectionbody\">\n<div class=\"paragraph\">\n<p>Hello.</p>\n</div>\n</div>\n</div>\n",
+    "stderr": ""
+  },
+  {
+    "id": "listing",
+    "html": "<div class=\"listingblock\">\n<div class=\"content\">\n<pre class=\"highlight\"><code class=\"language-cpp\" data-lang=\"cpp\">int main() {}</code></pre>\n</div>\n</div>\n",
+    "stderr": ""
+  },
+  {
+    "id": "inline",
+    "html": "<div class=\"paragraph\">\n<p><strong>strong</strong> <em>emphasis</em> <code>code</code> <mark>mark</mark></p>\n</div>\n",
+    "stderr": ""
+  },
+  {
+    "id": "lists",
+    "html": "<div class=\"ulist\">\n<ul>\n<li>\n<p>one</p>\n</li>\n<li>\n<p>two</p>\n</li>\n</ul>\n</div>\n",
+    "stderr": ""
+  },
+  {
+    "id": "table",
+    "html": "<table class=\"tableblock frame-all grid-all stretch\">\n<colgroup>\n<col style=\"width: 50%;\">\n<col style=\"width: 50%;\">\n</colgroup>\n<tbody>\n<tr>\n<td class=\"tableblock halign-left valign-top\"><p class=\"tableblock\">A</p></td>\n<td class=\"tableblock halign-left valign-top\"><p class=\"tableblock\">B</p></td>\n</tr>\n<tr>\n<td class=\"tableblock halign-left valign-top\"><p class=\"tableblock\">1</p></td>\n<td class=\"tableblock halign-left valign-top\"><p class=\"tableblock\">2</p></td>\n</tr>\n</tbody>\n</table>\n",
+    "stderr": ""
+  },
+  {
+    "id": "reference",
+    "html": "<div class=\"sect1\">\n<h2 id=\"start\">Start</h2>\n<div class=\"sectionbody\">\n<div class=\"paragraph\">\n<p>See <a href=\"#start\">Start</a>.</p>\n</div>\n</div>\n</div>\n",
+    "stderr": ""
+  },
+  {
+    "id": "conditional",
+    "html": "<div class=\"paragraph\">\n<p>Visible.</p>\n</div>\n",
+    "stderr": ""
+  },
+  {
+    "id": "deployment-guide",
+    "html": "<div class=\"sect1\">\n<h2 id=\"_install\">Install</h2>\n<div class=\"sectionbody\">\n<div class=\"olist arabic\">\n<ol class=\"arabic\">\n<li>\n<p>Download the archive</p>\n</li>\n<li>\n<p>Verify the checksum</p>\n</li>\n<li>\n<p>Start <code>Relay</code></p>\n</li>\n</ol>\n</div>\n<div class=\"listingblock\">\n<div class=\"content\">\n<pre class=\"highlight\"><code class=\"language-sh\" data-lang=\"sh\">relay serve</code></pre>\n</div>\n</div>\n</div>\n</div>\n",
+    "stderr": ""
+  }
+]

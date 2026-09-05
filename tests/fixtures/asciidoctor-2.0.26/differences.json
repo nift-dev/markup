@@ -1,11 +1,6 @@
-{
-  "paragraph": ["wrapper-class"],
-  "header-section": ["header-wrapper", "generated-section-id", "section-wrapper"],
-  "listing": ["source-wrapper", "language-class"],
-  "inline": ["mark-element"],
-  "lists": [],
-  "table": ["table-wrapper", "table-body"],
-  "reference": ["section-wrapper", "xref-label"],
-  "conditional": ["header-wrapper"],
-  "deployment-guide": ["header-wrapper", "section-wrapper", "source-wrapper"]
-}
+[
+  {
+    "id": "reference",
+    "reason": "Cross-reference labels: Asciidoctor resolves <<id>> link text to the referenced section title (Start); Markup++ renders the literal reference text (start). The link target href resolves identically. All other structure matches."
+  }
+]

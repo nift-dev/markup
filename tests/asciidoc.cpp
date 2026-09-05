@@ -171,7 +171,92 @@ int main() {
                              "[[same]]\nfirst\n\n[[same]]\nsecond\n",
                              ignored, reference_error, options) || diagnostics.empty() ||
             diagnostics.back().find("duplicate anchor: same") == std::string::npos) return 9;
-        checks += 2;
+        diagnostics.clear();
+        markup::Options identified;
+        identified.asciidoc_source_identity = "root.adoc";
+        identified.asciidoc_diagnostic = [&](const std::string& value) { diagnostics.push_back(value); };
+        if (!markup::convert(markup::Format::AsciiDoc,
+                             "[[same]]\nfirst\n\n[[same]]\nsecond\n",
+                             ignored, reference_error, identified) || diagnostics.empty() ||
+            diagnostics.back().find("root.adoc:5: duplicate anchor: same") == std::string::npos) return 10;
+        checks += 3;
+    }
+    {
+        // AsciiDoc include cycle detection via the canonical-identity stack.
+        std::string output, cycle_error;
+        markup::Options options;
+        options.asciidoc_include_resolver = [](
+            const std::string& from, const std::string&, std::string& content,
+            std::string& canonical, std::string&) {
+            content = "include::back.adoc[]\n";
+            canonical = (from == "root.adoc") ? "docs/a.adoc" : "root.adoc";
+            return true;
+        };
+        if (markup::convert(markup::Format::AsciiDoc, "include::a.adoc[]\n",
+                            output, cycle_error, options) ||
+            cycle_error.find("include cycle") == std::string::npos) return 11;
+        ++checks;
+    }
+    {
+        // AsciiDoc include depth limit (32 levels).
+        std::string output, depth_error;
+        markup::Options options;
+        int depth = 0;
+        options.asciidoc_include_resolver = [&](
+            const std::string&, const std::string&, std::string& content,
+            std::string& canonical, std::string&) {
+            content = "include::next.adoc[]\n";
+            canonical = "docs/depth" + std::to_string(++depth) + ".adoc";
+            return true;
+        };
+        if (markup::convert(markup::Format::AsciiDoc, "include::depth1.adoc[]\n",
+                            output, depth_error, options) ||
+            depth_error.find("include depth exceeds 32") == std::string::npos) return 12;
+        ++checks;
+    }
+    {
+        // Post-selection expansion limit: indent must be clamped so the selected
+        // output cannot exceed the documented 64 MiB budget.
+        std::string output, indent_error;
+        markup::Options options;
+        options.asciidoc_include_resolver = [](
+            const std::string&, const std::string&, std::string& content,
+            std::string& canonical, std::string&) {
+            content = "line\n";
+            canonical = "docs/tiny.adoc";
+            return true;
+        };
+        if (!markup::convert(markup::Format::AsciiDoc,
+                             "include::tiny.adoc[indent=4294967295]\n",
+                             output, indent_error, options) ||
+            output.size() > 4096) return 13;
+        ++checks;
+    }
+    {
+        // A genuinely oversized include must still fail the expansion limit.
+        std::string output, size_error;
+        markup::Options options;
+        std::string huge(64U * 1024U * 1024U, 'x');
+        options.asciidoc_include_resolver = [&](
+            const std::string&, const std::string&, std::string& content,
+            std::string& canonical, std::string&) {
+            content = huge;
+            canonical = "docs/huge.adoc";
+            return true;
+        };
+        if (markup::convert(markup::Format::AsciiDoc, "include::huge.adoc[]\n",
+                            output, size_error, options) ||
+            size_error.find("expanded input exceeds 64 MiB") == std::string::npos) return 14;
+        ++checks;
+    }
+    {
+        // Table-cell count limit is enforced without runaway allocation.
+        std::string cells;
+        for (int i = 0; i < 200000; ++i) cells += "|c ";
+        std::string output, table_error;
+        if (!markup::convert(markup::Format::AsciiDoc, "|===\n" + cells + "\n|===\n",
+                             output, table_error)) return 15;
+        ++checks;
     }
 
     std::string output, error;
