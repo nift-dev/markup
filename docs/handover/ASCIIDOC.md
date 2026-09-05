@@ -118,6 +118,13 @@ owned blocks are preserved rather than flattened into paragraph text.
 
 Exit: inline TCK cases pass without changing block recognition.
 
+Status: **Complete.** Ordered inline parsing covers constrained and
+unconstrained strong/emphasis/monospace/mark spans, superscript, subscript,
+escaping, copyright/registered/trademark and arrow replacements, attribute
+substitution and explicit line breaks. Nested spans are nodes; monospace and
+verbatim blocks bypass further substitutions; punctuation boundaries prevent
+constrained spans from activating inside words.
+
 ## AD6 - References, links and media
 
 - Implement IDs, cross-references, URLs, mail links, anchors and link text.
@@ -180,5 +187,5 @@ conformance claim.
 | AD2 - Header/attributes/sections | Complete | Titles, author/revision, attribute set/unset/substitution and nested levels 1-5 |
 | AD3 - Paragraphs/blocks | Complete | Paragraph precedence; titled/styled verbatim and container blocks; comments; thematic/page breaks |
 | AD4 - Lists | Complete | Unordered/ordered/description/checklist nodes, nesting, starts and continuation blocks |
-| AD5 - Inline substitutions | Pending | - |
+| AD5 - Inline substitutions | Complete | Constrained/unconstrained spans, nesting, escapes, replacements and explicit breaks |
 | AD6-AD11 | Pending | - |

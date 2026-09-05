@@ -64,6 +64,18 @@ int main() {
     expect("* principal\n+\ncontinued block\n* next\n",
            "<ul>\n<li>principal\n<div class=\"paragraph\">\n<p>continued block</p>\n</div>\n"
            "</li>\n<li>next</li>\n</ul>\n");
+    expect("*strong* _emphasis_ `code & text` #mark# ^up^ ~down~\n",
+           "<div class=\"paragraph\">\n<p><strong>strong</strong> <em>emphasis</em> "
+           "<code>code &amp; text</code> <mark>mark</mark> <sup>up</sup> <sub>down</sub></p>\n</div>\n");
+    expect("word*literal*word word**strong**word and *outer _inner_*\n",
+           "<div class=\"paragraph\">\n<p>word*literal*word word<strong>strong</strong>word "
+           "and <strong>outer <em>inner</em></strong></p>\n</div>\n");
+    expect("\\*escaped* (C) (R) (TM) left -> right +\nnext\n",
+           "<div class=\"paragraph\">\n<p>*escaped* \xc2\xa9 \xc2\xae \xe2\x84\xa2 left \xe2\x86\x92 right"
+           "<br>\nnext</p>\n</div>\n");
+    expect("----\n*not strong* (C)\n----\n",
+           "<div class=\"listingblock\">\n<pre>*not strong* (C)</pre>\n</div>\n");
+    expect("== *Strong* section\n", "<div class=\"sect1\">\n<h2><strong>Strong</strong> section</h2>\n</div>\n");
 
     std::string output, error;
     if (!markup::is_supported(markup::Format::AsciiDoc) ||

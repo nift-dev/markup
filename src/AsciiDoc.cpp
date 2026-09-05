@@ -73,6 +73,86 @@ std::string substitute_attributes(const std::string& value,
     return result;
 }
 
+bool boundary_character(char character) {
+    const unsigned char value = static_cast<unsigned char>(character);
+    return std::isspace(value) || std::ispunct(value);
+}
+
+std::vector<Inline> parse_inlines(const std::string& text, const Range& source) {
+    std::vector<Inline> output;
+    std::string plain;
+    auto flush = [&]() {
+        if (plain.empty()) return;
+        Inline node;
+        node.text = std::move(plain);
+        node.source = source;
+        output.push_back(std::move(node));
+        plain.clear();
+    };
+    struct Delimiter { const char* marker; InlineKind kind; bool constrained; };
+    static const Delimiter delimiters[] = {
+        {"**", InlineKind::Strong, false}, {"__", InlineKind::Emphasis, false},
+        {"``", InlineKind::Monospace, false}, {"##", InlineKind::Mark, false},
+        {"*", InlineKind::Strong, true}, {"_", InlineKind::Emphasis, true},
+        {"`", InlineKind::Monospace, true}, {"#", InlineKind::Mark, true},
+        {"^", InlineKind::Superscript, true}, {"~", InlineKind::Subscript, true},
+    };
+
+    for (std::size_t i = 0; i < text.size();) {
+        if (text[i] == '\\' && i + 1 < text.size()) {
+            plain.push_back(text[i + 1]);
+            i += 2;
+            continue;
+        }
+        if (text.compare(i, 3, "(C)") == 0) { plain += "\xc2\xa9"; i += 3; continue; }
+        if (text.compare(i, 3, "(R)") == 0) { plain += "\xc2\xae"; i += 3; continue; }
+        if (text.compare(i, 4, "(TM)") == 0) { plain += "\xe2\x84\xa2"; i += 4; continue; }
+        if (text.compare(i, 4, " -> ") == 0) { plain += " \xe2\x86\x92 "; i += 4; continue; }
+        if (text.compare(i, 4, " <- ") == 0) { plain += " \xe2\x86\x90 "; i += 4; continue; }
+        if (text[i] == '\n' && !plain.empty() && plain.size() >= 2 &&
+            plain[plain.size() - 1] == '+' && plain[plain.size() - 2] == ' ') {
+            plain.resize(plain.size() - 2);
+            flush();
+            Inline line_break;
+            line_break.kind = InlineKind::LineBreak;
+            line_break.source = source;
+            output.push_back(std::move(line_break));
+            ++i;
+            continue;
+        }
+
+        bool matched = false;
+        for (const auto& delimiter : delimiters) {
+            const std::string marker = delimiter.marker;
+            if (text.compare(i, marker.size(), marker) != 0) continue;
+            if (delimiter.constrained && i > 0 && !boundary_character(text[i - 1])) continue;
+            if (i + marker.size() >= text.size() ||
+                std::isspace(static_cast<unsigned char>(text[i + marker.size()]))) continue;
+            std::size_t end = text.find(marker, i + marker.size());
+            while (end != std::string::npos && delimiter.constrained &&
+                   end + marker.size() < text.size() &&
+                   !boundary_character(text[end + marker.size()])) {
+                end = text.find(marker, end + marker.size());
+            }
+            if (end == std::string::npos || end == i + marker.size()) continue;
+            flush();
+            Inline span;
+            span.kind = delimiter.kind;
+            span.text = text.substr(i + marker.size(), end - i - marker.size());
+            span.source = source;
+            if (span.kind != InlineKind::Monospace) span.children = parse_inlines(span.text, source);
+            output.push_back(std::move(span));
+            i = end + marker.size();
+            matched = true;
+            break;
+        }
+        if (matched) continue;
+        plain.push_back(text[i++]);
+    }
+    flush();
+    return output;
+}
+
 bool attribute_entry(const std::string& line, std::string& name,
                      std::string& value, bool& unset) {
     if (line.size() < 3 || line.front() != ':') return false;
@@ -106,10 +186,7 @@ void add_text_inline(Block& block, const std::string& text,
     block.text = substitute_attributes(text, attributes);
     block.source.begin = {first_line + 1, 1};
     block.source.end = {last_line + 1, text.size()};
-    Inline inline_text;
-    inline_text.text = block.text;
-    inline_text.source = block.source;
-    block.inlines.push_back(std::move(inline_text));
+    block.inlines = parse_inlines(block.text, block.source);
 }
 
 bool delimited_block(const std::string& line, BlockKind& kind) {
@@ -406,8 +483,24 @@ std::string escape_html(const std::string& value) {
 
 std::string render_inlines(const std::vector<Inline>& inlines) {
     std::string output;
-    for (const auto& inline_node : inlines) output += escape_html(inline_node.text);
+    for (const auto& node : inlines) {
+        switch (node.kind) {
+        case InlineKind::Text: output += escape_html(node.text); break;
+        case InlineKind::Strong: output += "<strong>" + render_inlines(node.children) + "</strong>"; break;
+        case InlineKind::Emphasis: output += "<em>" + render_inlines(node.children) + "</em>"; break;
+        case InlineKind::Monospace: output += "<code>" + escape_html(node.text) + "</code>"; break;
+        case InlineKind::Mark: output += "<mark>" + render_inlines(node.children) + "</mark>"; break;
+        case InlineKind::Superscript: output += "<sup>" + render_inlines(node.children) + "</sup>"; break;
+        case InlineKind::Subscript: output += "<sub>" + render_inlines(node.children) + "</sub>"; break;
+        case InlineKind::LineBreak: output += "<br>\n"; break;
+        default: output += escape_html(node.text); break;
+        }
+    }
     return output;
+}
+
+std::string render_inline_text(const std::string& value) {
+    return render_inlines(parse_inlines(value, {}));
 }
 
 std::string render_blocks(const std::vector<Block>& blocks) {
@@ -419,7 +512,7 @@ std::string render_blocks(const std::vector<Block>& blocks) {
                       "</p>\n</div>\n";
         } else if (block.kind == BlockKind::Section) {
             output += "<div class=\"sect" + std::to_string(block.level) + "\">\n<h" +
-                      std::to_string(block.level + 1) + ">" + escape_html(block.title) + "</h" +
+                      std::to_string(block.level + 1) + ">" + render_inline_text(block.title) + "</h" +
                       std::to_string(block.level + 1) + ">\n";
             output += render_blocks(block.blocks);
             output += "</div>\n";
@@ -521,7 +614,7 @@ bool parse(const std::string& input, Document& document, std::string& error) {
 std::string render_html(const Document& document, const Options&) {
     std::string output;
     if (!document.title.empty()) {
-        output += "<div id=\"header\">\n<h1>" + escape_html(document.title) + "</h1>\n";
+        output += "<div id=\"header\">\n<h1>" + render_inline_text(document.title) + "</h1>\n";
         if (!document.author.empty()) output += "<div class=\"details\">" + escape_html(document.author) + "</div>\n";
         output += "</div>\n";
     }
