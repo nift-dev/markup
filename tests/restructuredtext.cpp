@@ -17,6 +17,9 @@ int main(){
  expect("`site <https://example.test>`_ and https://example.test/path\n","<p><a href=\"https://example.test\">site</a> and <a href=\"https://example.test/path\">https://example.test/path</a></p>\n");
  expect("Use :code:`value` and |name|.\n","<p>Use <code class=\"code\">value</code> and |name|.</p>\n");
  expect("word*not emphasis*word and \\*escaped*\n","<p>word*not emphasis*word and *escaped*</p>\n");
+ expect("Example::\n\n   literal <tag>\n   second\n","<p>Example:</p>\n<pre class=\"literal-block\">literal &lt;tag&gt;\nsecond</pre>\n");
+ expect("| first\n| second\n","<div class=\"line-block\">\n<div class=\"line\">first</div>\n<div class=\"line\">second</div>\n</div>\n");
+ expect(">>> 1 + 1\n2\n","<pre class=\"doctest-block\">&gt;&gt;&gt; 1 + 1\n2</pre>\n");
  std::string o,e;if(!markup::is_supported(markup::Format::ReStructuredText)||!markup::convert(markup::Format::ReStructuredText,"repeat",o,e))return 2;auto first=o;if(!markup::convert(markup::Format::ReStructuredText,"repeat",o,e)||o!=first)return 3;checks+=2;
  std::cout<<checks<<" reStructuredText checks passed\n";
 }

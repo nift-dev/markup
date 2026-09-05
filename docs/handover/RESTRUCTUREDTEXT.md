@@ -90,6 +90,11 @@ Delimiter and backslash scans are bounded by input size.
 
 Exit: exact doctree content and whitespace fixtures pass.
 
+Status: **Complete for core block forms.** Double-colon literal transitions,
+dedented literal blocks, line blocks, doctest blocks and quoted blocks have
+distinct nodes and preserve significant whitespace. Parsed-literal behavior is
+reserved for the directive registry rather than conflated with verbatim input.
+
 ## RST5 - Lists and field structures
 
 - Implement bullet, enumerated, definition, field and option lists.
