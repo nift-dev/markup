@@ -74,6 +74,12 @@ remains an explicit processor-profile difference.
 
 Exit: common technical-document structures match the pinned processor profile.
 
+Status: **Complete for the supported core set.** Focused parity checks cover
+list families/nesting/starts, pipe tables, explicit IDs and cross-references,
+links and images. Duplicate and unresolved local-reference diagnostics are
+observable through the host callback. Advanced Asciidoctor table syntax and
+generated xref labels remain documented differences.
+
 ## AC5 - Attributes, conditionals and document types
 
 - Match attribute precedence, locking/unsetting, conditional inclusion and
