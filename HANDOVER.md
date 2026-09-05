@@ -71,13 +71,13 @@ profiles. Both release gates compare normalized Markup++ output against pinned
 reference output (Docutils 0.23 fragments and a genuine Asciidoctor 2.0.26
 reference) and fail on unexpected differences; every reviewed difference is
 pinned by the SHA-256 of both normalized sides in each `differences.json`, so a
-recorded case cannot change arbitrarily. The gates pass locally on Linux at the
-current candidate. Commit `ee0ec00` in Actions run `33938717946` is historical
-evidence that the earlier implementation passed the earlier Linux/macOS/Windows
-suite; cross-platform confirmation of the strengthened gates is pending until
-the new committed candidate passes Linux, macOS and Windows CI. Their exact,
-bounded compatibility wording may be published only with the pinned profiles,
-the new CI evidence and the limitations recorded in the release handovers.
+recorded case cannot change arbitrarily. The strengthened gates and their
+adversarial self-test passed Linux, macOS and Windows at commit `20cbefe` in
+Actions run `33964331360`. Commit `ee0ec00` in Actions run `33938717946` is
+historical evidence that the earlier implementation passed the earlier
+Linux/macOS/Windows suite. Their exact, bounded compatibility wording may be
+published only with the pinned profiles, the new CI evidence and the
+limitations recorded in the release handovers.
 
 Run:
 

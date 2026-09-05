@@ -35,11 +35,13 @@ compatibility claim can never rest on inventory alone.
 Historical evidence: commit `ee0ec00` in Actions run `33938717946` passed the
 earlier implementation's Linux, macOS, Windows and libFuzzer suite. The
 strengthened normalized-output gate and the pinned reference were added after
-that commit; the gate currently passes locally on Linux at the new candidate.
-Cross-platform confirmation of the strengthened gate is **pending** until the
-new committed candidate passes Linux, macOS and Windows CI. After that, record
-the new immutable commit and Actions run here in a separate evidence-only
-commit, then publish the compatibility wording.
+that commit.
+
+Verified cross-platform evidence for the strengthened gate: commit `20cbefe`
+in Actions run `33964331360` passed the strengthened gate, the pinned-output
+comparison and the difference-gate adversarial self-test on Linux
+(GCC/ubuntu), macOS (Clang) and Windows (MSVC), plus the bounded libFuzzer
+job. The exact compatibility wording may be published with this evidence.
 
 Public wording may then say "compatible with Asciidoctor core 2.0.26 under the
 documented profile." Never shorten this to "Asciidoctor compatible" or

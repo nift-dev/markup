@@ -247,8 +247,8 @@ Status: **Complete for the declared profile.**
 inventory, unit/robustness suites, three-run CLI determinism and a normalized
 output comparison against the pinned Docutils 0.23 fragments; unexpected output
 differences fail the gate and every reviewed difference is pinned by the SHA-256
-of both normalized sides in `differences.json`. The gate currently passes
-locally on Linux at the current candidate. Commit `ee0ec00` in Actions run
+of both normalized sides in `differences.json`. The strengthened gate and its
+adversarial self-test passed Linux, macOS and Windows at commit `20cbefe` in
+Actions run `33964331360`. Commit `ee0ec00` in Actions run
 `33938717946` is historical evidence that the earlier implementation passed the
-earlier Linux/macOS/Windows suite; cross-platform confirmation of this
-strengthened gate is pending until the new committed candidate passes CI.
+earlier Linux/macOS/Windows suite.

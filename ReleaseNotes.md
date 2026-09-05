@@ -61,8 +61,9 @@
 - Passed the earlier combined AsciiDoc/Asciidoctor and reStructuredText/Docutils
   release gate at commit `ee0ec00` in Actions run `33938717946` (historical
   evidence for that earlier implementation). The strengthened normalized-output
-  gates, pinned references and recorded-difference hashes were added afterwards
-  and pass locally on Linux; cross-platform confirmation is pending.
+  gates, pinned references, recorded-difference hashes and their adversarial
+  self-test passed Linux, macOS and Windows at commit `20cbefe` in Actions run
+  `33964331360`.
 - Added an exact 41-file synchronization check for Nift's embedded `markuppp/`
   subtree. Standalone Markup++ remains the source of truth.
 

@@ -26,12 +26,13 @@ case, duplicating an id or adding an unknown id all fail the gates.
 
 Historical evidence: commit `ee0ec00` in Actions run `33938717946` passed the
 earlier implementation's Linux, macOS, Windows and libFuzzer suite. The
-strengthened normalized-output gate above was added after that commit; it
-currently passes locally on Linux at the new candidate. Cross-platform
-confirmation of the strengthened gate is **pending** until the new committed
-candidate passes Linux, macOS and Windows CI. After that, record the new
-immutable commit and Actions run here in a separate evidence-only commit, then
-publish the compatibility wording.
+strengthened normalized-output gate above was added after that commit.
+
+Verified cross-platform evidence for the strengthened gate: commit `20cbefe`
+in Actions run `33964331360` passed the strengthened gate, the pinned-output
+comparison and the difference-gate adversarial self-test on Linux
+(GCC/ubuntu), macOS (Clang) and Windows (MSVC), plus the bounded libFuzzer
+job. The exact compatibility wording may be published with this evidence.
 
 Before publishing the exact compatibility wording:
 
