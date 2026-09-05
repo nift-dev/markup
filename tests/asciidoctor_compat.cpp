@@ -36,5 +36,20 @@ int main() {
     contains("link:https://example.test[site] image:diagram.png[diagram]\n", "<img src=\"diagram.png\" alt=\"diagram\">");
     contains("= {product} Guide\n:product: Markup++\n:enabled:\n\nifdef::enabled[]\n{product} enabled.\nendif::[]\n", "<p>Markup++ enabled.</p>");
     contains("= Unset\n:value: before\n:value!:\n\n{value}\n", "<p>{value}</p>");
+    {
+        markup::Options options;
+        options.asciidoc_include_resolver = [](
+            const std::string&, const std::string&, std::string& content,
+            std::string& canonical, std::string&) {
+            content = "zero\n// tag::keep[]\none\ntwo\n// end::keep[]\nthree";
+            canonical = "virtual/part.adoc";
+            return true;
+        };
+        std::string html, error;
+        if (!markup::convert(markup::Format::AsciiDoc,
+                             "include::part.adoc[tag=keep]\n", html, error, options) ||
+            html.find("one\ntwo") == std::string::npos || html.find("zero") != std::string::npos) return 10;
+        ++checks;
+    }
     std::cout << checks << " Asciidoctor core compatibility checks passed\n";
 }

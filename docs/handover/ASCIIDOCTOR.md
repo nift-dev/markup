@@ -103,6 +103,12 @@ are explicitly outside the compatibility claim instead of being approximated.
 
 Exit: virtual resource behavior is compatible within the declared security profile.
 
+Status: **Complete for the capability profile.** Host-resolved includes support
+line ranges, tagged regions and indentation without library IO. Canonical
+identity, dependency observation, missing-resource, cycle, 32-level and 64 MiB
+limits remain enforced. Attribute-driven and wildcard selection are outside the
+declared subset.
+
 ## AC7 - Diagnostics and unsupported extensions
 
 - Map reference warnings/errors to stable Markup++ diagnostics and source spans.

@@ -19,6 +19,51 @@ std::string normalize(const std::string& input);
 std::vector<std::string> split_lines(const std::string& input);
 bool starts_with(const std::string& value, const std::string& prefix);
 
+std::string select_include_content(const std::string& content, const std::string& options) {
+    auto lines = split_lines(normalize(content));
+    std::vector<std::string> selected = lines;
+    const auto lines_at = options.find("lines=");
+    if (lines_at != std::string::npos) {
+        const std::size_t start = lines_at + 6;
+        const auto end = options.find(',', start);
+        const std::string range = options.substr(start, end - start);
+        const auto dots = range.find("..");
+        if (dots != std::string::npos) {
+            const std::size_t first = static_cast<std::size_t>(std::stoul(range.substr(0, dots)));
+            const std::size_t last = static_cast<std::size_t>(std::stoul(range.substr(dots + 2)));
+            selected.clear();
+            if (first && last >= first)
+                for (std::size_t n = first; n <= last && n <= lines.size(); ++n) selected.push_back(lines[n - 1]);
+        }
+    }
+    const auto tag_at = options.find("tag=");
+    if (tag_at != std::string::npos) {
+        const std::size_t start = tag_at + 4;
+        const auto end = options.find(',', start);
+        const std::string tag = options.substr(start, end - start);
+        const std::string open = "tag::" + tag + "[]";
+        const std::string close = "end::" + tag + "[]";
+        selected.clear();
+        bool active = false;
+        for (const auto& value : lines) {
+            if (value.find(open) != std::string::npos) { active = true; continue; }
+            if (value.find(close) != std::string::npos) { active = false; continue; }
+            if (active) selected.push_back(value);
+        }
+    }
+    unsigned indent = 0;
+    const auto indent_at = options.find("indent=");
+    if (indent_at != std::string::npos)
+        indent = static_cast<unsigned>(std::stoul(options.substr(indent_at + 7)));
+    std::string result;
+    for (std::size_t i = 0; i < selected.size(); ++i) {
+        if (indent && !selected[i].empty()) result.append(indent, ' ');
+        result += selected[i];
+        if (i + 1 < selected.size()) result += '\n';
+    }
+    return result;
+}
+
 bool expand_includes(const std::string& input, const std::string& identity,
                      const Options& options, std::vector<std::string>& stack,
                      std::size_t& bytes, std::string& output, std::string& error) {
@@ -32,6 +77,7 @@ bool expand_includes(const std::string& input, const std::string& identity,
                 return false;
             }
             const std::string target = value.substr(9, bracket - 9);
+            const std::string include_options = value.substr(bracket + 1, value.size() - bracket - 2);
             if (!options.asciidoc_include_resolver) {
                 error = identity + ":" + std::to_string(line + 1) +
                         ": include requires a host resolver: " + target;
@@ -57,6 +103,12 @@ bool expand_includes(const std::string& input, const std::string& identity,
             }
             if (content.size() > max_input_bytes - bytes) {
                 error = identity + ":" + std::to_string(line + 1) + ": expanded input exceeds 64 MiB";
+                return false;
+            }
+            try {
+                content = select_include_content(content, include_options);
+            } catch (const std::exception&) {
+                error = identity + ":" + std::to_string(line + 1) + ": invalid include options";
                 return false;
             }
             bytes += content.size();
