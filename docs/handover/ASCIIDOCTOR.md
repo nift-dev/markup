@@ -20,6 +20,10 @@ PDF, EPUB, Antora or third-party converters.
 
 Exit: identical reference runs produce byte-identical normalized evidence.
 
+Status: **Complete.** Asciidoctor 2.0.26, gem SHA-256, secure embedded HTML5
+article profile, reproducible attributes, original focused corpus and offline
+regeneration command are frozen under `tests/fixtures/asciidoctor-2.0.26/`.
+
 ## AC1 - Define comparison semantics
 
 - Compare normalized document structure independently from final HTML spelling.

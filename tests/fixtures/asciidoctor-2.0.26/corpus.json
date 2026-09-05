@@ -1,0 +1,10 @@
+[
+  {"id":"paragraph","checkpoint":"AC2","input":"A paragraph.\n"},
+  {"id":"header-section","checkpoint":"AC2","input":"= Guide\n\n== Start\n\nHello.\n"},
+  {"id":"listing","checkpoint":"AC2","input":"[source,cpp]\n----\nint main() {}\n----\n"},
+  {"id":"inline","checkpoint":"AC3","input":"*strong* _emphasis_ `code` #mark#\n"},
+  {"id":"lists","checkpoint":"AC4","input":"* one\n* two\n"},
+  {"id":"table","checkpoint":"AC4","input":"|===\n|A |B\n|1 |2\n|===\n"},
+  {"id":"reference","checkpoint":"AC4","input":"[[start]]\n== Start\n\nSee <<start>>.\n"},
+  {"id":"conditional","checkpoint":"AC5","input":"= Conditional\n:show:\n\nifdef::show[]\nVisible.\nendif::[]\n"}
+]

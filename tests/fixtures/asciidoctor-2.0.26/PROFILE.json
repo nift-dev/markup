@@ -1,0 +1,12 @@
+{
+  "processor": "Asciidoctor",
+  "version": "2.0.26",
+  "artifact": "asciidoctor-2.0.26.gem",
+  "sha256": "16e3accf1fc206bbd6335848649d7fd65f31d2daa60d85af13d47a8ee4b071c1",
+  "backend": "html5",
+  "doctype": "article",
+  "safe_mode": "secure",
+  "header_footer": false,
+  "attributes": ["reproducible", "env=markup", "env-markup"],
+  "reference_command": "asciidoctor --backend html5 --doctype article --safe-mode secure --embedded --attribute reproducible --attribute env=markup --attribute env-markup -"
+}
