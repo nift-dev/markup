@@ -1,0 +1,10 @@
+{
+  "paragraph": ["wrapper-class"],
+  "header-section": ["header-wrapper", "generated-section-id", "section-wrapper"],
+  "listing": ["source-wrapper", "language-class"],
+  "inline": ["mark-element"],
+  "lists": [],
+  "table": ["table-wrapper", "table-body"],
+  "reference": ["section-wrapper", "xref-label"],
+  "conditional": ["header-wrapper"]
+}

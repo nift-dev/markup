@@ -34,6 +34,11 @@ regeneration command are frozen under `tests/fixtures/asciidoctor-2.0.26/`.
 
 Exit: deliberately changed structure is detected even when browsers look alike.
 
+Status: **Complete.** The comparator tokenizes semantic HTML structure and text
+separately from decoration, preserves raw outputs, and requires an exact-case
+reviewed difference manifest. Missing references and stale manifest entries
+fail rather than silently weakening comparison.
+
 ## AC2 - Core document and block parity
 
 - Differential-test headers, sections, IDs, block metadata, paragraphs, breaks,
