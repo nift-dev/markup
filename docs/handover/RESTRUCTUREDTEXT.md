@@ -117,6 +117,12 @@ decoration differences remain recorded for the Docutils profile.
 
 Exit: post-transform doctrees agree for reference-heavy documents.
 
+Status: **Complete for named targets, references, numbered footnotes and
+citations.** Names normalize deterministically, external and internal targets
+resolve after parsing, and footnote/citation definitions render separately.
+Automatic symbol numbering and multi-backreference decoration remain reviewed
+Docutils-profile differences.
+
 ## RST7 - Substitutions, comments and explicit markup
 
 - Implement substitution definitions/uses, comments and explicit markup blocks.
