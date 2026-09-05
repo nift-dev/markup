@@ -77,6 +77,11 @@ short adornments remain text rather than creating unstable hierarchy.
 
 Exit: applicable inline fixtures pass without post-render reparsing.
 
+Status: **Complete for core inline syntax.** Emphasis, strong, inline literals,
+embedded and standalone hyperlinks, named references, substitutions and
+interpreted roles are parsed into nodes with escaping and word-boundary rules.
+Delimiter and backslash scans are bounded by input size.
+
 ## RST4 - Literal, line, doctest and quoted blocks
 
 - Implement `::` literal-block transitions, indented literals, parsed-literal
