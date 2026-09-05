@@ -89,6 +89,12 @@ int main() {
     expect("Visit https://example.test/path now.\n",
            "<div class=\"paragraph\">\n<p>Visit <a href=\"https://example.test/path\">"
            "https://example.test/path</a> now.</p>\n</div>\n");
+    expect(".Inventory\n|===\n|Name |Count\n|Bolts |4\n|2+|Total\n|===\n",
+           "<table>\n<caption>Inventory</caption>\n<tr>\n<td>Name</td>\n<td>Count</td>\n</tr>\n"
+           "<tr>\n<td>Bolts</td>\n<td>4</td>\n</tr>\n<tr>\n<td colspan=\"2\">Total</td>\n</tr>\n</table>\n");
+    expect("|===\n|*strong* |a:AsciiDoc _cell_\n|===\n",
+           "<table>\n<tr>\n<td><strong>strong</strong></td>\n<td>AsciiDoc <em>cell</em></td>\n"
+           "</tr>\n</table>\n");
 
     std::string output, error;
     if (!markup::is_supported(markup::Format::AsciiDoc) ||

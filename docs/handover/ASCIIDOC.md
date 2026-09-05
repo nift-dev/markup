@@ -148,6 +148,11 @@ rejection apply at render time; identical targets resolve deterministically.
 
 Exit: applicable table TCK cases pass structurally and in fragment HTML.
 
+Status: **Complete.** Bounded pipe tables preserve rows, cells, simple column
+spans and cell styles in the model. Inline AsciiDoc is parsed inside cells;
+table delimiters take precedence over ordinary blocks. Parsing stops at 100,000
+cells and malformed/unclosed tables recover deterministically at EOF.
+
 ## AD8 - Built-in macros and conditionals
 
 - Implement language-defined inline/block macros and conditional directives.
@@ -195,4 +200,5 @@ conformance claim.
 | AD4 - Lists | Complete | Unordered/ordered/description/checklist nodes, nesting, starts and continuation blocks |
 | AD5 - Inline substitutions | Complete | Constrained/unconstrained spans, nesting, escapes, replacements and explicit breaks |
 | AD6 - References/media | Complete | Anchors, xrefs, links, mail, bare URLs, images and icons; no implicit IO |
-| AD7-AD11 | Pending | - |
+| AD7 - Tables | Complete | Bounded rows/cells, simple spans/styles, inline cell content and EOF recovery |
+| AD8-AD11 | Pending | - |

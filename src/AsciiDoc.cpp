@@ -11,6 +11,7 @@ namespace markup::asciidoc {
 namespace {
 
 constexpr std::size_t max_input_bytes = 64U * 1024U * 1024U;
+constexpr std::size_t max_table_cells = 100000U;
 
 std::string normalize(const std::string& input) {
     std::string output;
@@ -282,6 +283,77 @@ bool verbatim_kind(BlockKind kind) {
            kind == BlockKind::Comment;
 }
 
+Block parse_table_cell(const std::string& raw, std::size_t line,
+                       const std::map<std::string, std::string>& attributes) {
+    Block cell;
+    cell.kind = BlockKind::Paragraph;
+    std::string value = raw;
+    const auto plus = value.find('+');
+    if (plus != std::string::npos && plus > 0 && plus < 4) {
+        bool digits = true;
+        for (std::size_t i = 0; i < plus; ++i)
+            digits = digits && std::isdigit(static_cast<unsigned char>(value[i]));
+        if (digits) {
+            const unsigned parsed = static_cast<unsigned>(std::stoul(value.substr(0, plus)));
+            if (parsed > 0 && parsed <= 1000) cell.span = parsed;
+            value.erase(0, plus + 1);
+        }
+    }
+    if (value.size() > 2 && value[1] == ':' &&
+        (value[0] == 'a' || value[0] == 'm' || value[0] == 's' || value[0] == 'e')) {
+        cell.style = value.substr(0, 1);
+        value.erase(0, 2);
+    }
+    add_text_inline(cell, trim(value), line, line, attributes);
+    return cell;
+}
+
+void parse_table(const std::vector<std::string>& lines, std::size_t& line, Block& table,
+                 const std::map<std::string, std::string>& attributes) {
+    const std::size_t first = line++;
+    table.kind = BlockKind::Table;
+    table.source.begin = {first + 1, 1};
+    std::size_t cells = 0;
+    while (line < lines.size() && lines[line] != "|===") {
+        if (lines[line].empty()) { ++line; continue; }
+        Block row;
+        row.kind = BlockKind::Open;
+        row.source.begin = {line + 1, 1};
+        const std::string& value = lines[line];
+        std::size_t at = value.empty() || value.front() != '|' ? 0 : 1;
+        while (at <= value.size() && cells < max_table_cells) {
+            const auto separator = value.find('|', at);
+            std::string raw = value.substr(at,
+                separator == std::string::npos ? std::string::npos : separator - at);
+            if (separator != std::string::npos && raw.size() > 1 && raw.back() == '+') {
+                bool digits = true;
+                for (std::size_t digit = 0; digit + 1 < raw.size(); ++digit)
+                    digits = digits && std::isdigit(static_cast<unsigned char>(raw[digit]));
+                if (digits) {
+                    const auto following = value.find('|', separator + 1);
+                    raw += value.substr(separator + 1,
+                        following == std::string::npos ? std::string::npos : following - separator - 1);
+                    row.items.push_back(parse_table_cell(raw, line, attributes));
+                    ++cells;
+                    if (following == std::string::npos) break;
+                    at = following + 1;
+                    continue;
+                }
+            }
+            row.items.push_back(parse_table_cell(raw, line, attributes));
+            ++cells;
+            if (separator == std::string::npos) break;
+            at = separator + 1;
+        }
+        row.source.end = {line + 1, value.size()};
+        table.items.push_back(std::move(row));
+        ++line;
+    }
+    if (line < lines.size()) ++line;
+    const std::size_t last = line ? line - 1 : first;
+    table.source.end = {last + 1, lines[last].size()};
+}
+
 void parse_block_attributes(const std::string& line, std::string& style) {
     if (line.size() < 2 || line.front() != '[' || line.back() != ']') return;
     const std::string inside = line.substr(1, line.size() - 2);
@@ -463,6 +535,17 @@ void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
             ++line;
             blocks.push_back(std::move(separator));
             pending_title.clear(); pending_style.clear();
+            continue;
+        }
+
+        if (lines[line] == "|===") {
+            Block table;
+            table.title = pending_title;
+            table.style = pending_style;
+            table.id = pending_id;
+            parse_table(lines, line, table, attributes);
+            blocks.push_back(std::move(table));
+            pending_title.clear(); pending_style.clear(); pending_id.clear();
             continue;
         }
 
@@ -702,6 +785,22 @@ std::string render_blocks(const std::vector<Block>& blocks, const Options& optio
                 output += "</dd>\n";
             }
             output += "</dl>\n";
+        } else if (block.kind == BlockKind::Table) {
+            output += "<table" + id_attribute(block) + ">\n";
+            if (!block.title.empty()) output += "<caption>" + escape_html(block.title) + "</caption>\n";
+            const bool header = block.style == "options" || block.style == "header";
+            for (std::size_t row_index = 0; row_index < block.items.size(); ++row_index) {
+                output += "<tr>\n";
+                for (const auto& cell : block.items[row_index].items) {
+                    const bool heading = header && row_index == 0;
+                    const std::string tag = heading ? "th" : "td";
+                    output += "<" + tag;
+                    if (cell.span != 1) output += " colspan=\"" + std::to_string(cell.span) + "\"";
+                    output += ">" + render_inlines(cell.inlines, options) + "</" + tag + ">\n";
+                }
+                output += "</tr>\n";
+            }
+            output += "</table>\n";
         }
     }
     return output;

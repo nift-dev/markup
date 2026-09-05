@@ -41,6 +41,7 @@ struct Block {
     std::string id;
     unsigned level = 0;
     unsigned start = 1;
+    unsigned span = 1;
     bool checklist = false;
     bool checked = false;
     std::vector<Inline> inlines;
