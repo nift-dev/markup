@@ -34,4 +34,7 @@ source-positioned neutral model and enabled public conversion. AD2 implemented
 headers, attributes and nested sections; AD3 established block precedence and
 structural/verbatim containers; AD4 added list families and nesting; AD5 added
 ordered inline substitutions. These checkpoints establish useful conversion,
-not final language conformance: AD6-AD11 and the expected-ASG gate remain.
+AD6 added references/media, AD7 tables, AD8 macros/conditionals, AD9 explicit
+include capabilities, AD10 safe rendering and robustness, and AD11 the pinned
+alpha release gate. The development profile is complete; stable conformance
+still awaits a released standard/TCK and its expected-ASG oracle.

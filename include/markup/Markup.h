@@ -34,7 +34,7 @@ struct Options {
     std::function<void(const std::string&)> asciidoc_dependency;
 };
 
-inline constexpr unsigned api_version = 2;
+inline constexpr unsigned api_version = 3;
 
 bool format_for_extension(const std::string& extension, Format& format);
 const char* format_name(Format format);

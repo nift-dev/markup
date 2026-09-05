@@ -27,10 +27,13 @@
   bounded libFuzzer coverage.
 - Froze immutable Eclipse AsciiDoc language and TCK development snapshots and
   inventoried all 13 current upstream inputs offline.
-- Implemented AsciiDoc checkpoints AD1-AD5: a neutral source-positioned model,
+- Implemented AsciiDoc checkpoints AD1-AD11: a neutral source-positioned model,
   normalization and bounds, headers/attributes/sections, structural and
   verbatim blocks, list families and ordered inline substitutions.
-- Added 26 focused AsciiDoc checks while retaining the CommonMark release gate.
+- Added references/media, bounded tables, pure macros/conditionals, explicit
+  host-resolved includes, safe passthrough/URI behavior and a pinned alpha gate.
+- Added 39 focused AsciiDoc checks and deterministic coverage of all 13 current
+  upstream TCK inputs while retaining the CommonMark release gate.
 
 This is an implementation checkpoint, not a tagged public release. The evidence
 now supports the versioned CommonMark 0.31.2 compliance claim.

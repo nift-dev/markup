@@ -8,7 +8,7 @@ implementations mature, to be embedded by Nift behind the same kind of narrow
 library boundary used for Minify++ and Jsonic++.
 
 Markdown is CommonMark 0.31.2 compliant. AsciiDoc conversion is implemented
-through checkpoints AD0-AD5 against pinned Eclipse language/TCK development
+through checkpoints AD0-AD11 against pinned Eclipse language/TCK development
 snapshots; links, media, tables, macros, includes and the final conformance gate
 remain. reStructuredText is recognized but still returns a clear
 not-implemented error.
@@ -96,10 +96,12 @@ See [HANDOVER.md](HANDOVER.md) for the living development contract and
 ## AsciiDoc checkpoint
 
 The current AsciiDoc profile includes document metadata and attributes, nested
-sections, structural and verbatim blocks, unordered/ordered/description/
-checklist lists, and constrained/unconstrained inline substitutions.
+sections, structural and verbatim blocks, lists, inline substitutions,
+references/media, bounded tables, pure macros/conditionals, capability-based
+includes, and safe passthrough/URI handling.
 
 The target pins Eclipse specification commit `68ed0b22` and TCK commit
 `cdfada9c`. The TCK is an unreleased alpha with 13 inputs and an ASG oracle, so
-this checkpoint is not advertised as fully AsciiDoc conformant. See
+the exact claim is pinned-development-profile completion rather than stable
+language conformance because the alpha TCK has not published its expected ASG oracle. See
 `docs/handover/ASCIIDOC.md` for the exact evidence and remaining work.

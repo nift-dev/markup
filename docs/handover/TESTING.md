@@ -11,11 +11,12 @@
   atomic replacement boundaries, symlink refusal and unsupported formats;
 - `fuzz_smoke.cpp`: 10,000 deterministic mixed-character mutations through both
   implemented formats across raw/safe and fragment/standalone modes;
-- `asciidoc.cpp`: 26 focused AD1-AD5 model, precedence and rendering checks;
+- `asciidoc.cpp`: 39 focused AD1-AD10 model, capability, reference, safety and rendering checks;
+- `asciidoc_release_gate.py`: three-run deterministic AD11 gate over 13/13 pinned alpha TCK inputs;
 - `asciidoc_fixture_inventory.py`: validates all 13 inputs in the pinned
   Eclipse TCK alpha snapshot offline.
 
-`make test-sanitize` rebuilds Markdown semantic/adversarial and AsciiDoc AD1-AD5
+`make test-sanitize` rebuilds Markdown semantic/adversarial and AsciiDoc AD1-AD10
 gates under ASan/UBSan.
 Sanitizer success is workload evidence, not a universal memory-safety proof.
 Some sandboxed runners prevent LeakSanitizer from inspecting `/proc`; use

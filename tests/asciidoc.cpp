@@ -158,6 +158,15 @@ int main() {
             include_error.find("requires a host resolver") == std::string::npos) return 5;
         ++checks;
     }
+    {
+        std::string ignored, reference_error;
+        if (markup::convert(markup::Format::AsciiDoc, "See <<missing>>.\n", ignored, reference_error) ||
+            reference_error.find("unresolved cross-reference: missing") == std::string::npos) return 8;
+        if (markup::convert(markup::Format::AsciiDoc,
+                            "[[same]]\nfirst\n\n[[same]]\nsecond\n", ignored, reference_error) ||
+            reference_error.find("duplicate anchor: same") == std::string::npos) return 9;
+        checks += 2;
+    }
 
     std::string output, error;
     if (!markup::is_supported(markup::Format::AsciiDoc) ||

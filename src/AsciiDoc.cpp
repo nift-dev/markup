@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <cctype>
 #include <algorithm>
+#include <set>
 #include <utility>
 
 namespace markup::asciidoc {
@@ -892,6 +893,32 @@ std::string render_blocks(const std::vector<Block>& blocks, const Options& optio
     return output;
 }
 
+bool validate_references(const std::vector<Block>& blocks, std::set<std::string>& ids,
+                         std::vector<std::pair<std::string, Range>>& references,
+                         std::string& error) {
+    for (const auto& block : blocks) {
+        if (!block.id.empty() && !ids.insert(block.id).second) {
+            error = "<input>:" + std::to_string(block.source.begin.line) +
+                    ": duplicate anchor: " + block.id;
+            return false;
+        }
+        const auto inspect = [&](const std::vector<Inline>& inlines, const auto& self) -> void {
+            for (const auto& node : inlines) {
+                if (node.kind == InlineKind::CrossReference)
+                    references.emplace_back(node.target, node.source);
+                self(node.children, self);
+            }
+        };
+        inspect(block.inlines, inspect);
+        for (const auto& item : block.items) {
+            inspect(item.inlines, inspect);
+            if (!validate_references(item.blocks, ids, references, error)) return false;
+        }
+        if (!validate_references(block.blocks, ids, references, error)) return false;
+    }
+    return true;
+}
+
 } // namespace
 
 bool parse(const std::string& input, Document& document, std::string& error,
@@ -958,6 +985,19 @@ bool parse(const std::string& input, Document& document, std::string& error,
     }
     input_lines = std::move(filtered);
     parse_blocks(input_lines, line, 0, document.blocks, document.attributes);
+    std::set<std::string> ids;
+    std::vector<std::pair<std::string, Range>> references;
+    if (!validate_references(document.blocks, ids, references, error)) return false;
+    for (const auto& reference : references) {
+        if (reference.first.find('/') == std::string::npos &&
+            reference.first.find('.') == std::string::npos &&
+            ids.find(reference.first) == ids.end()) {
+            error = options.asciidoc_source_identity + ":" +
+                    std::to_string(reference.second.begin.line) +
+                    ": unresolved cross-reference: " + reference.first;
+            return false;
+        }
+    }
     if (!input_lines.empty()) {
         document.source.begin = {1, 1};
         document.source.end = {input_lines.size(), input_lines.back().size()};
