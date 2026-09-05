@@ -608,8 +608,10 @@ bool convert(Format format, const std::string& input, std::string& output,
         if (!asciidoc::parse(input, document, error, options)) return false;
         fragment = asciidoc::render_html(document, options);
     } else {
+        std::string expanded;
+        if (!rst::expand(input, expanded, error, options)) return false;
         rst::Document document;
-        if (!rst::parse(input, document, error, options)) return false;
+        if (!rst::parse(expanded, document, error, options)) return false;
         fragment = rst::render_html(document, options);
     }
     if (!options.standalone) {

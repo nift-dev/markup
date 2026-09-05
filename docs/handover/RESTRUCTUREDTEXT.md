@@ -190,6 +190,12 @@ through the RST11 capability boundary.
 
 Exit: virtual resource graphs work and hostile paths cannot trigger ambient IO.
 
+Status: **Complete for host-resolved includes and URI-only images.** Includes
+are IO-free by default and use a host resolver with canonical identities,
+dependency reporting, 32-level recursion, cycle and 64 MiB expanded-size
+limits. Images emit references without fetching. Raw/file-backed CSV and syntax
+highlight execution remain disabled unless an embedding host opts in.
+
 ## RST12 - Transforms, diagnostics and HTML rendering
 
 - Match the pinned core transforms for IDs, references, footnotes, contents and

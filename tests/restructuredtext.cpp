@@ -36,6 +36,9 @@ int main(){
  expect(".. note::\n\n   Remember this.\n","<aside class=\"admonition note\"><p class=\"admonition-title\">note</p><p>Remember this.</p></aside>\n");
  expect(".. topic:: Details\n\n   Topic body.\n","<section class=\"topic\"><h2>Details</h2><p>Topic body.</p></section>\n");
  expect(".. code:: cpp\n\n   int x;\n","<pre class=\"code cpp\">int x;</pre>\n");
+ {markup::Options options;std::vector<std::string>deps;options.rst_resource_resolver=[](const std::string&,const std::string&t,std::string&c,std::string&id,std::string&){if(t!="part.rst")return false;c="Included.\n";id="virtual:part";return true;};options.rst_dependency=[&](const std::string&v){deps.push_back(v);};std::string a,b;if(!markup::convert(markup::Format::ReStructuredText,"Before.\n\n.. include:: part.rst\n\nAfter.\n",a,b,options)||a!="<p>Before.</p>\n<p>Included.</p>\n<p>After.</p>\n"||deps.size()!=1)return 5;++checks;}
+ {markup::Options options;options.rst_resource_resolver=[](const std::string&,const std::string&,std::string&c,std::string&id,std::string&){c=".. include:: loop.rst\n";id="virtual:loop";return true;};std::string a,b;if(markup::convert(markup::Format::ReStructuredText,".. include:: loop.rst\n",a,b,options)||b.find("cycle")==std::string::npos)return 6;++checks;}
+ expect(".. image:: image.png\n","<figure><img src=\"image.png\" alt=\"\"></figure>\n");
  std::string o,e;if(!markup::is_supported(markup::Format::ReStructuredText)||!markup::convert(markup::Format::ReStructuredText,"repeat",o,e))return 2;auto first=o;if(!markup::convert(markup::Format::ReStructuredText,"repeat",o,e)||o!=first)return 3;checks+=2;
  std::cout<<checks<<" reStructuredText checks passed\n";
 }

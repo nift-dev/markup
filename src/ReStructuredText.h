@@ -13,5 +13,6 @@ struct Block { BlockKind kind=BlockKind::Paragraph; std::string text, title, nam
  unsigned level=0, start=1, span=1; std::vector<Inline> inlines; std::vector<Block> blocks, items; Range source; };
 struct Document { std::vector<Block> blocks; std::map<std::string,std::string> targets, substitutions; Range source; };
 bool parse(const std::string&, Document&, std::string&, const Options&);
+bool expand(const std::string&, std::string&, std::string&, const Options&);
 std::string render_html(const Document&, const Options&);
 } }
