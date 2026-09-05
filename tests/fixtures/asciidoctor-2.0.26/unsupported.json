@@ -1,0 +1,6 @@
+[
+  {"family":"extension API","examples":["Ruby block processors","tree processors","postprocessors"]},
+  {"family":"external converters","examples":["PDF","EPUB","DocBook"]},
+  {"family":"third-party macros","examples":["diagram","kroki","tabs"]},
+  {"family":"application layers","examples":["Antora","Sphinx-style cross-project catalogs"]}
+]

@@ -980,6 +980,16 @@ bool parse(const std::string& input, Document& document, std::string& error,
         return false;
     }
 
+    if (options.asciidoc_diagnostic) {
+        const auto raw_lines = split_lines(normalize(input));
+        static const char* unsupported[] = {"diagram::", "kroki::", "video::", "audio::"};
+        for (std::size_t index = 0; index < raw_lines.size(); ++index)
+            for (const char* prefix : unsupported)
+                if (starts_with(raw_lines[index], prefix))
+                    options.asciidoc_diagnostic(options.asciidoc_source_identity + ":" +
+                        std::to_string(index + 1) + ": unsupported Asciidoctor macro: " + prefix);
+    }
+
     std::string expanded;
     std::vector<std::string> include_stack{options.asciidoc_source_identity};
     std::size_t expanded_bytes = input.size();

@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <vector>
 
 namespace {
 int checks = 0;
@@ -49,6 +50,16 @@ int main() {
         if (!markup::convert(markup::Format::AsciiDoc,
                              "include::part.adoc[tag=keep]\n", html, error, options) ||
             html.find("one\ntwo") == std::string::npos || html.find("zero") != std::string::npos) return 10;
+        ++checks;
+    }
+    {
+        markup::Options options;
+        std::vector<std::string> diagnostics;
+        options.asciidoc_diagnostic = [&](const std::string& value) { diagnostics.push_back(value); };
+        std::string html, error;
+        if (!markup::convert(markup::Format::AsciiDoc, "diagram::flow.svg[]\n", html, error, options) ||
+            diagnostics.size() != 1 || diagnostics[0].find("unsupported Asciidoctor macro") == std::string::npos)
+            return 11;
         ++checks;
     }
     std::cout << checks << " Asciidoctor core compatibility checks passed\n";

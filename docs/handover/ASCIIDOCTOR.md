@@ -117,6 +117,11 @@ declared subset.
 
 Exit: users receive explicit actionable errors instead of plausible wrong HTML.
 
+Status: **Complete for the declared boundary.** Reference problems and known
+unsupported processor macros have positioned host diagnostics. The reviewed
+inventory names extension APIs, external converters, third-party macros and
+application layers that Markup++ never executes or claims.
+
 ## AC8 - Real-world and adversarial differential corpus
 
 - Test varied READMEs, manuals and generated documents whose licenses permit use.
