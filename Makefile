@@ -81,6 +81,7 @@ test-profile-matrix: $(PROFILE_MATRIX)
 	./$(PROFILE_MATRIX)
 
 test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix
+	python3 tests/asciidoc_fixture_inventory.py
 
 commonmark-report: $(TARGET)
 	python3 tests/commonmark_runner.py --program ./$(TARGET) --allow-failures

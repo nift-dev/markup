@@ -56,4 +56,7 @@ if(BUILD_TESTING)
     target_link_libraries(markup-commonmark-conformance PRIVATE markup_core)
     add_test(NAME commonmark_0_31_2
         COMMAND markup-commonmark-conformance)
+    add_test(NAME asciidoc_fixture_inventory
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/asciidoc_fixture_inventory.py
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 endif()

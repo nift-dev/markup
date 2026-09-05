@@ -10,10 +10,12 @@ Authoritative references:
 - language documentation: <https://docs.asciidoctor.org/asciidoc/latest/>;
 - official TCK: <https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-tck>.
 
-The specification and TCK revision must be pinned by immutable tag or commit in
-the repository when AD0 closes. Ordinary builds and tests must not download a
-mutable upstream branch. A claim of conformance applies only to that pinned
-revision and the explicitly documented processor capabilities.
+The frozen development target is specification commit
+`68ed0b22e8d9b919897542d8ae14f03e7dbdd2e4` and TCK commit
+`cdfada9c2768b164eadf4bc12e9f9c68e6caf68a` (`1.0.0-alpha.0`). Ordinary builds
+and tests do not download upstream data. The upstream specification and TCK are
+not released yet, so AD work is implementation against a pinned development
+snapshot, not a certification or final standards claim.
 
 ## Rules for every checkpoint
 
@@ -39,6 +41,13 @@ revision and the explicitly documented processor capabilities.
 - Record the initial per-section baseline without making a conformance claim.
 
 Exit: every applicable test is discoverable and reproducible offline.
+
+Status: **Complete.** All thirteen current upstream inputs are inventoried in
+`tests/fixtures/asciidoc-tck/cases.json`, classified by type and owning
+checkpoint, and checked offline in Make and CTest. Provenance, licensing, pins
+and the upgrade procedure live beside the fixture. The current TCK asserts ASG,
+not HTML; its expected ASGs remain the future adapter oracle and are not replaced
+with renderer-specific expectations.
 
 ## AD1 - Establish the AsciiDoc document model and parsing invariants
 
@@ -138,3 +147,15 @@ Exit: hostile inputs are bounded and the safe-mode boundary is documented.
 
 Exit: only then may public material make the versioned AsciiDoc language
 conformance claim.
+
+## Progress ledger
+
+| Checkpoint | Status | Evidence |
+|---|---|---|
+| AD0 - Target/TCK harness | Complete | 13/13 upstream inputs inventoried at immutable spec/TCK commits |
+| AD1 - Model/invariants | Pending | - |
+| AD2 - Header/attributes/sections | Pending | - |
+| AD3 - Paragraphs/blocks | Pending | - |
+| AD4 - Lists | Pending | - |
+| AD5 - Inline substitutions | Pending | - |
+| AD6-AD11 | Pending | - |

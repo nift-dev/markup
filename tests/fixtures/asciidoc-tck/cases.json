@@ -1,0 +1,15 @@
+[
+  {"path":"block/document/body-only","type":"block","checkpoint":"AD1","input":"body only\n"},
+  {"path":"block/document/header-body","type":"block","checkpoint":"AD2","input":"= Document Title\n\nbody\n"},
+  {"path":"block/header/attribute-entries-below-title","type":"block","checkpoint":"AD2","input":"= Document Title\n:icons: font\n:toc:\n"},
+  {"path":"block/list/unordered/single-item","type":"block","checkpoint":"AD4","input":"* water\n"},
+  {"path":"block/listing/multiple-lines","type":"block","checkpoint":"AD3","input":"----\ndef main\n  puts 'hello'\nend\n----\n"},
+  {"path":"block/paragraph/multiple-lines","type":"block","checkpoint":"AD3","input":"This paragraph has multiple lines that wrap after reaching the 72\ncharacter limit set by the text editor.\n"},
+  {"path":"block/paragraph/paragraph-empty-lines-paragraph","type":"block","checkpoint":"AD3","input":"This document has multiple paragraphs.\n\n\nParagraphs are separated by one or more empty lines.\n"},
+  {"path":"block/paragraph/sibling-paragraphs","type":"block","checkpoint":"AD3","input":"This document has multiple paragraphs.\n\nParagraphs are separated by one or more empty lines.\n"},
+  {"path":"block/paragraph/single-line","type":"block","checkpoint":"AD1","input":"A paragraph that consists of a single line.\n"},
+  {"path":"block/section/title-body","type":"block","checkpoint":"AD2","input":"== Section Title\n\nparagraph\n"},
+  {"path":"block/sidebar/containing-unordered-list","type":"block","checkpoint":"AD4","input":"****\n* phone\n* wallet\n* keys\n****\n"},
+  {"path":"inline/no-markup/single-word","type":"inline","checkpoint":"AD1","input":"hello\n"},
+  {"path":"inline/span/strong/constrained-single-char","type":"inline","checkpoint":"AD5","input":"*s*\n"}
+]
