@@ -237,3 +237,9 @@ Every future differential defect must be reduced into this permanent corpus.
 
 Exit: public wording may say “compatible with the reStructuredText specification
 and Docutils 0.23 core parser behavior under the documented profile.”
+
+Status: **Implementation and local profile gate complete; public claim gated.**
+`make test-rst-release` validates the pinned profile, exact 24-case oracle
+inventory, unit/robustness suites and three-run CLI determinism. The exact
+compatibility sentence may be published only after a clean pushed candidate
+passes Linux, macOS and Windows CI and the immutable run is recorded.

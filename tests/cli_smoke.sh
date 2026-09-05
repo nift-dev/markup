@@ -35,6 +35,7 @@ if ln -s target "$tmp/link.html" 2>/dev/null; then
 fi
 
 printf 'CLI paragraph\n' | "$bin" --format asciidoc - | grep -F '<p>CLI paragraph</p>' >/dev/null
+printf 'RST paragraph.\n' | "$bin" --format rst - | grep -F '<p>RST paragraph.</p>' >/dev/null
 "$bin" --version | grep -Fx 'Markup++ 0.1.0' >/dev/null
 "$bin" --help | grep -F 'convert markup formats to HTML' >/dev/null
 echo 'CLI smoke checks passed'

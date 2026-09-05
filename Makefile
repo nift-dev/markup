@@ -114,7 +114,10 @@ test-rst: $(RST)
 test-rst-robustness: $(RST_ROBUSTNESS)
 	./$(RST_ROBUSTNESS)
 
-test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-release test-rst test-rst-robustness
+test-rst-release: $(TARGET) test-rst test-rst-robustness
+	python3 tests/docutils_release_gate.py --program ./$(TARGET)
+
+test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-release test-rst-release
 	python3 tests/asciidoc_fixture_inventory.py
 
 commonmark-report: $(TARGET)
