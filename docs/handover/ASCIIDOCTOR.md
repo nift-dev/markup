@@ -89,6 +89,11 @@ generated xref labels remain documented differences.
 
 Exit: configuration-sensitive behavior is deterministic and covered.
 
+Status: **Complete for the declared `article` profile.** Attribute assignment,
+substitution, unsetting and nested conditionals are covered. Markup++ currently
+accepts only article semantics; `book`, `manpage` and other processor doctypes
+are explicitly outside the compatibility claim instead of being approximated.
+
 ## AC6 - Include and path behavior
 
 - Reproduce supported include selection, tags, lines, indentation and attribute

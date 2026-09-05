@@ -34,5 +34,7 @@ int main() {
     contains("|===\n|A |B\n|1 |2\n|===\n", "<table>\n<tr>");
     contains("[[start]]\n== Start\n\nSee <<start,begin>>.\n", "href=\"#start\">begin</a>");
     contains("link:https://example.test[site] image:diagram.png[diagram]\n", "<img src=\"diagram.png\" alt=\"diagram\">");
+    contains("= {product} Guide\n:product: Markup++\n:enabled:\n\nifdef::enabled[]\n{product} enabled.\nendif::[]\n", "<p>Markup++ enabled.</p>");
+    contains("= Unset\n:value: before\n:value!:\n\n{value}\n", "<p>{value}</p>");
     std::cout << checks << " Asciidoctor core compatibility checks passed\n";
 }
