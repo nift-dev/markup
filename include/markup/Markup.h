@@ -33,9 +33,15 @@ struct Options {
     std::string asciidoc_source_identity = "<input>";
     std::function<void(const std::string&)> asciidoc_dependency;
     std::function<void(const std::string&)> asciidoc_diagnostic;
+    using RstResourceResolver = std::function<bool(
+        const std::string&, const std::string&, std::string&, std::string&, std::string&)>;
+    RstResourceResolver rst_resource_resolver;
+    std::string rst_source_identity = "<input>";
+    std::function<void(const std::string&)> rst_dependency;
+    std::function<void(const std::string&)> rst_diagnostic;
 };
 
-inline constexpr unsigned api_version = 3;
+inline constexpr unsigned api_version = 4;
 
 bool format_for_extension(const std::string& extension, Format& format);
 const char* format_name(Format format);

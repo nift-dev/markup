@@ -55,6 +55,6 @@ int main() {
                 "standalone wrapper");
     }
 
-    static_assert(markup::api_version == 3, "AsciiDoc host capabilities require API version 3");
+    static_assert(markup::api_version == 4, "RST host capabilities require API version 4");
     std::cout << checks << " profile matrix conversions passed\n";
 }

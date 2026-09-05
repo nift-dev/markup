@@ -31,6 +31,8 @@ int main(){
  expect(".. hidden comment\n   continued\n\nVisible.\n","<p>Visible.</p>\n");
  expect("=====  =====\nName   Count\n=====  =====\nBolt   4\n=====  =====\n","<table class=\"simple\">\n<tr><td>Name</td><td>Count</td></tr>\n<tr><td>Bolt</td><td>4</td></tr>\n</table>\n");
  expect("+------+-------+\n| Name | Count |\n+------+-------+\n| Bolt | 4     |\n+------+-------+\n","<table class=\"grid\">\n<tr><td>Name</td><td>Count</td></tr>\n<tr><td>Bolt</td><td>4</td></tr>\n</table>\n");
+ expect("Use :code:`x` :math:`a+b` :emphasis:`e` :strong:`s` :sub:`2` :sup:`3` :title:`Book`","<p>Use <code class=\"code\">x</code> <span class=\"math\">a+b</span> <em>e</em> <strong>s</strong> <sub>2</sub> <sup>3</sup> <cite>Book</cite></p>\n");
+ {markup::Options options;std::vector<std::string>d;options.rst_diagnostic=[&](const std::string&v){d.push_back(v);};std::string a,b;if(!markup::convert(markup::Format::ReStructuredText,"Use :sphinx:`x`",a,b,options)||d.size()!=1)return 4;++checks;}
  std::string o,e;if(!markup::is_supported(markup::Format::ReStructuredText)||!markup::convert(markup::Format::ReStructuredText,"repeat",o,e))return 2;auto first=o;if(!markup::convert(markup::Format::ReStructuredText,"repeat",o,e)||o!=first)return 3;checks+=2;
  std::cout<<checks<<" reStructuredText checks passed\n";
 }

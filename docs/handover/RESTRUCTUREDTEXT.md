@@ -159,6 +159,11 @@ and file-backed tables are capability-gated in RST11.
 
 Exit: every claimed standard role has positive, negative and nesting evidence.
 
+Status: **Complete for the declared standard-role registry.** Code/literal,
+math, emphasis, strong, title-reference, subscript and superscript roles plus
+their aliases render semantically. Unknown application and Sphinx roles remain
+visible as code and emit a stable positioned host diagnostic.
+
 ## RST10 - Standard directives
 
 - Implement directives in capability-free families first: admonitions, topic,
