@@ -106,5 +106,8 @@ corresponding evidence.
 - `docs/handover/TESTING.md`
 - `docs/handover/COMMONMARK.md`
 - `docs/handover/COMMONMARK-RELEASE.md`
+- `docs/handover/ASCIIDOC.md`
+- `docs/handover/ASCIIDOCTOR.md`
+- `docs/handover/RESTRUCTUREDTEXT.md`
 - `docs/handover/ROADMAP.md`
 - `docs/handover/PROJECT-HISTORY.md`

@@ -43,6 +43,13 @@ leak-enabled sanitizer and bounded Clang libFuzzer jobs. A workflow file is not
 execution evidence: record the first successful pushed run here before changing
 the CM10 ledger to complete or publishing the compliance claim.
 
+The CMake/CTest conformance gate generates a C++ fixture from the pinned JSON
+corpus and executes all 652 conversions in one process linked to `markup_core`.
+This avoids the severe process-startup and antivirus cost of launching the CLI
+652 times on hosted Windows. The Python subprocess runner remains authoritative
+for report/reproducibility and CLI-boundary checks on Unix, while `cli_smoke.sh`
+continues to test the standalone executable contract directly.
+
 ## Missing evidence
 
 - Differential comparison against established converters with a precisely

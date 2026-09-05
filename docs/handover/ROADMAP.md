@@ -19,19 +19,21 @@
 
 ## M2 - AsciiDoc
 
-- Define a deliberately bounded initial compatibility profile rather than
-  claiming the entire Asciidoctor ecosystem.
-- Add headings, paragraphs, emphasis, lists, links, code/literal blocks,
-  admonitions and tables with explicit unsupported diagnostics.
-- Establish an oracle/corpus and document attributes/includes/macros policy.
+- Complete the versioned language/TCK checkpoints AD0 through AD11 in
+  `ASCIIDOC.md`.
+- Independently complete Asciidoctor core compatibility checkpoints AC0 through
+  AC9 in `ASCIIDOCTOR.md`; do not conflate processor compatibility with language
+  conformance.
+- Keep extensions and resource access outside either claim unless explicitly
+  implemented and capability-gated.
 
 ## M3 - reStructuredText
 
-- Define the docutils-compatible target and security policy.
-- Add sections, paragraphs, inline roles, lists, links, literal blocks,
-  directives and tables in evidence-backed increments.
-- Treat directives and includes as capability/security boundaries, not merely
-  syntax.
+- Complete RST0 through RST14 in `RESTRUCTUREDTEXT.md` against the specification
+  and pinned Docutils 0.23 core parser behavior.
+- Compare normalized doctrees independently from stable Markup++ fragment HTML.
+- Treat directives, roles, includes and raw content as explicit registries and
+  capability/security boundaries.
 
 ## M4 - Nift embedding
 

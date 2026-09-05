@@ -1,0 +1,163 @@
+# reStructuredText and Docutils compatibility plan
+
+The target is the reStructuredText Markup Specification plus the core parser
+behavior of **Docutils 0.23**, released 2026-05-27. The reference environment
+must pin `docutils==0.23`, its distribution checksum and Python version. The
+reference writer is `html5`; parser/document-tree compatibility and Markup++
+HTML rendering are measured separately.
+
+Authoritative references:
+
+- syntax specification: <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html>;
+- directives: <https://docutils.sourceforge.io/docs/ref/rst/directives.html>;
+- interpreted roles: <https://docutils.sourceforge.io/docs/ref/rst/roles.html>;
+- Docutils package: <https://pypi.org/project/docutils/0.23/>.
+
+## Rules for every checkpoint
+
+1. Add specification examples, Docutils parser fixtures and ambiguous neighbors.
+2. Compare normalized Docutils doctrees first; test stable Markup++ fragment HTML
+   separately from Docutils writer decoration.
+3. Run all prior checkpoints, malformed-input, mutation and sanitizer gates.
+4. Record deviations in a narrow manifest with reasons; stale entries fail CI.
+5. Keep directives and roles registry-driven and host capabilities explicit.
+6. Update claims only after cross-platform evidence for the pinned profile.
+
+## RST0 - Freeze references and build the oracle
+
+- Vendor or reproducibly acquire the 0.23 parser/functional fixtures with
+  provenance, license and checksums.
+- Pin the Python/reference environment and disable local/user configuration.
+- Build runners for specification sections, Docutils fixture families and exact
+  cases, capturing doctree, diagnostics and HTML5 outputs.
+- Define normalization for source paths, generated IDs and non-semantic writer
+  decoration; do not normalize structural differences.
+- Record the baseline and classify non-parser or capability-dependent cases.
+
+Exit: the reference and Markup++ results are reproducible offline.
+
+## RST1 - Document tree, state machine and invariants
+
+- Define neutral nodes for sections, transitions, paragraphs, blocks, lists,
+  tables, references, substitutions, directives, roles and system messages.
+- Normalize line endings while preserving significant indentation and blank lines.
+- Establish UTF-8, tabs, source positions, nesting, size and recovery policies.
+
+Exit: empty, Unicode, malformed and deeply nested inputs behave deterministically.
+
+## RST2 - Sections, paragraphs and transitions
+
+- Implement adornment-based section discovery and hierarchy.
+- Implement paragraphs, block quotes, attribution and transitions.
+- Match Docutils rules for overline/underline lengths and unexpected hierarchy.
+
+Exit: specification and pinned parser fixtures match normalized doctrees.
+
+## RST3 - Inline markup and escaping
+
+- Implement emphasis, strong, inline literals, interpreted text, references,
+  substitution references and standalone hyperlinks.
+- Match start/end-string recognition, escaping and punctuation boundary rules.
+- Bound adversarial delimiter and backslash runs.
+
+Exit: applicable inline fixtures pass without post-render reparsing.
+
+## RST4 - Literal, line, doctest and quoted blocks
+
+- Implement `::` literal-block transitions, indented literals, parsed-literal
+  foundations, line blocks, doctest blocks and quoted blocks.
+- Match whitespace preservation, dedentation and interruption behavior.
+
+Exit: exact doctree content and whitespace fixtures pass.
+
+## RST5 - Lists and field structures
+
+- Implement bullet, enumerated, definition, field and option lists.
+- Support auto-enumeration, nesting, multi-paragraph bodies and classifiers.
+- Match malformed-marker recovery and system-message severity.
+
+Exit: all core list fixture families pass.
+
+## RST6 - Targets, references, footnotes and citations
+
+- Implement explicit/implicit targets, aliases, indirect references and anonymous
+  hyperlinks.
+- Implement auto-symbol/numbered footnotes, citations and backreferences.
+- Match name normalization, duplicate handling and unresolved-reference transforms.
+
+Exit: post-transform doctrees agree for reference-heavy documents.
+
+## RST7 - Substitutions, comments and explicit markup
+
+- Implement substitution definitions/uses, comments and explicit markup blocks.
+- Define recursion/cycle/expansion limits and source-position propagation.
+- Ensure comments never leak into fragment HTML.
+
+Exit: substitution transforms and malformed explicit markup match the profile.
+
+## RST8 - Tables
+
+- Implement simple and grid tables, spans and nested block content where specified.
+- Match column boundaries, whitespace semantics and malformed-table diagnostics.
+- Defer CSV/file-backed table loading to the capability checkpoint.
+
+Exit: normalized table doctrees and deterministic HTML pass.
+
+## RST9 - Standard roles
+
+- Implement a registry and the standard roles defined by Docutils 0.23.
+- Cover default-role changes, aliases, language-independent behavior and unknown
+  role diagnostics.
+- Keep application/Sphinx roles outside the core claim unless separately added.
+
+Exit: every claimed standard role has positive, negative and nesting evidence.
+
+## RST10 - Standard directives
+
+- Implement directives in capability-free families first: admonitions, topic,
+  sidebar, rubric, epigraph, highlights, pull-quote, compound, container and class.
+- Add contents, sectnum, header/footer and other transform-producing directives.
+- Inventory image, figure, include, raw, code and table directives separately.
+- Diagnose unknown/application-specific directives explicitly.
+
+Exit: every claimed Docutils core directive matches doctree and diagnostics.
+
+## RST11 - Resource and execution capabilities
+
+- Add host callbacks for include/image/resource resolution; default library use
+  remains IO-free.
+- Gate `raw`, file insertion, CSV loading and code highlighting explicitly.
+- Enforce canonical paths, traversal, cycle, depth, byte and expansion limits.
+- Expose resolved identities for future Nift dependency tracking.
+
+Exit: virtual resource graphs work and hostile paths cannot trigger ambient IO.
+
+## RST12 - Transforms, diagnostics and HTML rendering
+
+- Match the pinned core transforms for IDs, references, footnotes, contents and
+  document metadata.
+- Map Docutils system-message levels to stable Markup++ diagnostics.
+- Define stable fragment HTML separately from optional standalone HTML5 output.
+- Test raw/safe rendering and URI policy without altering parser structure.
+
+Exit: doctree parity and Markup++ HTML contracts both pass independently.
+
+## RST13 - Robustness and real-document compatibility
+
+- Differential-test licensed READMEs, Python documentation and standalone manuals.
+- Add fuzzing, ASan/UBSan, pathological nesting/table/reference cases and explicit
+  time/RSS budgets.
+- Minimize every discovered difference into a permanent regression.
+
+Exit: common and hostile documents are bounded with no unexplained divergence.
+
+## RST14 - Compatibility release gate
+
+- Pass all applicable specification examples and the declared Docutils 0.23 core
+  parser corpus, with reviewed exclusions published.
+- Run deterministic clean-room Linux/macOS/Windows builds and tests.
+- Publish the pinned version, doctree normalization, writer/profile, fixture
+  counts, capability policy and unsupported Sphinx/application extensions.
+
+Exit: public wording may say “compatible with the reStructuredText specification
+and Docutils 0.23 core parser behavior under the documented profile.”

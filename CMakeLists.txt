@@ -39,8 +39,21 @@ if(BUILD_TESTING)
     add_executable(markup-fuzz-smoke tests/fuzz_smoke.cpp)
     target_link_libraries(markup-fuzz-smoke PRIVATE markup_core)
     add_test(NAME fuzz_smoke COMMAND markup-fuzz-smoke 10000)
+
+    set(COMMONMARK_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated)
+    set(COMMONMARK_GENERATED_CASES ${COMMONMARK_GENERATED_DIR}/commonmark_cases.inc)
+    add_custom_command(
+        OUTPUT ${COMMONMARK_GENERATED_CASES}
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/generate_commonmark_cases.py
+                --spec ${CMAKE_SOURCE_DIR}/tests/fixtures/commonmark-0.31.2.json
+                --output ${COMMONMARK_GENERATED_CASES}
+        DEPENDS tests/generate_commonmark_cases.py
+                tests/fixtures/commonmark-0.31.2.json
+        VERBATIM)
+    add_executable(markup-commonmark-conformance
+        tests/commonmark_conformance.cpp ${COMMONMARK_GENERATED_CASES})
+    target_include_directories(markup-commonmark-conformance PRIVATE ${COMMONMARK_GENERATED_DIR})
+    target_link_libraries(markup-commonmark-conformance PRIVATE markup_core)
     add_test(NAME commonmark_0_31_2
-        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/commonmark_runner.py
-                --program $<TARGET_FILE:markup_cli>
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+        COMMAND markup-commonmark-conformance)
 endif()
