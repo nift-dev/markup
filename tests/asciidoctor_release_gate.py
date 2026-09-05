@@ -4,6 +4,7 @@ import argparse, json, pathlib, subprocess, sys
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--program", default="./markup")
+ap.add_argument("--manifest", default="tests/fixtures/asciidoctor-2.0.26/differences.json")
 args = ap.parse_args()
 
 root = pathlib.Path("tests/fixtures/asciidoctor-2.0.26")
@@ -26,7 +27,7 @@ if not all(case.get("reason") for case in differences):
 # Structural output comparison against the pinned Asciidoctor 2.0.26 reference.
 compare = subprocess.run(
     [sys.executable, str(pathlib.Path(__file__).with_name("asciidoctor_compare.py")),
-     "--program", args.program],
+     "--program", args.program, "--manifest", args.manifest],
     capture_output=True, text=True,
 )
 print(compare.stdout, end="")

@@ -6,10 +6,15 @@ the normalized HTML fragment against the pinned Docutils 0.23 HTML5-writer
 reference output. Normalization removes the documented writer-decoration
 differences only (attributes, wrapper tags, `<p>` inside list items/table
 cells, heading-level offsets caused by Docutils document-title promotion).
-Structural differences that are reviewed and intentional are recorded in
-`differences.json`; any other unexpected difference fails the gate.
+
+Every recorded difference in `differences.json` pins both normalized sides by
+SHA-256, so an accepted case cannot change arbitrarily: the expected reference
+hash and the actual Markup++ hash must both match the reviewed values and the
+two sides must remain different. Any other unexpected difference fails the
+gate.
 """
 import argparse
+import hashlib
 import json
 import pathlib
 import re
@@ -18,12 +23,13 @@ import sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--program", default="./markup")
+parser.add_argument("--manifest", default="tests/fixtures/docutils-0.23/differences.json")
 args = parser.parse_args()
 root = pathlib.Path("tests/fixtures/docutils-0.23")
 profile = json.loads((root / "PROFILE.json").read_text())
 corpus = json.loads((root / "corpus.json").read_text())
 reference = json.loads((root / "reference.json").read_text())
-manifest = json.loads((root / "differences.json").read_text())
+manifest = json.loads(pathlib.Path(args.manifest).read_text())
 ids = [case["id"] for case in corpus]
 if profile["version"] != "0.23" or len(profile["sha256"]) != 64:
     raise SystemExit("invalid Docutils profile")
@@ -36,8 +42,13 @@ if len(manifest) != len(manifest_ids):
 unknown_manifest = manifest_ids - set(ids)
 if unknown_manifest:
     raise SystemExit(f"differences.json lists unknown case ids: {sorted(unknown_manifest)}")
-if not all(case.get("reason") for case in manifest):
-    raise SystemExit("every differences.json entry needs a reason")
+for entry in manifest:
+    if not entry.get("reason"):
+        raise SystemExit("every differences.json entry needs a reason")
+    if not (entry.get("expected_normalized_sha256") and entry.get("actual_normalized_sha256")):
+        raise SystemExit(
+            f"differences.json entry {entry['id']} must pin both normalized SHA-256 hashes"
+        )
 
 
 VOID_TAGS = {"br", "hr", "img"}
@@ -148,23 +159,46 @@ for case in corpus:
         continue
     actual = normalize_fragment(runs[0].stdout)
     expected = normalize_fragment(reference_map[case["id"]]["fragment"])
+    actual_hash = hashlib.sha256(actual.encode()).hexdigest()
+    expected_hash = hashlib.sha256(expected.encode()).hexdigest()
     if actual == expected:
+        if case["id"] in manifest_map:
+            failures.append(
+                f"{case['id']}: recorded difference now matches; remove the manifest entry"
+            )
+            continue
         passed += 1
         continue
-    if case["id"] in manifest_map:
-        accepted.append(case["id"])
+    entry = manifest_map.get(case["id"])
+    if entry is None:
+        failures.append(
+            f"{case['id']}: normalized output differs from the Docutils 0.23 reference"
+        )
         continue
-    failures.append(
-        f"{case['id']}: normalized output differs from the Docutils 0.23 reference"
-    )
+    if entry["expected_normalized_sha256"] != expected_hash:
+        failures.append(
+            f"{case['id']}: pinned expected reference hash changed "
+            f"({entry['expected_normalized_sha256'][:12]} vs {expected_hash[:12]})"
+        )
+        continue
+    if entry["actual_normalized_sha256"] != actual_hash:
+        failures.append(
+            f"{case['id']}: pinned actual Markup++ output hash changed "
+            f"({entry['actual_normalized_sha256'][:12]} vs {actual_hash[:12]})"
+        )
+        continue
+    if expected_hash == actual_hash:
+        failures.append(f"{case['id']}: pinned difference is not actually different")
+        continue
+    accepted.append(case["id"])
 
 if failures:
     print("\n".join(failures), file=sys.stderr)
     raise SystemExit(1)
 print(
     f"RST14 output gate: Docutils {profile['version']}, {len(corpus)} corpus cases, "
-    f"{passed} normalized matches, {len(accepted)} recorded differences"
+    f"{passed} normalized matches, {len(accepted)} pinned differences"
 )
 if accepted:
-    print("Recorded differences:", ", ".join(accepted), file=sys.stderr)
+    print("Pinned differences:", ", ".join(accepted), file=sys.stderr)
 print("Cross-platform execution is required before publishing the compatibility claim")

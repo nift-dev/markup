@@ -15,6 +15,7 @@ Any case whose normalized structure still differs from the reference and is not
 recorded in `differences.json` fails the gate.
 """
 import argparse
+import hashlib
 import html.parser
 import json
 import pathlib
@@ -184,6 +185,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--program", default="./markup")
     ap.add_argument("--reference", default="tests/fixtures/asciidoctor-2.0.26/reference.json")
+    ap.add_argument("--manifest", default="tests/fixtures/asciidoctor-2.0.26/differences.json")
+    ap.add_argument("--corpus", default="tests/fixtures/asciidoctor-2.0.26/corpus.json")
     args = ap.parse_args()
     ref_path = pathlib.Path(args.reference)
     if not ref_path.exists():
@@ -195,20 +198,27 @@ def main():
         )
         return 2
     references = {x["id"]: x for x in json.loads(ref_path.read_text())}
-    cases = json.loads(
-        pathlib.Path("tests/fixtures/asciidoctor-2.0.26/corpus.json").read_text()
-    )
-    manifest = json.loads(
-        pathlib.Path("tests/fixtures/asciidoctor-2.0.26/differences.json").read_text()
-    )
+    cases = json.loads(pathlib.Path(args.corpus).read_text())
+    manifest = json.loads(pathlib.Path(args.manifest).read_text())
     manifest_ids = {x["id"] for x in manifest}
     case_ids = {x["id"] for x in cases}
+    if len(manifest) != len(manifest_ids):
+        print("differences.json has duplicate ids", file=sys.stderr)
+        return 1
     if not manifest_ids <= case_ids:
         print("differences.json lists unknown case ids", file=sys.stderr)
         return 1
-    if not all(isinstance(x, dict) and x.get("reason") for x in manifest):
-        print("every differences.json entry needs a reason", file=sys.stderr)
-        return 1
+    manifest_map = {x["id"]: x for x in manifest}
+    for entry in manifest:
+        if not isinstance(entry, dict) or not entry.get("reason"):
+            print("every differences.json entry needs a reason", file=sys.stderr)
+            return 1
+        if not (entry.get("expected_normalized_sha256") and entry.get("actual_normalized_sha256")):
+            print(
+                f"differences.json entry {entry['id']} must pin both normalized SHA-256 hashes",
+                file=sys.stderr,
+            )
+            return 1
     failures = []
     accepted = []
     passed = 0
@@ -222,22 +232,45 @@ def main():
             continue
         actual = normalize_fragment(run.stdout)
         expected = normalize_fragment(references[case["id"]]["html"])
+        actual_hash = hashlib.sha256(actual.encode()).hexdigest()
+        expected_hash = hashlib.sha256(expected.encode()).hexdigest()
         if actual == expected:
+            if case["id"] in manifest_ids:
+                failures.append(
+                    case["id"] + ": recorded difference now matches; remove the manifest entry"
+                )
+                continue
             passed += 1
             continue
-        if case["id"] in manifest_ids:
-            accepted.append(case["id"])
+        entry = manifest_map.get(case["id"])
+        if entry is None:
+            failures.append(case["id"] + ": normalized output differs from Asciidoctor 2.0.26")
             continue
-        failures.append(case["id"] + ": normalized output differs from Asciidoctor 2.0.26")
+        if entry["expected_normalized_sha256"] != expected_hash:
+            failures.append(
+                case["id"] + ": pinned expected reference hash changed "
+                f"({entry['expected_normalized_sha256'][:12]} vs {expected_hash[:12]})"
+            )
+            continue
+        if entry["actual_normalized_sha256"] != actual_hash:
+            failures.append(
+                case["id"] + ": pinned actual Markup++ output hash changed "
+                f"({entry['actual_normalized_sha256'][:12]} vs {actual_hash[:12]})"
+            )
+            continue
+        if expected_hash == actual_hash:
+            failures.append(case["id"] + ": pinned difference is not actually different")
+            continue
+        accepted.append(case["id"])
     if failures:
         print("\n".join(failures), file=sys.stderr)
         return 1
     print(
         f"AC9 output gate: Asciidoctor 2.0.26, {len(cases)} corpus cases, "
-        f"{passed} normalized matches, {len(accepted)} recorded differences"
+        f"{passed} normalized matches, {len(accepted)} pinned differences"
     )
     if accepted:
-        print("Recorded differences:", ", ".join(accepted), file=sys.stderr)
+        print("Pinned differences:", ", ".join(accepted), file=sys.stderr)
     return 0
 
 

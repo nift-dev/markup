@@ -117,10 +117,13 @@ test-rst-robustness: $(RST_ROBUSTNESS)
 test-rst-release: $(TARGET) test-rst test-rst-robustness
 	python3 tests/docutils_release_gate.py --program ./$(TARGET)
 
+test-difference-gates: $(TARGET)
+	python3 tests/difference_gate_self_test.py
+
 check-nift-sync:
 	bash scripts/check-nift-sync.sh "$(NIFT_DIR)"
 
-test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-release test-rst-release
+test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-release test-rst-release test-difference-gates
 	python3 tests/asciidoc_fixture_inventory.py
 
 commonmark-report: $(TARGET)
@@ -183,6 +186,7 @@ test-sanitize:
 	ASAN_OPTIONS=$(ASAN_OPTIONS) UBSAN_OPTIONS=$(UBSAN_OPTIONS) ./$(BUILD_DIR)/rst-robustness-san
 
 clean:
-	rm -rf $(BUILD_DIR) $(TARGET)
+	rm -rf $(BUILD_DIR) $(TARGET) tests/__pycache__
+	find tests -type f -name '*.pyc' -delete 2>/dev/null || true
 
-.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-compat test-asciidoctor-release test-rst test-rst-robustness test-rst-release test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 test-commonmark-cm8 test-commonmark-cm9 test-performance fuzz-libfuzzer test-release-local check-nift-sync clean
+.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-compat test-asciidoctor-release test-rst test-rst-robustness test-rst-release test-difference-gates test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 test-commonmark-cm8 test-commonmark-cm9 test-performance fuzz-libfuzzer test-release-local check-nift-sync clean

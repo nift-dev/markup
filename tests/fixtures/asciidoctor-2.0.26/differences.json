@@ -1,6 +1,8 @@
 [
   {
     "id": "reference",
-    "reason": "Cross-reference labels: Asciidoctor resolves <<id>> link text to the referenced section title (Start); Markup++ renders the literal reference text (start). The link target href resolves identically. All other structure matches."
+    "reason": "Cross-reference labels: Asciidoctor resolves <<id>> link text to the referenced section title (Start); Markup++ renders the literal reference text (start). The link target href resolves identically. All other structure matches.",
+    "expected_normalized_sha256": "d9d3b684fd98ed3463ee01ad826ee72c0e921b02c443f358068f8830fee2c7a3",
+    "actual_normalized_sha256": "77814b49fbea8713fd087efa3130a53528e7b8997a9f33f66c4774ed34409d67"
   }
 ]
