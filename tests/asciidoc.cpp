@@ -78,6 +78,17 @@ int main() {
     expect("== *Strong* section\n", "<div class=\"sect1\">\n<h2><strong>Strong</strong> section</h2>\n</div>\n");
     expect("9999999999. not an ordered marker\n",
            "<div class=\"paragraph\">\n<p>9999999999. not an ordered marker</p>\n</div>\n");
+    expect("[[intro]]\n== Introduction\n\nSee <<intro,Start here>>, "
+           "link:https://example.test[the site], mailto:team@example.test[mail] and "
+           "image:diagram.png[System diagram].\n",
+           "<div class=\"sect1\" id=\"intro\">\n<h2>Introduction</h2>\n"
+           "<div class=\"paragraph\">\n<p>See <a href=\"#intro\">Start here</a>, "
+           "<a href=\"https://example.test\">the site</a>, "
+           "<a href=\"mailto:team@example.test\">mail</a> and "
+           "<img src=\"diagram.png\" alt=\"System diagram\">.</p>\n</div>\n</div>\n");
+    expect("Visit https://example.test/path now.\n",
+           "<div class=\"paragraph\">\n<p>Visit <a href=\"https://example.test/path\">"
+           "https://example.test/path</a> now.</p>\n</div>\n");
 
     std::string output, error;
     if (!markup::is_supported(markup::Format::AsciiDoc) ||

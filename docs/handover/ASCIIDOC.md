@@ -134,6 +134,11 @@ constrained spans from activating inside words.
 
 Exit: resolution is deterministic and no URI causes implicit IO.
 
+Status: **Complete.** Explicit and shorthand cross-references, block anchors,
+link and mail macros, bare HTTP(S) URLs, images and icons are represented as
+nodes and rendered without fetching. Attribute escaping and safe-profile URI
+rejection apply at render time; identical targets resolve deterministically.
+
 ## AD7 - Tables
 
 - Implement table boundaries, columns, cells, spans, formats and cell styles.
@@ -189,4 +194,5 @@ conformance claim.
 | AD3 - Paragraphs/blocks | Complete | Paragraph precedence; titled/styled verbatim and container blocks; comments; thematic/page breaks |
 | AD4 - Lists | Complete | Unordered/ordered/description/checklist nodes, nesting, starts and continuation blocks |
 | AD5 - Inline substitutions | Complete | Constrained/unconstrained spans, nesting, escapes, replacements and explicit breaks |
-| AD6-AD11 | Pending | - |
+| AD6 - References/media | Complete | Anchors, xrefs, links, mail, bare URLs, images and icons; no implicit IO |
+| AD7-AD11 | Pending | - |

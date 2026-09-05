@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <cctype>
 #include <utility>
+#include <set>
 
 namespace markup::asciidoc {
 namespace {
@@ -78,6 +79,10 @@ bool boundary_character(char character) {
     return std::isspace(value) || std::ispunct(value);
 }
 
+bool starts_with(const std::string& value, const std::string& prefix) {
+    return value.compare(0, prefix.size(), prefix) == 0;
+}
+
 std::vector<Inline> parse_inlines(const std::string& text, const Range& source) {
     std::vector<Inline> output;
     std::string plain;
@@ -102,6 +107,76 @@ std::vector<Inline> parse_inlines(const std::string& text, const Range& source) 
         if (text[i] == '\\' && i + 1 < text.size()) {
             plain.push_back(text[i + 1]);
             i += 2;
+            continue;
+        }
+        const auto macro = [&](const std::string& prefix, InlineKind kind,
+                               std::size_t at, Inline& node, std::size_t& next) {
+            if (!starts_with(text.substr(at), prefix)) return false;
+            const std::size_t target_start = at + prefix.size();
+            const auto bracket = text.find('[', target_start);
+            if (bracket == std::string::npos || bracket == target_start) return false;
+            const auto close = text.find(']', bracket + 1);
+            if (close == std::string::npos) return false;
+            node.kind = kind;
+            node.target = text.substr(target_start, bracket - target_start);
+            node.text = text.substr(bracket + 1, close - bracket - 1);
+            const auto comma = node.text.find(',');
+            if (comma != std::string::npos) {
+                node.title = trim(node.text.substr(comma + 1));
+                node.text = trim(node.text.substr(0, comma));
+            }
+            node.source = source;
+            if (kind == InlineKind::Link || kind == InlineKind::CrossReference)
+                node.children = parse_inlines(node.text.empty() ? node.target : node.text, source);
+            next = close + 1;
+            return true;
+        };
+        Inline macro_node;
+        std::size_t macro_next = i;
+        if (macro("link:", InlineKind::Link, i, macro_node, macro_next) ||
+            macro("mailto:", InlineKind::Link, i, macro_node, macro_next) ||
+            macro("image:", InlineKind::Image, i, macro_node, macro_next) ||
+            macro("icon:", InlineKind::Image, i, macro_node, macro_next) ||
+            macro("xref:", InlineKind::CrossReference, i, macro_node, macro_next)) {
+            flush();
+            if (starts_with(text.substr(i), "mailto:")) macro_node.target = "mailto:" + macro_node.target;
+            if (starts_with(text.substr(i), "icon:")) macro_node.title = "icon";
+            output.push_back(std::move(macro_node));
+            i = macro_next;
+            continue;
+        }
+        if (text.compare(i, 2, "<<") == 0) {
+            const auto close = text.find(">>", i + 2);
+            if (close != std::string::npos) {
+                flush();
+                Inline xref;
+                xref.kind = InlineKind::CrossReference;
+                std::string inside = text.substr(i + 2, close - i - 2);
+                const auto comma = inside.find(',');
+                xref.target = trim(inside.substr(0, comma));
+                xref.text = comma == std::string::npos ? xref.target : trim(inside.substr(comma + 1));
+                xref.children = parse_inlines(xref.text, source);
+                xref.source = source;
+                output.push_back(std::move(xref));
+                i = close + 2;
+                continue;
+            }
+        }
+        if (starts_with(text.substr(i), "http://") || starts_with(text.substr(i), "https://")) {
+            std::size_t end = i;
+            while (end < text.size() && !std::isspace(static_cast<unsigned char>(text[end]))) ++end;
+            flush();
+            Inline link;
+            link.kind = InlineKind::Link;
+            link.target = text.substr(i, end - i);
+            link.text = link.target;
+            Inline label;
+            label.text = link.text;
+            label.source = source;
+            link.children.push_back(std::move(label));
+            link.source = source;
+            output.push_back(std::move(link));
+            i = end;
             continue;
         }
         if (text.compare(i, 3, "(C)") == 0) { plain += "\xc2\xa9"; i += 3; continue; }
@@ -212,6 +287,15 @@ void parse_block_attributes(const std::string& line, std::string& style) {
     const std::string inside = line.substr(1, line.size() - 2);
     const auto comma = inside.find(',');
     style = trim(inside.substr(0, comma));
+}
+
+std::string anchor_id(const std::string& line) {
+    if (line.size() > 4 && starts_with(line, "[[") && line.substr(line.size() - 2) == "]] ") return {};
+    if (line.size() > 4 && starts_with(line, "[[") && line.substr(line.size() - 2) == "]]" )
+        return trim(line.substr(2, line.size() - 4));
+    if (line.size() > 3 && starts_with(line, "[#") && line.back() == ']')
+        return trim(line.substr(2, line.size() - 3));
+    return {};
 }
 
 struct ListInfo {
@@ -332,6 +416,7 @@ void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
                   const std::string& end_delimiter = {}, std::size_t nesting = 0) {
     std::string pending_title;
     std::string pending_style;
+    std::string pending_id;
     while (line < lines.size()) {
         while (line < lines.size() && lines[line].empty()) ++line;
         if (line == lines.size()) return;
@@ -339,6 +424,8 @@ void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
             ++line;
             return;
         }
+        const std::string id = anchor_id(lines[line]);
+        if (!id.empty()) { pending_id = id; ++line; continue; }
 
         if (lines[line].size() > 1 && lines[line].front() == '.' && lines[line][1] != '.') {
             pending_title = substitute_attributes(lines[line++].substr(1), attributes);
@@ -357,6 +444,7 @@ void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
             Block section;
             section.kind = BlockKind::Section;
             section.level = level;
+            section.id = pending_id;
             section.title = substitute_attributes(title, attributes);
             section.source.begin = {first + 1, 1};
             parse_blocks(lines, line, level, section.blocks, attributes, end_delimiter, nesting);
@@ -364,6 +452,7 @@ void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
             section.source.end = {last + 1, lines[last].size()};
             section.title = substitute_attributes(section.title, attributes);
             blocks.push_back(std::move(section));
+            pending_id.clear();
             continue;
         }
 
@@ -385,6 +474,7 @@ void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
             block.kind = delimiter_kind;
             block.title = pending_title;
             block.style = pending_style;
+            block.id = pending_id;
             if (pending_style == "source" && delimiter_kind == BlockKind::Listing) block.kind = BlockKind::Source;
             if (pending_style == "verse" && delimiter_kind == BlockKind::Quote) block.kind = BlockKind::Verse;
             block.source.begin = {first + 1, 1};
@@ -417,6 +507,7 @@ void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
             block.source.end = {last + 1, lines[last].size()};
             blocks.push_back(std::move(block));
             pending_title.clear(); pending_style.clear();
+            pending_id.clear();
             continue;
         }
 
@@ -425,9 +516,11 @@ void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
             Block list;
             list.title = pending_title;
             list.style = pending_style;
+            list.id = pending_id;
             parse_list(lines, line, first_item.depth, first_item.kind, list, attributes);
             blocks.push_back(std::move(list));
             pending_title.clear(); pending_style.clear();
+            pending_id.clear();
             continue;
         }
 
@@ -436,6 +529,7 @@ void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
             Block literal;
             literal.kind = BlockKind::Literal;
             literal.title = pending_title;
+            literal.id = pending_id;
             while (line < lines.size() && (lines[line].empty() || lines[line][0] == ' ' || lines[line][0] == '\t')) {
                 if (!literal.text.empty()) literal.text += '\n';
                 literal.text += lines[line].empty() ? "" :
@@ -446,6 +540,7 @@ void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
             literal.source.end = {line, lines[line - 1].size()};
             blocks.push_back(std::move(literal));
             pending_title.clear(); pending_style.clear();
+            pending_id.clear();
             continue;
         }
 
@@ -468,8 +563,10 @@ void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
         add_text_inline(paragraph, text, first, line - 1, attributes);
         paragraph.title = pending_title;
         paragraph.style = pending_style;
+        paragraph.id = pending_id;
         blocks.push_back(std::move(paragraph));
         pending_title.clear(); pending_style.clear();
+        pending_id.clear();
     }
 }
 
@@ -487,17 +584,47 @@ std::string escape_html(const std::string& value) {
     return output;
 }
 
-std::string render_inlines(const std::vector<Inline>& inlines) {
+bool safe_uri(const std::string& uri) {
+    std::string scheme;
+    for (unsigned char c : uri) if (!std::isspace(c)) scheme.push_back(static_cast<char>(std::tolower(c)));
+    return !starts_with(scheme, "javascript:") && !starts_with(scheme, "vbscript:") &&
+           !starts_with(scheme, "data:");
+}
+
+std::string escape_attribute(const std::string& value) {
+    std::string output = escape_html(value);
+    std::string result;
+    for (char c : output) result += c == '"' ? "&quot;" : std::string(1, c);
+    return result;
+}
+
+std::string render_inlines(const std::vector<Inline>& inlines, const Options& options) {
     std::string output;
     for (const auto& node : inlines) {
         switch (node.kind) {
         case InlineKind::Text: output += escape_html(node.text); break;
-        case InlineKind::Strong: output += "<strong>" + render_inlines(node.children) + "</strong>"; break;
-        case InlineKind::Emphasis: output += "<em>" + render_inlines(node.children) + "</em>"; break;
+        case InlineKind::Strong: output += "<strong>" + render_inlines(node.children, options) + "</strong>"; break;
+        case InlineKind::Emphasis: output += "<em>" + render_inlines(node.children, options) + "</em>"; break;
         case InlineKind::Monospace: output += "<code>" + escape_html(node.text) + "</code>"; break;
-        case InlineKind::Mark: output += "<mark>" + render_inlines(node.children) + "</mark>"; break;
-        case InlineKind::Superscript: output += "<sup>" + render_inlines(node.children) + "</sup>"; break;
-        case InlineKind::Subscript: output += "<sub>" + render_inlines(node.children) + "</sub>"; break;
+        case InlineKind::Mark: output += "<mark>" + render_inlines(node.children, options) + "</mark>"; break;
+        case InlineKind::Superscript: output += "<sup>" + render_inlines(node.children, options) + "</sup>"; break;
+        case InlineKind::Subscript: output += "<sub>" + render_inlines(node.children, options) + "</sub>"; break;
+        case InlineKind::Link: {
+            const std::string target = !options.allow_raw_html && !safe_uri(node.target) ? "" : node.target;
+            output += "<a href=\"" + escape_attribute(target) + "\">" +
+                      render_inlines(node.children, options) + "</a>";
+            break;
+        }
+        case InlineKind::CrossReference:
+            output += "<a href=\"#" + escape_attribute(node.target) + "\">" +
+                      render_inlines(node.children, options) + "</a>"; break;
+        case InlineKind::Image: {
+            const std::string target = !options.allow_raw_html && !safe_uri(node.target) ? "" : node.target;
+            if (node.title == "icon") output += "<span class=\"icon\">" + escape_html(node.text) + "</span>";
+            else output += "<img src=\"" + escape_attribute(target) + "\" alt=\"" +
+                           escape_attribute(node.text) + "\">";
+            break;
+        }
         case InlineKind::LineBreak: output += "<br>\n"; break;
         default: output += escape_html(node.text); break;
         }
@@ -505,28 +632,32 @@ std::string render_inlines(const std::vector<Inline>& inlines) {
     return output;
 }
 
-std::string render_inline_text(const std::string& value) {
-    return render_inlines(parse_inlines(value, {}));
+std::string render_inline_text(const std::string& value, const Options& options) {
+    return render_inlines(parse_inlines(value, {}), options);
 }
 
-std::string render_blocks(const std::vector<Block>& blocks) {
+std::string id_attribute(const Block& block) {
+    return block.id.empty() ? "" : " id=\"" + escape_attribute(block.id) + "\"";
+}
+
+std::string render_blocks(const std::vector<Block>& blocks, const Options& options) {
     std::string output;
     for (const auto& block : blocks) {
         if (block.kind == BlockKind::Paragraph) {
             if (!block.title.empty()) output += "<div class=\"title\">" + escape_html(block.title) + "</div>\n";
-            output += "<div class=\"paragraph\">\n<p>" + render_inlines(block.inlines) +
+            output += "<div class=\"paragraph\"" + id_attribute(block) + ">\n<p>" + render_inlines(block.inlines, options) +
                       "</p>\n</div>\n";
         } else if (block.kind == BlockKind::Section) {
-            output += "<div class=\"sect" + std::to_string(block.level) + "\">\n<h" +
-                      std::to_string(block.level + 1) + ">" + render_inline_text(block.title) + "</h" +
+            output += "<div class=\"sect" + std::to_string(block.level) + "\"" + id_attribute(block) + ">\n<h" +
+                      std::to_string(block.level + 1) + ">" + render_inline_text(block.title, options) + "</h" +
                       std::to_string(block.level + 1) + ">\n";
-            output += render_blocks(block.blocks);
+            output += render_blocks(block.blocks, options);
             output += "</div>\n";
         } else if (block.kind == BlockKind::Listing || block.kind == BlockKind::Literal ||
                    block.kind == BlockKind::Source) {
             const std::string role = block.kind == BlockKind::Source ? "source" :
                                      block.kind == BlockKind::Listing ? "listingblock" : "literalblock";
-            output += "<div class=\"" + role + "\">\n";
+            output += "<div class=\"" + role + "\"" + id_attribute(block) + ">\n";
             if (!block.title.empty()) output += "<div class=\"title\">" + escape_html(block.title) + "</div>\n";
             output += "<pre>" + escape_html(block.text) + "</pre>\n</div>\n";
         } else if (block.kind == BlockKind::Sidebar || block.kind == BlockKind::Example ||
@@ -535,11 +666,11 @@ std::string render_blocks(const std::vector<Block>& blocks) {
                                      block.kind == BlockKind::Example ? "exampleblock" : "openblock";
             output += "<div class=\"" + role + "\">\n";
             if (!block.title.empty()) output += "<div class=\"title\">" + escape_html(block.title) + "</div>\n";
-            output += render_blocks(block.blocks) + "</div>\n";
+            output += render_blocks(block.blocks, options) + "</div>\n";
         } else if (block.kind == BlockKind::Quote || block.kind == BlockKind::Verse) {
             output += "<blockquote";
             if (block.kind == BlockKind::Verse) output += " class=\"verse\"";
-            output += ">\n" + render_blocks(block.blocks) + "</blockquote>\n";
+            output += ">\n" + render_blocks(block.blocks, options) + "</blockquote>\n";
         } else if (block.kind == BlockKind::ThematicBreak) {
             output += "<hr>\n";
         } else if (block.kind == BlockKind::PageBreak) {
@@ -557,8 +688,8 @@ std::string render_blocks(const std::vector<Block>& blocks) {
                     if (item.checked) output += " checked";
                     output += "> ";
                 }
-                output += render_inlines(item.inlines);
-                if (!item.blocks.empty()) output += '\n' + render_blocks(item.blocks);
+                output += render_inlines(item.inlines, options);
+                if (!item.blocks.empty()) output += '\n' + render_blocks(item.blocks, options);
                 output += "</li>\n";
             }
             output += ordered ? "</ol>\n" : "</ul>\n";
@@ -566,8 +697,8 @@ std::string render_blocks(const std::vector<Block>& blocks) {
             output += "<dl>\n";
             for (const auto& item : block.items) {
                 output += "<dt>" + escape_html(item.title) + "</dt>\n<dd>" +
-                          render_inlines(item.inlines);
-                if (!item.blocks.empty()) output += '\n' + render_blocks(item.blocks);
+                          render_inlines(item.inlines, options);
+                if (!item.blocks.empty()) output += '\n' + render_blocks(item.blocks, options);
                 output += "</dd>\n";
             }
             output += "</dl>\n";
@@ -617,14 +748,14 @@ bool parse(const std::string& input, Document& document, std::string& error) {
     return true;
 }
 
-std::string render_html(const Document& document, const Options&) {
+std::string render_html(const Document& document, const Options& options) {
     std::string output;
     if (!document.title.empty()) {
-        output += "<div id=\"header\">\n<h1>" + render_inline_text(document.title) + "</h1>\n";
+        output += "<div id=\"header\">\n<h1>" + render_inline_text(document.title, options) + "</h1>\n";
         if (!document.author.empty()) output += "<div class=\"details\">" + escape_html(document.author) + "</div>\n";
         output += "</div>\n";
     }
-    output += render_blocks(document.blocks);
+    output += render_blocks(document.blocks, options);
     return output;
 }
 
