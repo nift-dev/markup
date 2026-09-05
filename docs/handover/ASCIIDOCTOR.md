@@ -48,6 +48,11 @@ fail rather than silently weakening comparison.
 
 Exit: the core block corpus has no unexplained structural differences.
 
+Status: **Complete for the declared core profile.** Focused executable tests
+cover headers, sections, paragraphs, source/listing, example, quote, sidebar
+and comment behavior through the public API. Known wrapper differences remain
+enumerated rather than normalized away.
+
 ## AC3 - Inline and substitution parity
 
 - Differential-test emphasis, strong, monospace, mark, quotes, replacements,

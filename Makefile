@@ -20,6 +20,7 @@ FUZZ := $(BUILD_DIR)/markup-fuzz
 COMMONMARK_REGRESSIONS := $(BUILD_DIR)/commonmark-regressions
 PROFILE_MATRIX := $(BUILD_DIR)/profile-matrix
 ASCIIDOC := $(BUILD_DIR)/asciidoc
+ASCIIDOCTOR_COMPAT := $(BUILD_DIR)/asciidoctor-compat
 CMARK_REFERENCE := $(BUILD_DIR)/cmark-reference
 SANITIZER_FLAGS ?= -O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined
 ASAN_OPTIONS ?= detect_leaks=1:halt_on_error=1
@@ -63,6 +64,9 @@ $(PROFILE_MATRIX): tests/profile_matrix.cpp $(LIBSRC) include/markup/Markup.h $(
 $(ASCIIDOC): tests/asciidoc.cpp $(LIBSRC) include/markup/Markup.h src/AsciiDoc.h $(CMARK_OBJ) | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/asciidoc.cpp $(LIBSRC) $(CMARK_OBJ) -o $@
 
+$(ASCIIDOCTOR_COMPAT): tests/asciidoctor_compat.cpp $(LIBSRC) include/markup/Markup.h src/AsciiDoc.h $(CMARK_OBJ) | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/asciidoctor_compat.cpp $(LIBSRC) $(CMARK_OBJ) -o $@
+
 $(CMARK_REFERENCE): tests/cmark_reference.c $(CMARK_OBJ) | $(BUILD_DIR)
 	$(CC) -I$(CMARK_DIR) $(CFLAGS) tests/cmark_reference.c $(CMARK_OBJ) -o $@
 
@@ -90,7 +94,10 @@ test-asciidoc: $(ASCIIDOC)
 test-asciidoc-release: $(TARGET) test-asciidoc
 	python3 tests/asciidoc_release_gate.py --program ./$(TARGET)
 
-test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release
+test-asciidoctor-compat: $(ASCIIDOCTOR_COMPAT)
+	./$(ASCIIDOCTOR_COMPAT)
+
+test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-compat
 	python3 tests/asciidoc_fixture_inventory.py
 
 commonmark-report: $(TARGET)
