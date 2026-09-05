@@ -138,7 +138,8 @@ Status: **Complete.** Explicit and shorthand cross-references, block anchors,
 link and mail macros, bare HTTP(S) URLs, images and icons are represented as
 nodes and rendered without fetching. Attribute escaping and safe-profile URI
 rejection apply at render time; identical targets resolve deterministically.
-Duplicate anchors and unresolved local references produce stable diagnostics.
+Duplicate anchors and unresolved local references produce stable diagnostics
+through an optional host observer without making otherwise renderable input fail.
 
 ## AD7 - Tables
 

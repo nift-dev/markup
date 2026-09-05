@@ -90,7 +90,7 @@ test-asciidoc: $(ASCIIDOC)
 test-asciidoc-release: $(TARGET) test-asciidoc
 	python3 tests/asciidoc_release_gate.py --program ./$(TARGET)
 
-test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc
+test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release
 	python3 tests/asciidoc_fixture_inventory.py
 
 commonmark-report: $(TARGET)

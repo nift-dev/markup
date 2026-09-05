@@ -893,14 +893,13 @@ std::string render_blocks(const std::vector<Block>& blocks, const Options& optio
     return output;
 }
 
-bool validate_references(const std::vector<Block>& blocks, std::set<std::string>& ids,
+void validate_references(const std::vector<Block>& blocks, std::set<std::string>& ids,
                          std::vector<std::pair<std::string, Range>>& references,
-                         std::string& error) {
+                         std::vector<std::string>& diagnostics) {
     for (const auto& block : blocks) {
         if (!block.id.empty() && !ids.insert(block.id).second) {
-            error = "<input>:" + std::to_string(block.source.begin.line) +
-                    ": duplicate anchor: " + block.id;
-            return false;
+            diagnostics.push_back("<input>:" + std::to_string(block.source.begin.line) +
+                                  ": duplicate anchor: " + block.id);
         }
         const auto inspect = [&](const std::vector<Inline>& inlines, const auto& self) -> void {
             for (const auto& node : inlines) {
@@ -912,11 +911,10 @@ bool validate_references(const std::vector<Block>& blocks, std::set<std::string>
         inspect(block.inlines, inspect);
         for (const auto& item : block.items) {
             inspect(item.inlines, inspect);
-            if (!validate_references(item.blocks, ids, references, error)) return false;
+            validate_references(item.blocks, ids, references, diagnostics);
         }
-        if (!validate_references(block.blocks, ids, references, error)) return false;
+        validate_references(block.blocks, ids, references, diagnostics);
     }
-    return true;
 }
 
 } // namespace
@@ -987,17 +985,19 @@ bool parse(const std::string& input, Document& document, std::string& error,
     parse_blocks(input_lines, line, 0, document.blocks, document.attributes);
     std::set<std::string> ids;
     std::vector<std::pair<std::string, Range>> references;
-    if (!validate_references(document.blocks, ids, references, error)) return false;
+    std::vector<std::string> diagnostics;
+    validate_references(document.blocks, ids, references, diagnostics);
     for (const auto& reference : references) {
         if (reference.first.find('/') == std::string::npos &&
             reference.first.find('.') == std::string::npos &&
             ids.find(reference.first) == ids.end()) {
-            error = options.asciidoc_source_identity + ":" +
-                    std::to_string(reference.second.begin.line) +
-                    ": unresolved cross-reference: " + reference.first;
-            return false;
+            diagnostics.push_back(options.asciidoc_source_identity + ":" +
+                                  std::to_string(reference.second.begin.line) +
+                                  ": unresolved cross-reference: " + reference.first);
         }
     }
+    if (options.asciidoc_diagnostic)
+        for (const auto& diagnostic : diagnostics) options.asciidoc_diagnostic(diagnostic);
     if (!input_lines.empty()) {
         document.source.begin = {1, 1};
         document.source.end = {input_lines.size(), input_lines.back().size()};

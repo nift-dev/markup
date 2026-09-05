@@ -160,11 +160,17 @@ int main() {
     }
     {
         std::string ignored, reference_error;
-        if (markup::convert(markup::Format::AsciiDoc, "See <<missing>>.\n", ignored, reference_error) ||
-            reference_error.find("unresolved cross-reference: missing") == std::string::npos) return 8;
-        if (markup::convert(markup::Format::AsciiDoc,
-                            "[[same]]\nfirst\n\n[[same]]\nsecond\n", ignored, reference_error) ||
-            reference_error.find("duplicate anchor: same") == std::string::npos) return 9;
+        std::vector<std::string> diagnostics;
+        markup::Options options;
+        options.asciidoc_diagnostic = [&](const std::string& value) { diagnostics.push_back(value); };
+        if (!markup::convert(markup::Format::AsciiDoc, "See <<missing>>.\n",
+                             ignored, reference_error, options) || diagnostics.empty() ||
+            diagnostics.back().find("unresolved cross-reference: missing") == std::string::npos) return 8;
+        diagnostics.clear();
+        if (!markup::convert(markup::Format::AsciiDoc,
+                             "[[same]]\nfirst\n\n[[same]]\nsecond\n",
+                             ignored, reference_error, options) || diagnostics.empty() ||
+            diagnostics.back().find("duplicate anchor: same") == std::string::npos) return 9;
         checks += 2;
     }
 

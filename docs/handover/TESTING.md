@@ -2,7 +2,7 @@
 
 ## Current gates
 
-`make test` runs:
+`make test` runs the ordinary offline suite, including the AD11 pinned-profile gate:
 
 - `markdown_smoke.cpp`: exact feature and public-API output contracts;
 - `markdown_adversarial.cpp`: malformed delimiters, large runs, embedded NUL,

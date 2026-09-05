@@ -32,6 +32,7 @@ struct Options {
     AsciiDocIncludeResolver asciidoc_include_resolver;
     std::string asciidoc_source_identity = "<input>";
     std::function<void(const std::string&)> asciidoc_dependency;
+    std::function<void(const std::string&)> asciidoc_diagnostic;
 };
 
 inline constexpr unsigned api_version = 3;
