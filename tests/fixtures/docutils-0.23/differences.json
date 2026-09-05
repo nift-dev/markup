@@ -1,0 +1,30 @@
+[
+  {
+    "id": "sections",
+    "reason": "Docutils HTML5 writer promotes the document title and the single top-level section out of the body fragment (document-title promotion); Markup++ emits the full nested section structure in the fragment. Structural, documented profile difference; heading depth is preserved."
+  },
+  {
+    "id": "real-document",
+    "reason": "Same document-title promotion as 'sections': the title and top-level section are document structure, not fragment body, in the Docutils HTML5 reference; Markup++ emits them in the fragment. Also the code directive renders without the Docutils inner <code> wrapper."
+  },
+  {
+    "id": "field-list",
+    "reason": "Docutils HTML5 writer moves bibliographic field lists (Author, Version, ...) into the document <header> docinfo, leaving the fragment empty; Markup++ renders the field list inline as <dl class=\"field-list\">."
+  },
+  {
+    "id": "footnote",
+    "reason": "Docutils HTML5 emits the footnote-list container, brackets and backlinks structure; Markup++ emits a single <aside class=\"footnote\"> per footnote. Container decoration difference; the footnote target and label text match."
+  },
+  {
+    "id": "roles",
+    "reason": "The :math: role is rendered by Docutils as MathML (<math> with <mi>/<mo>/<mn>), while Markup++ emits <span class=\"math\">text</span>; MathML output is not part of the declared Markup++ profile. All other roles in the case match."
+  },
+  {
+    "id": "include",
+    "reason": "File insertion is disabled in the documented profile (settings.file_insertion_enabled=false). Docutils emits an in-fragment system-message aside; Markup++ emits a converter diagnostic and produces no fragment output."
+  },
+  {
+    "id": "raw",
+    "reason": "Raw directives are disabled in the documented profile (settings.raw_enabled=false). Docutils emits an in-fragment system-message aside; Markup++ emits a converter diagnostic and produces no fragment output."
+  }
+]

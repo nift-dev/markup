@@ -80,7 +80,9 @@ Exit: applicable inline fixtures pass without post-render reparsing.
 Status: **Complete for core inline syntax.** Emphasis, strong, inline literals,
 embedded and standalone hyperlinks, named references, substitutions and
 interpreted roles are parsed into nodes with escaping and word-boundary rules.
-Delimiter and backslash scans are bounded by input size.
+An inline literal is never swallowed into a following hyperlink label (the
+`inline` frozen case passes the output gate). Delimiter and backslash scans are
+bounded by input size.
 
 ## RST4 - Literal, line, doctest and quoted blocks
 
@@ -145,10 +147,12 @@ declared text-only subset.
 
 Exit: normalized table doctrees and deterministic HTML pass.
 
-Status: **Complete for simple and grid tables without spans.** Column boundaries,
-header/body rows and cell inline parsing are deterministic. Complex row/column
-spans and nested block cells remain explicit Docutils-profile differences; CSV
-and file-backed tables are capability-gated in RST11.
+Status: **Complete for simple and grid tables without spans.** Simple tables use
+the border's column boundaries (single- or double-space gaps) and grid tables
+accept both `-` and `=` separators, so the frozen `simple-table` and `grid-table`
+cases pass the output gate. Complex row/column spans and nested block cells
+remain explicit Docutils-profile differences; CSV and file-backed tables are
+capability-gated in RST11.
 
 ## RST9 - Standard roles
 
@@ -240,6 +244,9 @@ and Docutils 0.23 core parser behavior under the documented profile.”
 
 Status: **Complete for the declared profile.**
 `make test-rst-release` validates the pinned profile, exact 24-case oracle
-inventory, unit/robustness suites and three-run CLI determinism. The exact
-compatibility sentence is supported by the clean pushed candidate at commit
-`ee0ec00`, Actions run `33938717946`, which passed Linux, macOS and Windows CI.
+inventory, unit/robustness suites, three-run CLI determinism and a normalized
+output comparison against the pinned Docutils 0.23 fragments; unexpected output
+differences fail the gate and reviewed differences are recorded in
+`differences.json`. The exact compatibility sentence is supported by the clean
+pushed candidate at commit `ee0ec00`, Actions run `33938717946`, which passed
+Linux, macOS and Windows CI.

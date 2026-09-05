@@ -28,13 +28,13 @@ int main(){
  expect("Text [1]_.\n\n.. [1] Note.\n","<p>Text <a class=\"footnote-reference\" href=\"#footnote-1\">[1]</a>.</p>\n<aside class=\"footnote\" id=\"footnote-1\"><span>[1]</span> Note.</aside>\n");
  expect("See [CITE]_.\n\n.. [CITE] Source.\n","<p>See <a class=\"footnote-reference\" href=\"#footnote-CITE\">[CITE]</a>.</p>\n<aside class=\"citation\" id=\"footnote-CITE\"><span>[CITE]</span> Source.</aside>\n");
  expect("Hello |name|.\n\n.. |name| replace:: world\n","<p>Hello world.</p>\n");
- expect(".. hidden comment\n   continued\n\nVisible.\n","<p>Visible.</p>\n");
+ expect(".. hidden comment\n   continued\n\nVisible.\n","<!-- hidden comment\ncontinued -->\n<p>Visible.</p>\n");
  expect("=====  =====\nName   Count\n=====  =====\nBolt   4\n=====  =====\n","<table class=\"simple\">\n<tr><td>Name</td><td>Count</td></tr>\n<tr><td>Bolt</td><td>4</td></tr>\n</table>\n");
  expect("+------+-------+\n| Name | Count |\n+------+-------+\n| Bolt | 4     |\n+------+-------+\n","<table class=\"grid\">\n<tr><td>Name</td><td>Count</td></tr>\n<tr><td>Bolt</td><td>4</td></tr>\n</table>\n");
  expect("Use :code:`x` :math:`a+b` :emphasis:`e` :strong:`s` :sub:`2` :sup:`3` :title:`Book`","<p>Use <code class=\"code\">x</code> <span class=\"math\">a+b</span> <em>e</em> <strong>s</strong> <sub>2</sub> <sup>3</sup> <cite>Book</cite></p>\n");
  {markup::Options options;std::vector<std::string>d;options.rst_diagnostic=[&](const std::string&v){d.push_back(v);};std::string a,b;if(!markup::convert(markup::Format::ReStructuredText,"Use :sphinx:`x`",a,b,options)||d.size()!=1)return 4;++checks;}
- expect(".. note::\n\n   Remember this.\n","<aside class=\"admonition note\"><p class=\"admonition-title\">note</p><p>Remember this.</p></aside>\n");
- expect(".. topic:: Details\n\n   Topic body.\n","<section class=\"topic\"><h2>Details</h2><p>Topic body.</p></section>\n");
+ expect(".. note::\n\n   Remember this.\n","<aside class=\"admonition note\"><p class=\"admonition-title\">Note</p><p>Remember this.</p></aside>\n");
+ expect(".. topic:: Details\n\n   Topic body.\n","<aside class=\"topic\"><p class=\"topic-title\">Details</p><p>Topic body.</p></aside>\n");
  expect(".. code:: cpp\n\n   int x;\n","<pre class=\"code cpp\">int x;</pre>\n");
  {markup::Options options;std::vector<std::string>deps;options.rst_resource_resolver=[](const std::string&,const std::string&t,std::string&c,std::string&id,std::string&){if(t!="part.rst")return false;c="Included.\n";id="virtual:part";return true;};options.rst_dependency=[&](const std::string&v){deps.push_back(v);};std::string a,b;if(!markup::convert(markup::Format::ReStructuredText,"Before.\n\n.. include:: part.rst\n\nAfter.\n",a,b,options)||a!="<p>Before.</p>\n<p>Included.</p>\n<p>After.</p>\n"||deps.size()!=1)return 5;++checks;}
  {markup::Options options;options.rst_resource_resolver=[](const std::string&,const std::string&,std::string&c,std::string&id,std::string&){c=".. include:: loop.rst\n";id="virtual:loop";return true;};std::string a,b;if(markup::convert(markup::Format::ReStructuredText,".. include:: loop.rst\n",a,b,options)||b.find("cycle")==std::string::npos)return 6;++checks;}
