@@ -156,4 +156,4 @@ unsupported inventory are enforced by `make test-asciidoctor-release`.
 | Checkpoint | Status |
 |---|---|
 | AC0-AC8 | Complete for the declared profile |
-| AC9 | Complete; Actions run `33938717946` passed Linux/macOS/Windows at `ee0ec00` |
+| AC9 | Complete; normalized-output gate passes locally on Linux; cross-platform confirmation pending (historical run `33938717946` at `ee0ec00` passed the earlier implementation) |

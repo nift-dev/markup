@@ -40,8 +40,9 @@ The library accepts strings and returns strings/errors. It performs no file IO
 and has no Nift dependency or global mutable state. Format selection is explicit
 through `markup::Format`; `format_for_extension` is only a convenience boundary.
 
-Nift embeds the approved Markup++ sources from commit `ee0ec00` under
-`markuppp/`. The standalone repository remains canonical. Run
+Nift embeds the approved Markup++ sources synchronized from the current
+standalone candidate (see `scripts/check-nift-sync.sh`) under `markuppp/`.
+The standalone repository remains canonical. Run
 `make check-nift-sync NIFT_DIR=/path/to/nift` to compare the public header,
 implementation, licence and vendored cmark tree byte for byte. Nift connects
 only through the public API; Markup++ must not learn Nift's parser, project
@@ -65,14 +66,18 @@ not stable language conformance: the upstream alpha TCK's expected ASG oracle
 and a future stable-spec upgrade gate remain. `docs/handover/ASCIIDOC.md`
 is authoritative for its completed behavior and limitations.
 
-AsciiDoc AC0-AC9 and reStructuredText RST0-RST14 have now passed their pushed
-Linux/macOS/Windows candidate gate at commit `ee0ec00` in Actions run
-`33938717946`. Their exact, bounded compatibility wording may be published only
-with the pinned profiles and limitations recorded in the release handovers.
-Both release gates compare normalized Markup++ output against pinned reference
-output (Docutils 0.23 fragments and a genuine Asciidoctor 2.0.26 reference),
-and fail on unexpected differences; reviewed differences are recorded with
-reasons in each `differences.json`.
+AsciiDoc AC0-AC9 and reStructuredText RST0-RST14 define the declared bounded
+profiles. Both release gates compare normalized Markup++ output against pinned
+reference output (Docutils 0.23 fragments and a genuine Asciidoctor 2.0.26
+reference) and fail on unexpected differences; every reviewed difference is
+pinned by the SHA-256 of both normalized sides in each `differences.json`, so a
+recorded case cannot change arbitrarily. The gates pass locally on Linux at the
+current candidate. Commit `ee0ec00` in Actions run `33938717946` is historical
+evidence that the earlier implementation passed the earlier Linux/macOS/Windows
+suite; cross-platform confirmation of the strengthened gates is pending until
+the new committed candidate passes Linux, macOS and Windows CI. Their exact,
+bounded compatibility wording may be published only with the pinned profiles,
+the new CI evidence and the limitations recorded in the release handovers.
 
 Run:
 

@@ -13,27 +13,32 @@ and HTML5 writer. Raw and file insertion are disabled in the oracle.
    removing documented writer decoration (attributes, wrapper tags, `<p>`
    inside list items/table cells, and heading-level offsets caused by Docutils
    document-title promotion) and compares the structures;
-4. fails on any case whose normalized output still differs from the reference
-   unless that case is recorded with a reason in `differences.json`;
-5. requires the reviewed `differences.json` manifest to be current.
+4. pins every reviewed difference in `differences.json` by the SHA-256 of both
+   normalized sides, so a recorded case cannot change arbitrarily: the expected
+   reference hash and the actual Markup++ hash must both match the reviewed
+   values and the two sides must remain different;
+5. fails on any unlisted mismatch and on any manifest entry for a case that now
+   matches.
 
-Unexpected output differences fail the gate. Cases with reviewed, intentional
-differences remain listed in `differences.json` with explicit reasons
-(document-title promotion, docinfo field lists, footnote containers, MathML
-math roles, and disabled raw/include directives that Docutils reports as
-in-fragment system messages).
+`make test-difference-gates` runs `tests/difference_gate_self_test.py`, which
+proves that mutating a pinned hash, removing a pin, listing a now-matching
+case, duplicating an id or adding an unknown id all fail the gates.
 
-The pushed gate passed at commit `ee0ec00` in Actions run `33938717946`, with
-Linux, macOS, Windows and libFuzzer jobs green. Public wording may now say
-"compatible with the reStructuredText specification and Docutils 0.23 core
-parser behavior under the documented profile." The gate itself compares
-normalized output, not only inventory and determinism.
+Historical evidence: commit `ee0ec00` in Actions run `33938717946` passed the
+earlier implementation's Linux, macOS, Windows and libFuzzer suite. The
+strengthened normalized-output gate above was added after that commit; it
+currently passes locally on Linux at the new candidate. Cross-platform
+confirmation of the strengthened gate is **pending** until the new committed
+candidate passes Linux, macOS and Windows CI. After that, record the new
+immutable commit and Actions run here in a separate evidence-only commit, then
+publish the compatibility wording.
 
 Before publishing the exact compatibility wording:
 
 1. Run `make test-rst-release` in a clean checkout.
 2. Run the full `make test` suite and sanitizer target.
-3. Push the candidate and require Linux, macOS and Windows CI to pass.
+3. Push the candidate and require Linux, macOS and Windows CI to pass the
+   strengthened gate.
 4. Preserve the immutable commit and Actions run in this file.
 5. Review every documented subset/difference; never infer Sphinx compatibility.
 6. Publish the pinned Docutils version, 24-case oracle count, writer/settings,

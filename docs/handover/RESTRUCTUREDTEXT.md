@@ -246,7 +246,9 @@ Status: **Complete for the declared profile.**
 `make test-rst-release` validates the pinned profile, exact 24-case oracle
 inventory, unit/robustness suites, three-run CLI determinism and a normalized
 output comparison against the pinned Docutils 0.23 fragments; unexpected output
-differences fail the gate and reviewed differences are recorded in
-`differences.json`. The exact compatibility sentence is supported by the clean
-pushed candidate at commit `ee0ec00`, Actions run `33938717946`, which passed
-Linux, macOS and Windows CI.
+differences fail the gate and every reviewed difference is pinned by the SHA-256
+of both normalized sides in `differences.json`. The gate currently passes
+locally on Linux at the current candidate. Commit `ee0ec00` in Actions run
+`33938717946` is historical evidence that the earlier implementation passed the
+earlier Linux/macOS/Windows suite; cross-platform confirmation of this
+strengthened gate is pending until the new committed candidate passes CI.

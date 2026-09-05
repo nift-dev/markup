@@ -58,9 +58,11 @@
   on the selected output; added hostile AsciiDoc include cycle/depth/size and
   table-cell tests; duplicate-anchor diagnostics now use the configured source
   identity.
-- Passed the combined AsciiDoc/Asciidoctor and reStructuredText/Docutils pushed
-  release gate at commit `ee0ec00` in Actions run `33938717946`; GCC/Linux,
-  Clang/macOS, MSVC/Windows and bounded libFuzzer jobs all passed.
+- Passed the earlier combined AsciiDoc/Asciidoctor and reStructuredText/Docutils
+  release gate at commit `ee0ec00` in Actions run `33938717946` (historical
+  evidence for that earlier implementation). The strengthened normalized-output
+  gates, pinned references and recorded-difference hashes were added afterwards
+  and pass locally on Linux; cross-platform confirmation is pending.
 - Added an exact 41-file synchronization check for Nift's embedded `markuppp/`
   subtree. Standalone Markup++ remains the source of truth.
 
