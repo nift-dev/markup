@@ -20,8 +20,8 @@
 - `docutils_release_gate.py`: validates the frozen 24-case Docutils 0.23 oracle
   inventory and three-run CLI determinism.
 
-`make test-sanitize` rebuilds Markdown semantic/adversarial and AsciiDoc AD1-AD10
-gates under ASan/UBSan.
+`make test-sanitize` rebuilds Markdown semantic/adversarial, AsciiDoc and
+reStructuredText semantic/robustness gates under ASan/UBSan.
 Sanitizer success is workload evidence, not a universal memory-safety proof.
 Some sandboxed runners prevent LeakSanitizer from inspecting `/proc`; use
 `make test-sanitize ASAN_OPTIONS=detect_leaks=0:halt_on_error=1` there and record

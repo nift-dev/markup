@@ -174,8 +174,12 @@ test-sanitize:
 	ASAN_OPTIONS=$(ASAN_OPTIONS) UBSAN_OPTIONS=$(UBSAN_OPTIONS) ./$(BUILD_DIR)/profile-matrix-san
 	$(CXX) $(CPPFLAGS) -std=c++17 -Wall -Wextra -pedantic $(SANITIZER_FLAGS) tests/asciidoc.cpp $(LIBSRC) $(CMARK_SAN_OBJ) -o $(BUILD_DIR)/asciidoc-san
 	ASAN_OPTIONS=$(ASAN_OPTIONS) UBSAN_OPTIONS=$(UBSAN_OPTIONS) ./$(BUILD_DIR)/asciidoc-san
+	$(CXX) $(CPPFLAGS) -std=c++17 -Wall -Wextra -pedantic $(SANITIZER_FLAGS) tests/restructuredtext.cpp $(LIBSRC) $(CMARK_SAN_OBJ) -o $(BUILD_DIR)/rst-san
+	ASAN_OPTIONS=$(ASAN_OPTIONS) UBSAN_OPTIONS=$(UBSAN_OPTIONS) ./$(BUILD_DIR)/rst-san
+	$(CXX) $(CPPFLAGS) -std=c++17 -Wall -Wextra -pedantic $(SANITIZER_FLAGS) tests/rst_robustness.cpp $(LIBSRC) $(CMARK_SAN_OBJ) -o $(BUILD_DIR)/rst-robustness-san
+	ASAN_OPTIONS=$(ASAN_OPTIONS) UBSAN_OPTIONS=$(UBSAN_OPTIONS) ./$(BUILD_DIR)/rst-robustness-san
 
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET)
 
-.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 test-commonmark-cm8 test-commonmark-cm9 test-performance fuzz-libfuzzer test-release-local clean
+.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-compat test-asciidoctor-release test-rst test-rst-robustness test-rst-release test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 test-commonmark-cm8 test-commonmark-cm9 test-performance fuzz-libfuzzer test-release-local clean
