@@ -20,6 +20,10 @@ int main(){
  expect("Example::\n\n   literal <tag>\n   second\n","<p>Example:</p>\n<pre class=\"literal-block\">literal &lt;tag&gt;\nsecond</pre>\n");
  expect("| first\n| second\n","<div class=\"line-block\">\n<div class=\"line\">first</div>\n<div class=\"line\">second</div>\n</div>\n");
  expect(">>> 1 + 1\n2\n","<pre class=\"doctest-block\">&gt;&gt;&gt; 1 + 1\n2</pre>\n");
+ expect("* one\n* two\n","<ul>\n<li>one</li>\n<li>two</li>\n</ul>\n");
+ expect("1. one\n2. two\n","<ol>\n<li>one</li>\n<li>two</li>\n</ol>\n");
+ expect("Term\n  Definition.\n","<dl>\n<dt>Term</dt>\n<dd>Definition.</dd>\n</dl>\n");
+ expect(":Author: Ada\n:Version: 1\n","<dl class=\"field-list\">\n<dt>Author</dt>\n<dd>Ada</dd>\n<dt>Version</dt>\n<dd>1</dd>\n</dl>\n");
  std::string o,e;if(!markup::is_supported(markup::Format::ReStructuredText)||!markup::convert(markup::Format::ReStructuredText,"repeat",o,e))return 2;auto first=o;if(!markup::convert(markup::Format::ReStructuredText,"repeat",o,e)||o!=first)return 3;checks+=2;
  std::cout<<checks<<" reStructuredText checks passed\n";
 }

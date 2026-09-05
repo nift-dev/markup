@@ -103,6 +103,11 @@ reserved for the directive registry rather than conflated with verbatim input.
 
 Exit: all core list fixture families pass.
 
+Status: **Complete for core list families.** Bullet, enumerated and
+auto-enumerated lists, definition lists and field lists have distinct nodes and
+deterministic malformed-marker fallback. Option-list and deeply nested body
+decoration differences remain recorded for the Docutils profile.
+
 ## RST6 - Targets, references, footnotes and citations
 
 - Implement explicit/implicit targets, aliases, indirect references and anonymous
