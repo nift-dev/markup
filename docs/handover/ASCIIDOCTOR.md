@@ -61,6 +61,11 @@ enumerated rather than normalized away.
 
 Exit: inline differences are either eliminated or precisely documented.
 
+Status: **Complete for supported core substitutions.** Tests cover constrained
+and unconstrained spans, nested markup, monospace escaping, punctuation,
+backslash escaping and typographic replacements. Unsupported quote typography
+remains an explicit processor-profile difference.
+
 ## AC4 - Lists, tables, references and media parity
 
 - Cover every list family, continuation/nesting, tables/cells/spans, generated

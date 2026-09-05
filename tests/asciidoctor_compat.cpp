@@ -24,5 +24,9 @@ int main() {
     contains("____\nquoted\n____\n", "<blockquote>");
     contains("****\nsidebar\n****\n", "<div class=\"sidebarblock\">");
     contains("////\nhidden\n////\n\nshown\n", "<p>shown</p>");
+    contains("*strong* _emphasis_ `code` #mark# ^up^ ~down~\n", "<strong>strong</strong> <em>emphasis</em> <code>code</code>");
+    contains("word**strong**word and *outer _inner_*\n", "word<strong>strong</strong>word and <strong>outer <em>inner</em></strong>");
+    contains("\\*escaped* (C) (R) (TM) left -> right\n", "*escaped* © ® ™ left → right");
+    contains("`<tag> & value`\n", "<code>&lt;tag&gt; &amp; value</code>");
     std::cout << checks << " Asciidoctor core compatibility checks passed\n";
 }
