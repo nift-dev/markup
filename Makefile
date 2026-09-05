@@ -87,6 +87,9 @@ test-profile-matrix: $(PROFILE_MATRIX)
 test-asciidoc: $(ASCIIDOC)
 	./$(ASCIIDOC)
 
+test-asciidoc-release: $(TARGET) test-asciidoc
+	python3 tests/asciidoc_release_gate.py --program ./$(TARGET)
+
 test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc
 	python3 tests/asciidoc_fixture_inventory.py
 
@@ -128,7 +131,7 @@ test-performance: $(TARGET)
 fuzz-libfuzzer: $(CMARK_FUZZ_OBJ)
 	$(CXX) $(CPPFLAGS) -std=c++17 -O1 -g -fno-omit-frame-pointer -fsanitize=fuzzer,address,undefined tests/fuzz_libfuzzer.cpp $(LIBSRC) $(CMARK_FUZZ_OBJ) -o $(BUILD_DIR)/markup-libfuzzer
 
-test-release-local: test test-commonmark-cm9 test-performance
+test-release-local: test test-commonmark-cm9 test-performance test-asciidoc-release
 	python3 tests/commonmark_complexity.py --program ./$(TARGET) --family all
 
 test-sanitize:
@@ -148,4 +151,4 @@ test-sanitize:
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET)
 
-.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 test-commonmark-cm8 test-commonmark-cm9 test-performance fuzz-libfuzzer test-release-local clean
+.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 test-commonmark-cm8 test-commonmark-cm9 test-performance fuzz-libfuzzer test-release-local clean

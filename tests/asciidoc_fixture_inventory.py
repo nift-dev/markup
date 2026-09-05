@@ -9,7 +9,7 @@ import sys
 def main() -> int:
     path = pathlib.Path("tests/fixtures/asciidoc-tck/cases.json")
     cases = json.loads(path.read_text(encoding="utf-8"))
-    required = {"path", "type", "checkpoint", "input"}
+    required = {"path", "type", "checkpoint", "input", "html_sha256"}
     if len(cases) != 13:
         print(f"expected 13 pinned inputs, found {len(cases)}", file=sys.stderr)
         return 1
@@ -18,7 +18,8 @@ def main() -> int:
         if set(case) != required or case["type"] not in {"block", "inline"}:
             print(f"invalid case entry: {case!r}", file=sys.stderr)
             return 1
-        if case["path"] in paths or not case["input"].endswith("\n"):
+        if (case["path"] in paths or not case["input"].endswith("\n") or
+                len(case["html_sha256"]) != 64):
             print(f"duplicate or unterminated input: {case['path']}", file=sys.stderr)
             return 1
         paths.add(case["path"])

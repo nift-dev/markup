@@ -1,15 +1,15 @@
 [
-  {"path":"block/document/body-only","type":"block","checkpoint":"AD1","input":"body only\n"},
-  {"path":"block/document/header-body","type":"block","checkpoint":"AD2","input":"= Document Title\n\nbody\n"},
-  {"path":"block/header/attribute-entries-below-title","type":"block","checkpoint":"AD2","input":"= Document Title\n:icons: font\n:toc:\n"},
-  {"path":"block/list/unordered/single-item","type":"block","checkpoint":"AD4","input":"* water\n"},
-  {"path":"block/listing/multiple-lines","type":"block","checkpoint":"AD3","input":"----\ndef main\n  puts 'hello'\nend\n----\n"},
-  {"path":"block/paragraph/multiple-lines","type":"block","checkpoint":"AD3","input":"This paragraph has multiple lines that wrap after reaching the 72\ncharacter limit set by the text editor.\n"},
-  {"path":"block/paragraph/paragraph-empty-lines-paragraph","type":"block","checkpoint":"AD3","input":"This document has multiple paragraphs.\n\n\nParagraphs are separated by one or more empty lines.\n"},
-  {"path":"block/paragraph/sibling-paragraphs","type":"block","checkpoint":"AD3","input":"This document has multiple paragraphs.\n\nParagraphs are separated by one or more empty lines.\n"},
-  {"path":"block/paragraph/single-line","type":"block","checkpoint":"AD1","input":"A paragraph that consists of a single line.\n"},
-  {"path":"block/section/title-body","type":"block","checkpoint":"AD2","input":"== Section Title\n\nparagraph\n"},
-  {"path":"block/sidebar/containing-unordered-list","type":"block","checkpoint":"AD4","input":"****\n* phone\n* wallet\n* keys\n****\n"},
-  {"path":"inline/no-markup/single-word","type":"inline","checkpoint":"AD1","input":"hello\n"},
-  {"path":"inline/span/strong/constrained-single-char","type":"inline","checkpoint":"AD5","input":"*s*\n"}
+  {"path":"block/document/body-only","type":"block","checkpoint":"AD1","input":"body only\n","html_sha256":"f3cf7b0395b82475cf52aaf49f1ea98c99d33facec3acc5dbfb0692134a6c980"},
+  {"path":"block/document/header-body","type":"block","checkpoint":"AD2","input":"= Document Title\n\nbody\n","html_sha256":"f734d056f54561f9b5b05d6582c4d83fcbe5a6cfa4aa8437bcf4dd274374ded9"},
+  {"path":"block/header/attribute-entries-below-title","type":"block","checkpoint":"AD2","input":"= Document Title\n:icons: font\n:toc:\n","html_sha256":"72b74566b2a8a8f0447ab031dae5c01ef4245ae373453fab175c0ee1725e97ba"},
+  {"path":"block/list/unordered/single-item","type":"block","checkpoint":"AD4","input":"* water\n","html_sha256":"8a41daac7de84a864f73ee73e710d8d894ca899b68b8258d8fe4c854e920c130"},
+  {"path":"block/listing/multiple-lines","type":"block","checkpoint":"AD3","input":"----\ndef main\n  puts 'hello'\nend\n----\n","html_sha256":"6adf2522c5e12a40afc463b8b49220e4b4b4ef3ac7468859883cea8245e98ac6"},
+  {"path":"block/paragraph/multiple-lines","type":"block","checkpoint":"AD3","input":"This paragraph has multiple lines that wrap after reaching the 72\ncharacter limit set by the text editor.\n","html_sha256":"a88a2133fd2b634a17f33624370c32cdc24938db1a00e09fb80ea63b720b14e4"},
+  {"path":"block/paragraph/paragraph-empty-lines-paragraph","type":"block","checkpoint":"AD3","input":"This document has multiple paragraphs.\n\n\nParagraphs are separated by one or more empty lines.\n","html_sha256":"65811609ee0b0622d30d6b801d7b840c8ca1f4c3eb74545822ad541716cfb175"},
+  {"path":"block/paragraph/sibling-paragraphs","type":"block","checkpoint":"AD3","input":"This document has multiple paragraphs.\n\nParagraphs are separated by one or more empty lines.\n","html_sha256":"65811609ee0b0622d30d6b801d7b840c8ca1f4c3eb74545822ad541716cfb175"},
+  {"path":"block/paragraph/single-line","type":"block","checkpoint":"AD1","input":"A paragraph that consists of a single line.\n","html_sha256":"39b1ce06849d7c44d63cb07649e494c4f3aeeddf518b278d4ebf0e854d668b10"},
+  {"path":"block/section/title-body","type":"block","checkpoint":"AD2","input":"== Section Title\n\nparagraph\n","html_sha256":"afd57652787200fad6f6bc4e548045992be2393d77c985b91222737929f00c89"},
+  {"path":"block/sidebar/containing-unordered-list","type":"block","checkpoint":"AD4","input":"****\n* phone\n* wallet\n* keys\n****\n","html_sha256":"220e96c69c6a22fdbb38fb2903624bcf853d22da26aff4dd942eb1b7ebf732e8"},
+  {"path":"inline/no-markup/single-word","type":"inline","checkpoint":"AD1","input":"hello\n","html_sha256":"9eb03b26fb04551538228309c5279fa0794b00e858358ba40464a76fff4ef453"},
+  {"path":"inline/span/strong/constrained-single-char","type":"inline","checkpoint":"AD5","input":"*s*\n","html_sha256":"c08bb4d366bde2ab80a000aa14ee7434604018ee7cb74e489a0a8bd2893db6a0"}
 ]

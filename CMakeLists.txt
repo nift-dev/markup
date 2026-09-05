@@ -62,4 +62,8 @@ if(BUILD_TESTING)
     add_test(NAME asciidoc_fixture_inventory
         COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/asciidoc_fixture_inventory.py
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+    add_test(NAME asciidoc_release_gate
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/asciidoc_release_gate.py
+                --program $<TARGET_FILE:markup_cli>
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 endif()

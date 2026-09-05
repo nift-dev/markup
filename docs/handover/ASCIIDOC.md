@@ -208,6 +208,13 @@ gates.
 Exit: only then may public material make the versioned AsciiDoc language
 conformance claim.
 
+Status: **Complete for the pinned unreleased development profile.** All 13/13
+available alpha TCK inputs have no exclusions and pass three-run deterministic
+conversion against reviewed HTML digests. The upstream snapshot does not ship
+its expected ASG oracle, so the precise public claim is "AsciiDoc pinned
+development profile AD0-AD11 complete", not stable language conformance.
+`ASCIIDOC-RELEASE.md` freezes the evidence and mandatory future upgrade rule.
+
 ## Progress ledger
 
 | Checkpoint | Status | Evidence |
@@ -223,4 +230,4 @@ conformance claim.
 | AD8 - Macros/conditionals | Complete | Pure built-ins and nested attribute conditionals; unknown macros literal |
 | AD9 - Includes/capabilities | Complete | Explicit resolver and dependency observer; cycle/depth/byte bounds; IO-free default |
 | AD10 - Safety/robustness | Complete | Safe passthrough/URI boundary, positioned diagnostics and hostile-input guards |
-| AD11 | Pending | - |
+| AD11 - Release gate | Complete (development profile) | 13/13 inputs, zero exclusions, three-run determinism; expected upstream ASG pending |
