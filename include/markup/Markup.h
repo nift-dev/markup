@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <functional>
 
 namespace markup {
 
@@ -21,6 +22,16 @@ struct Options {
     };
     MarkdownProfile markdown_profile = MarkdownProfile::CommonMark;
     std::string title;
+
+    // AsciiDoc conversion is IO-free unless a host supplies this resolver.
+    // The resolver receives (including identity, requested target) and returns
+    // content plus a stable canonical identity. Hosts enforce their own root
+    // and traversal policy before returning true.
+    using AsciiDocIncludeResolver = std::function<bool(
+        const std::string&, const std::string&, std::string&, std::string&, std::string&)>;
+    AsciiDocIncludeResolver asciidoc_include_resolver;
+    std::string asciidoc_source_identity = "<input>";
+    std::function<void(const std::string&)> asciidoc_dependency;
 };
 
 inline constexpr unsigned api_version = 2;

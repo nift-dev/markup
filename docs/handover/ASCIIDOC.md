@@ -175,6 +175,13 @@ No macro invokes a process, filesystem or network capability.
 
 Exit: virtual include graphs pass without ambient filesystem access.
 
+Status: **Complete.** `Options::asciidoc_include_resolver` is an explicit host
+capability accepting the including identity and requested target and returning
+content plus a canonical identity. The default is IO-free and errors on include.
+Canonical identities expose dependencies to an observer callback. Expansion is
+bounded to 32 levels and 64 MiB with deterministic missing, empty-identity and
+cycle diagnostics; the host owns traversal/root policy.
+
 ## AD10 - Safe rendering, diagnostics and robustness
 
 - Define raw passthrough, URI and macro behavior for raw and safe modes.
@@ -207,4 +214,5 @@ conformance claim.
 | AD6 - References/media | Complete | Anchors, xrefs, links, mail, bare URLs, images and icons; no implicit IO |
 | AD7 - Tables | Complete | Bounded rows/cells, simple spans/styles, inline cell content and EOF recovery |
 | AD8 - Macros/conditionals | Complete | Pure built-ins and nested attribute conditionals; unknown macros literal |
-| AD9-AD11 | Pending | - |
+| AD9 - Includes/capabilities | Complete | Explicit resolver and dependency observer; cycle/depth/byte bounds; IO-free default |
+| AD10-AD11 | Pending | - |

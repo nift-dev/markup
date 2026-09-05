@@ -603,7 +603,7 @@ bool convert(Format format, const std::string& input, std::string& output,
         fragment = markdown_fragment(input, options);
     } else {
         asciidoc::Document document;
-        if (!asciidoc::parse(input, document, error)) return false;
+        if (!asciidoc::parse(input, document, error, options)) return false;
         fragment = asciidoc::render_html(document, options);
     }
     if (!options.standalone) {

@@ -104,6 +104,38 @@ int main() {
            "then <span class=\"menuseq\">File &gt; Open</span>. "
            "<span class=\"footnote\">A note</span></p>\n</div>\n");
 
+    {
+        markup::Options options;
+        std::vector<std::string> dependencies;
+        options.asciidoc_source_identity = "root.adoc";
+        options.asciidoc_dependency = [&](const std::string& identity) { dependencies.push_back(identity); };
+        options.asciidoc_include_resolver = [](
+            const std::string& from, const std::string& target, std::string& content,
+            std::string& canonical, std::string& resolver_error) {
+            (void)resolver_error;
+            if (from == "root.adoc" && target == "part.adoc") {
+                content = "included *content*";
+                canonical = "docs/part.adoc";
+                return true;
+            }
+            return false;
+        };
+        std::string included, include_error;
+        if (!markup::convert(markup::Format::AsciiDoc, "before\n\ninclude::part.adoc[]\n\nafter",
+                             included, include_error, options) ||
+            included != "<div class=\"paragraph\">\n<p>before</p>\n</div>\n"
+                        "<div class=\"paragraph\">\n<p>included <strong>content</strong></p>\n</div>\n"
+                        "<div class=\"paragraph\">\n<p>after</p>\n</div>\n" ||
+            dependencies != std::vector<std::string>{"docs/part.adoc"}) return 4;
+        ++checks;
+    }
+    {
+        std::string ignored, include_error;
+        if (markup::convert(markup::Format::AsciiDoc, "include::missing.adoc[]", ignored, include_error) ||
+            include_error.find("requires a host resolver") == std::string::npos) return 5;
+        ++checks;
+    }
+
     std::string output, error;
     if (!markup::is_supported(markup::Format::AsciiDoc) ||
         !markup::convert(markup::Format::AsciiDoc, "repeat", output, error)) return 2;

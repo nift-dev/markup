@@ -59,7 +59,8 @@ struct Document {
     Range source;
 };
 
-bool parse(const std::string& input, Document& document, std::string& error);
+bool parse(const std::string& input, Document& document, std::string& error,
+           const Options& options);
 std::string render_html(const Document& document, const Options& options);
 
 } // namespace asciidoc

@@ -4,14 +4,73 @@
 
 #include <cstddef>
 #include <cctype>
+#include <algorithm>
 #include <utility>
-#include <set>
 
 namespace markup::asciidoc {
 namespace {
 
 constexpr std::size_t max_input_bytes = 64U * 1024U * 1024U;
 constexpr std::size_t max_table_cells = 100000U;
+constexpr std::size_t max_include_depth = 32U;
+
+std::string normalize(const std::string& input);
+std::vector<std::string> split_lines(const std::string& input);
+bool starts_with(const std::string& value, const std::string& prefix);
+
+bool expand_includes(const std::string& input, const std::string& identity,
+                     const Options& options, std::vector<std::string>& stack,
+                     std::size_t& bytes, std::string& output, std::string& error) {
+    const auto lines = split_lines(normalize(input));
+    for (std::size_t line = 0; line < lines.size(); ++line) {
+        const std::string& value = lines[line];
+        if (starts_with(value, "include::") && value.size() > 11 && value.back() == ']') {
+            const auto bracket = value.find('[', 9);
+            if (bracket == std::string::npos) {
+                error = identity + ":" + std::to_string(line + 1) + ": malformed include directive";
+                return false;
+            }
+            const std::string target = value.substr(9, bracket - 9);
+            if (!options.asciidoc_include_resolver) {
+                error = identity + ":" + std::to_string(line + 1) +
+                        ": include requires a host resolver: " + target;
+                return false;
+            }
+            if (stack.size() >= max_include_depth) {
+                error = identity + ":" + std::to_string(line + 1) + ": include depth exceeds 32";
+                return false;
+            }
+            std::string content, canonical, resolver_error;
+            if (!options.asciidoc_include_resolver(identity, target, content, canonical, resolver_error)) {
+                error = identity + ":" + std::to_string(line + 1) + ": " +
+                        (resolver_error.empty() ? "include could not be resolved: " + target : resolver_error);
+                return false;
+            }
+            if (canonical.empty()) {
+                error = identity + ":" + std::to_string(line + 1) + ": resolver returned an empty identity";
+                return false;
+            }
+            if (std::find(stack.begin(), stack.end(), canonical) != stack.end()) {
+                error = identity + ":" + std::to_string(line + 1) + ": include cycle at " + canonical;
+                return false;
+            }
+            if (content.size() > max_input_bytes - bytes) {
+                error = identity + ":" + std::to_string(line + 1) + ": expanded input exceeds 64 MiB";
+                return false;
+            }
+            bytes += content.size();
+            if (options.asciidoc_dependency) options.asciidoc_dependency(canonical);
+            stack.push_back(canonical);
+            if (!expand_includes(content, canonical, options, stack, bytes, output, error)) return false;
+            stack.pop_back();
+            if (line + 1 < lines.size() && (output.empty() || output.back() != '\n')) output += '\n';
+        } else {
+            output += value;
+            if (line + 1 < lines.size()) output += '\n';
+        }
+    }
+    return true;
+}
 
 std::string normalize(const std::string& input) {
     std::string output;
@@ -829,7 +888,8 @@ std::string render_blocks(const std::vector<Block>& blocks, const Options& optio
 
 } // namespace
 
-bool parse(const std::string& input, Document& document, std::string& error) {
+bool parse(const std::string& input, Document& document, std::string& error,
+           const Options& options) {
     document = {};
     error.clear();
     if (input.size() > max_input_bytes) {
@@ -837,7 +897,12 @@ bool parse(const std::string& input, Document& document, std::string& error) {
         return false;
     }
 
-    auto input_lines = split_lines(normalize(input));
+    std::string expanded;
+    std::vector<std::string> include_stack{options.asciidoc_source_identity};
+    std::size_t expanded_bytes = input.size();
+    if (!expand_includes(input, options.asciidoc_source_identity, options,
+                         include_stack, expanded_bytes, expanded, error)) return false;
+    auto input_lines = split_lines(normalize(expanded));
     std::size_t line = 0;
     if (!input_lines.empty() && input_lines[0].rfind("= ", 0) == 0) {
         document.title = trim(input_lines[0].substr(2));
