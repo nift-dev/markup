@@ -14,5 +14,7 @@ Before publishing the exact compatibility wording:
 6. Publish the pinned Docutils version, 24-case oracle count, writer/settings,
    capability policy and unsupported extensions beside the claim.
 
-Local implementation evidence is complete. The public wording remains gated
-until a pushed candidate supplies the three-platform run identifier.
+The pushed gate passed at commit `ee0ec00` in Actions run `33938717946`, with
+Linux, macOS, Windows and libFuzzer jobs green. Public wording may now say
+“compatible with the reStructuredText specification and Docutils 0.23 core
+parser behavior under the documented profile.”

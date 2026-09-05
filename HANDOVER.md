@@ -40,11 +40,12 @@ The library accepts strings and returns strings/errors. It performs no file IO
 and has no Nift dependency or global mutable state. Format selection is explicit
 through `markup::Format`; `format_for_extension` is only a convenience boundary.
 
-Nift does **not** embed Markup++ at this checkpoint. When embedding begins, the
-standalone repository is canonical. Mirror a standalone-style subtree into Nift,
-keep the public header and implementation byte-identical where practical, add an
-explicit synchronization check, then connect Nift only through the public API.
-Markup++ must not learn Nift's parser, project model, tracked state or CLI.
+Nift embeds the approved Markup++ sources from commit `ee0ec00` under
+`markuppp/`. The standalone repository remains canonical. Run
+`make check-nift-sync NIFT_DIR=/path/to/nift` to compare the public header,
+implementation, licence and vendored cmark tree byte for byte. Nift connects
+only through the public API; Markup++ must not learn Nift's parser, project
+model, tracked state or CLI.
 
 ## Current behavior and evidence
 
@@ -64,10 +65,10 @@ not stable language conformance: the upstream alpha TCK's expected ASG oracle
 and a future stable-spec upgrade gate remain. `docs/handover/ASCIIDOC.md`
 is authoritative for its completed behavior and limitations.
 
-reStructuredText RST0-RST14 implementation and local evidence are complete
-against the frozen Docutils 0.23 profile. Do not publish the exact compatibility
-claim until a pushed Linux/macOS/Windows run is recorded in
-`docs/handover/RESTRUCTUREDTEXT-RELEASE.md`.
+AsciiDoc AC0-AC9 and reStructuredText RST0-RST14 have now passed their pushed
+Linux/macOS/Windows candidate gate at commit `ee0ec00` in Actions run
+`33938717946`. Their exact, bounded compatibility wording may be published only
+with the pinned profiles and limitations recorded in the release handovers.
 
 Run:
 

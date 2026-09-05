@@ -14,6 +14,7 @@ secure mode, reproducible environment attributes and no extension API.
 the pinned gem can additionally regenerate raw reference evidence with
 `tests/asciidoctor_reference.py` and run `tests/asciidoctor_compare.py`.
 
-Do not publish the compatibility wording until the pushed Linux, macOS and
-Windows jobs pass at the candidate commit. Never shorten the claim to
-"Asciidoctor compatible" or "drop-in compatible".
+The pushed gate passed at commit `ee0ec00` in Actions run `33938717946`, with
+Linux, macOS, Windows and libFuzzer jobs green. Public wording may now say
+“compatible with Asciidoctor core 2.0.26 under the documented profile.” Never
+shorten this to “Asciidoctor compatible” or “drop-in compatible.”

@@ -41,6 +41,11 @@
   substitutions, host-controlled resources, diagnostics and release gates.
 - Added 39 focused RST checks, a large/adversarial robustness suite, all-format
   mutation coverage and a 24-case deterministic Docutils profile gate.
+- Passed the combined AsciiDoc/Asciidoctor and reStructuredText/Docutils pushed
+  release gate at commit `ee0ec00` in Actions run `33938717946`; GCC/Linux,
+  Clang/macOS, MSVC/Windows and bounded libFuzzer jobs all passed.
+- Added an exact 41-file synchronization check for Nift's embedded `markuppp/`
+  subtree. Standalone Markup++ remains the source of truth.
 
 This is an implementation checkpoint, not a tagged public release. The evidence
 now supports the versioned CommonMark 0.31.2 compliance claim.

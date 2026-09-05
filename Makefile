@@ -117,6 +117,9 @@ test-rst-robustness: $(RST_ROBUSTNESS)
 test-rst-release: $(TARGET) test-rst test-rst-robustness
 	python3 tests/docutils_release_gate.py --program ./$(TARGET)
 
+check-nift-sync:
+	bash scripts/check-nift-sync.sh "$(NIFT_DIR)"
+
 test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-release test-rst-release
 	python3 tests/asciidoc_fixture_inventory.py
 
@@ -182,4 +185,4 @@ test-sanitize:
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET)
 
-.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-compat test-asciidoctor-release test-rst test-rst-robustness test-rst-release test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 test-commonmark-cm8 test-commonmark-cm9 test-performance fuzz-libfuzzer test-release-local clean
+.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-compat test-asciidoctor-release test-rst test-rst-robustness test-rst-release test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 test-commonmark-cm8 test-commonmark-cm9 test-performance fuzz-libfuzzer test-release-local check-nift-sync clean
