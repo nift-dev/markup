@@ -36,6 +36,11 @@ Authoritative references:
 
 Exit: the reference and Markup++ results are reproducible offline.
 
+Status: **Complete.** Docutils 0.23, its wheel/source checksums, Python floor,
+standalone reader, reStructuredText parser, HTML5 writer, disabled resource/raw
+capabilities and 24-case original corpus are pinned. The frozen oracle records
+doctrees, fragments and diagnostics for offline use.
+
 ## RST1 - Document tree, state machine and invariants
 
 - Define neutral nodes for sections, transitions, paragraphs, blocks, lists,

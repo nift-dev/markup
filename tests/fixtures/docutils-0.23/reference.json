@@ -1,0 +1,146 @@
+[
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"paragraph.rst\">\n    <paragraph>\n        A paragraph.\n",
+    "fragment": "<p>A paragraph.</p>\n",
+    "id": "paragraph"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document ids=\"title\" names=\"title\" source=\"sections.rst\" title=\"Title\">\n    <title>\n        Title\n    <subtitle ids=\"section\" names=\"section\">\n        Section\n    <paragraph>\n        Body.\n",
+    "fragment": "<p>Body.</p>\n",
+    "id": "sections"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"transition.rst\">\n    <paragraph>\n        Before.\n    <transition>\n    <paragraph>\n        After.\n",
+    "fragment": "<p>Before.</p>\n<hr class=\"docutils\" />\n<p>After.</p>\n",
+    "id": "transition"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"inline.rst\">\n    <paragraph>\n        <emphasis>\n            emphasis\n         \n        <strong>\n            strong\n         \n        <literal>\n            literal\n         and \n        <reference name=\"site\" refuri=\"https://example.test\">\n            site\n        <target ids=\"site\" names=\"site\" refuri=\"https://example.test\">\n        .\n",
+    "fragment": "<p><em>emphasis</em> <strong>strong</strong> <span class=\"docutils literal\">literal</span> and <a class=\"reference external\" href=\"https://example.test\">site</a>.</p>\n",
+    "id": "inline"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"literal.rst\">\n    <paragraph>\n        Example:\n    <literal_block xml:space=\"preserve\">\n        literal <tag>\n",
+    "fragment": "<p>Example:</p>\n<pre class=\"literal-block\">literal &lt;tag&gt;</pre>\n",
+    "id": "literal"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"line-block.rst\">\n    <line_block>\n        <line>\n            first\n        <line>\n            second\n",
+    "fragment": "<div class=\"line-block\">\n<div class=\"line\">first</div>\n<div class=\"line\">second</div>\n</div>\n",
+    "id": "line-block"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"doctest.rst\">\n    <doctest_block xml:space=\"preserve\">\n        >>> 1 + 1\n        2\n",
+    "fragment": "<pre class=\"code python doctest\">&gt;&gt;&gt; 1 + 1\n2\n</pre>\n",
+    "id": "doctest"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"bullet-list.rst\">\n    <bullet_list bullet=\"*\">\n        <list_item>\n            <paragraph>\n                one\n        <list_item>\n            <paragraph>\n                two\n",
+    "fragment": "<ul class=\"simple\">\n<li><p>one</p></li>\n<li><p>two</p></li>\n</ul>\n",
+    "id": "bullet-list"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"enumerated-list.rst\">\n    <enumerated_list enumtype=\"arabic\" prefix=\"\" suffix=\".\">\n        <list_item>\n            <paragraph>\n                one\n        <list_item>\n            <paragraph>\n                two\n",
+    "fragment": "<ol class=\"arabic simple\">\n<li><p>one</p></li>\n<li><p>two</p></li>\n</ol>\n",
+    "id": "enumerated-list"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"definition-list.rst\">\n    <definition_list>\n        <definition_list_item>\n            <term>\n                Term\n            <definition>\n                <paragraph>\n                    Definition.\n",
+    "fragment": "<dl class=\"simple\">\n<dt>Term</dt>\n<dd><p>Definition.</p>\n</dd>\n</dl>\n",
+    "id": "definition-list"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"field-list.rst\">\n    <docinfo>\n        <author>\n            Ada\n        <version>\n            1\n",
+    "fragment": "",
+    "id": "field-list"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"target-reference.rst\">\n    <target ids=\"home\" names=\"home\" refuri=\"https://example.test\">\n    <paragraph>\n        Visit \n        <reference name=\"home\" refuri=\"https://example.test\">\n            home\n        .\n",
+    "fragment": "<p>Visit <a class=\"reference external\" href=\"https://example.test\">home</a>.</p>\n",
+    "id": "target-reference"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"footnote.rst\">\n    <paragraph>\n        Text \n        <footnote_reference ids=\"footnote-reference-1\" refid=\"footnote-1\">\n            1\n        .\n    <footnote backrefs=\"footnote-reference-1\" ids=\"footnote-1\" names=\"1\">\n        <label>\n            1\n        <paragraph>\n            Note.\n",
+    "fragment": "<p>Text <a class=\"brackets\" href=\"#footnote-1\" id=\"footnote-reference-1\" role=\"doc-noteref\"><span class=\"fn-bracket\">[</span>1<span class=\"fn-bracket\">]</span></a>.</p>\n<aside class=\"footnote-list brackets\">\n<aside class=\"footnote brackets\" id=\"footnote-1\" role=\"doc-footnote\">\n<span class=\"label\"><span class=\"fn-bracket\">[</span><a role=\"doc-backlink\" href=\"#footnote-reference-1\">1</a><span class=\"fn-bracket\">]</span></span>\n<p>Note.</p>\n</aside>\n</aside>\n",
+    "id": "footnote"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"substitution.rst\">\n    <paragraph>\n        Hello \n        world\n        .\n    <substitution_definition names=\"name\">\n        world\n",
+    "fragment": "<p>Hello world.</p>\n",
+    "id": "substitution"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"comment.rst\">\n    <comment xml:space=\"preserve\">\n        hidden comment\n    <paragraph>\n        Visible.\n",
+    "fragment": "<!-- hidden comment -->\n<p>Visible.</p>\n",
+    "id": "comment"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"simple-table.rst\">\n    <table>\n        <tgroup cols=\"2\">\n            <colspec colwidth=\"5\">\n            <colspec colwidth=\"5\">\n            <thead>\n                <row>\n                    <entry>\n                        <paragraph>\n                            Name\n                    <entry>\n                        <paragraph>\n                            Count\n            <tbody>\n                <row>\n                    <entry>\n                        <paragraph>\n                            Bolt\n                    <entry>\n                        <paragraph>\n                            4\n",
+    "fragment": "<table>\n<thead>\n<tr><th class=\"head\"><p>Name</p></th>\n<th class=\"head\"><p>Count</p></th>\n</tr>\n</thead>\n<tbody>\n<tr><td><p>Bolt</p></td>\n<td><p>4</p></td>\n</tr>\n</tbody>\n</table>\n",
+    "id": "simple-table"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"grid-table.rst\">\n    <table>\n        <tgroup cols=\"2\">\n            <colspec colwidth=\"6\">\n            <colspec colwidth=\"7\">\n            <thead>\n                <row>\n                    <entry>\n                        <paragraph>\n                            Name\n                    <entry>\n                        <paragraph>\n                            Count\n            <tbody>\n                <row>\n                    <entry>\n                        <paragraph>\n                            Bolt\n                    <entry>\n                        <paragraph>\n                            4\n",
+    "fragment": "<table>\n<thead>\n<tr><th class=\"head\"><p>Name</p></th>\n<th class=\"head\"><p>Count</p></th>\n</tr>\n</thead>\n<tbody>\n<tr><td><p>Bolt</p></td>\n<td><p>4</p></td>\n</tr>\n</tbody>\n</table>\n",
+    "id": "grid-table"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"roles.rst\">\n    <paragraph>\n        Use \n        <literal classes=\"code\">\n            value\n         and \n        <math>\n            x + y\n        .\n",
+    "fragment": "<p>Use <code>value</code> and <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n  <mi>x</mi>\n  <mo>+</mo>\n  <mi>y</mi>\n</math>.</p>\n",
+    "id": "roles"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"admonition.rst\">\n    <note>\n        <paragraph>\n            Remember this.\n",
+    "fragment": "<aside class=\"admonition note\">\n<p class=\"admonition-title\">Note</p>\n<p>Remember this.</p>\n</aside>\n",
+    "id": "admonition"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"topic.rst\">\n    <topic>\n        <title>\n            Details\n        <paragraph>\n            Topic body.\n",
+    "fragment": "<aside class=\"topic\">\n<p class=\"topic-title\">Details</p>\n<p>Topic body.</p>\n</aside>\n",
+    "id": "topic"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document source=\"contents.rst\">\n    <topic classes=\"contents\" ids=\"contents\" names=\"contents\">\n        <title>\n            Contents\n        <bullet_list>\n            <list_item>\n                <paragraph>\n                    <reference ids=\"toc-entry-1\" refid=\"section\">\n                        Section\n    <section ids=\"section\" names=\"section\">\n        <title refid=\"toc-entry-1\">\n            Section\n        <paragraph>\n            Body.\n",
+    "fragment": "<nav class=\"contents\" id=\"contents\" role=\"doc-toc\">\n<p class=\"topic-title\"><a class=\"reference internal\" href=\"#top\">Contents</a></p>\n<ul class=\"simple\">\n<li><p><a class=\"reference internal\" href=\"#section\" id=\"toc-entry-1\">Section</a></p></li>\n</ul>\n</nav>\n<section id=\"section\">\n<h2><a class=\"toc-backref\" href=\"#toc-entry-1\" role=\"doc-backlink\">Section</a></h2>\n<p>Body.</p>\n</section>\n",
+    "id": "contents"
+  },
+  {
+    "diagnostics": "include.rst:1: (WARNING/2) \"include\" directive disabled.\ninclude.rst:1: (WARNING/2) \"include\" directive disabled.\n",
+    "doctree": "<document source=\"include.rst\">\n    <system_message level=\"2\" line=\"1\" source=\"include.rst\" type=\"WARNING\">\n        <paragraph>\n            \"include\" directive disabled.\n        <literal_block xml:space=\"preserve\">\n            .. include:: part.rst\n",
+    "fragment": "<aside class=\"system-message\">\n<p class=\"system-message-title\">System Message: WARNING/2 (<span class=\"docutils literal\">include.rst</span>, line 1)</p>\n<p>&quot;include&quot; directive disabled.</p>\n<pre class=\"literal-block\">.. include:: part.rst</pre>\n</aside>\n",
+    "id": "include"
+  },
+  {
+    "diagnostics": "raw.rst:1: (WARNING/2) \"raw\" directive disabled.\nraw.rst:1: (WARNING/2) \"raw\" directive disabled.\n",
+    "doctree": "<document source=\"raw.rst\">\n    <system_message level=\"2\" line=\"1\" source=\"raw.rst\" type=\"WARNING\">\n        <paragraph>\n            \"raw\" directive disabled.\n        <literal_block xml:space=\"preserve\">\n            .. raw:: html\n            \n               <b>raw</b>\n",
+    "fragment": "<aside class=\"system-message\">\n<p class=\"system-message-title\">System Message: WARNING/2 (<span class=\"docutils literal\">raw.rst</span>, line 1)</p>\n<p>&quot;raw&quot; directive disabled.</p>\n<pre class=\"literal-block\">.. raw:: html\n\n   &lt;b&gt;raw&lt;/b&gt;</pre>\n</aside>\n",
+    "id": "raw"
+  },
+  {
+    "diagnostics": "",
+    "doctree": "<document ids=\"service-guide\" names=\"service\\ guide\" source=\"real-document.rst\" title=\"Service Guide\">\n    <title>\n        Service Guide\n    <subtitle ids=\"install\" names=\"install\">\n        Install\n    <enumerated_list enumtype=\"arabic\" prefix=\"\" suffix=\".\">\n        <list_item>\n            <paragraph>\n                Download the archive.\n        <list_item>\n            <paragraph>\n                Verify it.\n    <literal_block classes=\"code console\" xml:space=\"preserve\">\n        service start\n",
+    "fragment": "<ol class=\"arabic simple\">\n<li><p>Download the archive.</p></li>\n<li><p>Verify it.</p></li>\n</ol>\n<pre class=\"code console literal-block\"><code>service start</code></pre>\n",
+    "id": "real-document"
+  }
+]

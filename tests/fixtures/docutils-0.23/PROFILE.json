@@ -1,0 +1,11 @@
+{
+  "processor": "Docutils",
+  "version": "0.23",
+  "artifact": "docutils-0.23-py3-none-any.whl",
+  "sha256": "25d013af9bf23bc1c7b2b093dff4208166c53a94786c9e447808335ef1185fea",
+  "python": ">=3.9",
+  "reader": "standalone",
+  "parser": "restructuredtext",
+  "writer": "html5",
+  "settings": {"raw_enabled": false, "file_insertion_enabled": false, "syntax_highlight": "none"}
+}
