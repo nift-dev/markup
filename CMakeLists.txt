@@ -48,6 +48,9 @@ if(BUILD_TESTING)
     add_executable(markup-rst tests/restructuredtext.cpp)
     target_link_libraries(markup-rst PRIVATE markup_core)
     add_test(NAME restructuredtext COMMAND markup-rst)
+    add_executable(markup-rst-robustness tests/rst_robustness.cpp)
+    target_link_libraries(markup-rst-robustness PRIVATE markup_core)
+    add_test(NAME rst_robustness COMMAND markup-rst-robustness)
     add_test(NAME asciidoctor_2_0_26_profile
         COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/asciidoctor_release_gate.py
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})

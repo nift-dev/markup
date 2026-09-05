@@ -20,7 +20,8 @@ int main(int argc, char** argv) {
         options.allow_raw_html = (n % 2) == 0;
         options.standalone = (n % 7) == 0;
         std::string output, error;
-        for (const auto format : {markup::Format::Markdown, markup::Format::AsciiDoc}) {
+        for (const auto format : {markup::Format::Markdown, markup::Format::AsciiDoc,
+                                  markup::Format::ReStructuredText}) {
             if (!markup::convert(format, input, output, error, options) || !error.empty()) {
                 std::cerr << markup::format_name(format) << " conversion failed at deterministic case "
                           << n << ": " << error << '\n';
@@ -28,5 +29,5 @@ int main(int argc, char** argv) {
             }
         }
     }
-    std::cout << iterations << " deterministic mutation cases passed for both formats\n";
+    std::cout << iterations << " deterministic mutation cases passed for all formats\n";
 }

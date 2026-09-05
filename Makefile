@@ -22,6 +22,7 @@ PROFILE_MATRIX := $(BUILD_DIR)/profile-matrix
 ASCIIDOC := $(BUILD_DIR)/asciidoc
 ASCIIDOCTOR_COMPAT := $(BUILD_DIR)/asciidoctor-compat
 RST := $(BUILD_DIR)/restructuredtext
+RST_ROBUSTNESS := $(BUILD_DIR)/rst-robustness
 CMARK_REFERENCE := $(BUILD_DIR)/cmark-reference
 SANITIZER_FLAGS ?= -O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined
 ASAN_OPTIONS ?= detect_leaks=1:halt_on_error=1
@@ -71,6 +72,9 @@ $(ASCIIDOCTOR_COMPAT): tests/asciidoctor_compat.cpp $(LIBSRC) include/markup/Mar
 $(RST): tests/restructuredtext.cpp $(LIBSRC) include/markup/Markup.h src/ReStructuredText.h $(CMARK_OBJ) | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/restructuredtext.cpp $(LIBSRC) $(CMARK_OBJ) -o $@
 
+$(RST_ROBUSTNESS): tests/rst_robustness.cpp $(LIBSRC) include/markup/Markup.h src/ReStructuredText.h $(CMARK_OBJ) | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/rst_robustness.cpp $(LIBSRC) $(CMARK_OBJ) -o $@
+
 $(CMARK_REFERENCE): tests/cmark_reference.c $(CMARK_OBJ) | $(BUILD_DIR)
 	$(CC) -I$(CMARK_DIR) $(CFLAGS) tests/cmark_reference.c $(CMARK_OBJ) -o $@
 
@@ -107,7 +111,10 @@ test-asciidoctor-release: test-asciidoctor-compat
 test-rst: $(RST)
 	./$(RST)
 
-test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-release test-rst
+test-rst-robustness: $(RST_ROBUSTNESS)
+	./$(RST_ROBUSTNESS)
+
+test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-release test-rst test-rst-robustness
 	python3 tests/asciidoc_fixture_inventory.py
 
 commonmark-report: $(TARGET)

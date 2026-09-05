@@ -222,6 +222,11 @@ treated as parser structure.
 
 Exit: common and hostile documents are bounded with no unexplained divergence.
 
+Status: **Complete for the local robustness gate.** A large mixed manual,
+adversarial delimiter run, malformed tables/directives/roles, deterministic
+mutation corpus and sanitizer-compatible test target exercise the RST parser.
+Every future differential defect must be reduced into this permanent corpus.
+
 ## RST14 - Compatibility release gate
 
 - Pass all applicable specification examples and the declared Docutils 0.23 core
