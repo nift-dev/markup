@@ -97,7 +97,10 @@ test-asciidoc-release: $(TARGET) test-asciidoc
 test-asciidoctor-compat: $(ASCIIDOCTOR_COMPAT)
 	./$(ASCIIDOCTOR_COMPAT)
 
-test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-compat
+test-asciidoctor-release: test-asciidoctor-compat
+	python3 tests/asciidoctor_release_gate.py
+
+test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-release
 	python3 tests/asciidoc_fixture_inventory.py
 
 commonmark-report: $(TARGET)

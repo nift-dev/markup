@@ -146,3 +146,15 @@ mutation, sanitizer and pathological suites cover both implemented formats.
 
 Exit: public wording may say “compatible with Asciidoctor core `<version>` under
 the documented profile,” never simply “drop-in compatible with Asciidoctor.”
+
+Status: **Implementation gate complete; pushed cross-platform evidence
+required before the public claim.** AC0-AC8 tests, the exact manifest and
+unsupported inventory are enforced by `make test-asciidoctor-release`.
+`ASCIIDOCTOR-RELEASE.md` records the candidate profile and wording boundary.
+
+## Progress ledger
+
+| Checkpoint | Status |
+|---|---|
+| AC0-AC8 | Complete for the declared profile |
+| AC9 | Local implementation gate complete; Linux/macOS/Windows candidate run pending |

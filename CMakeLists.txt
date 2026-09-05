@@ -45,6 +45,9 @@ if(BUILD_TESTING)
     add_executable(markup-asciidoctor-compat tests/asciidoctor_compat.cpp)
     target_link_libraries(markup-asciidoctor-compat PRIVATE markup_core)
     add_test(NAME asciidoctor_2_0_26_compat COMMAND markup-asciidoctor-compat)
+    add_test(NAME asciidoctor_2_0_26_profile
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tests/asciidoctor_release_gate.py
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
     set(COMMONMARK_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated)
     set(COMMONMARK_GENERATED_CASES ${COMMONMARK_GENERATED_DIR}/commonmark_cases.inc)
