@@ -9,10 +9,14 @@
   safe-mode active content and recovery behavior;
 - `cli_smoke.sh`: stdout/file/stdin paths, diagnostics, permission preservation,
   atomic replacement boundaries, symlink refusal and unsupported formats;
-- `fuzz_smoke.cpp`: 10,000 deterministic mixed-character mutations across raw
-  and safe modes, with periodic standalone documents.
+- `fuzz_smoke.cpp`: 10,000 deterministic mixed-character mutations through both
+  implemented formats across raw/safe and fragment/standalone modes;
+- `asciidoc.cpp`: 25 focused AD1-AD5 model, precedence and rendering checks;
+- `asciidoc_fixture_inventory.py`: validates all 13 inputs in the pinned
+  Eclipse TCK alpha snapshot offline.
 
-`make test-sanitize` rebuilds semantic and adversarial gates under ASan/UBSan.
+`make test-sanitize` rebuilds Markdown semantic/adversarial and AsciiDoc AD1-AD5
+gates under ASan/UBSan.
 Sanitizer success is workload evidence, not a universal memory-safety proof.
 Some sandboxed runners prevent LeakSanitizer from inspecting `/proc`; use
 `make test-sanitize ASAN_OPTIONS=detect_leaks=0:halt_on_error=1` there and record
@@ -60,7 +64,7 @@ continues to test the standalone executable contract directly.
 - Large-document performance and complexity guards.
 - A broader Unicode/invalid-UTF-8 corpus beyond the strict-mode replacement
   regressions.
-- AsciiDoc and reStructuredText corpora.
+- Complete AsciiDoc expected-ASG adapter gate and reStructuredText corpora.
 - Nift synchronization and integration tests.
 
 These are roadmap gates, not reasons to overstate the initial test counts.

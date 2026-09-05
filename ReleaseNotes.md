@@ -25,6 +25,12 @@
 - Passed the first pushed cross-platform release gate at commit `3cba857` in
   Actions run `33933214625`, including GCC/Linux, Clang/macOS, MSVC/Windows and
   bounded libFuzzer coverage.
+- Froze immutable Eclipse AsciiDoc language and TCK development snapshots and
+  inventoried all 13 current upstream inputs offline.
+- Implemented AsciiDoc checkpoints AD1-AD5: a neutral source-positioned model,
+  normalization and bounds, headers/attributes/sections, structural and
+  verbatim blocks, list families and ordered inline substitutions.
+- Added 25 focused AsciiDoc checks while retaining the CommonMark release gate.
 
 This is an implementation checkpoint, not a tagged public release. The evidence
 now supports the versioned CommonMark 0.31.2 compliance claim.

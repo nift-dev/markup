@@ -25,3 +25,13 @@ tests. CM10 added local performance, RSS, pathological, sanitizer and fuzz
 infrastructure plus cross-platform CI. Actions run `33933214625` passed at
 commit `3cba857` on 2026-09-05, closing the versioned CommonMark 0.31.2 release
 gate; the corrected MSVC job completed in 1m 4s instead of timing out.
+
+## AsciiDoc language program
+
+AD0 pinned the unreleased Eclipse language and TCK development snapshots and
+inventoried all 13 current upstream inputs. AD1 established a bounded,
+source-positioned neutral model and enabled public conversion. AD2 implemented
+headers, attributes and nested sections; AD3 established block precedence and
+structural/verbatim containers; AD4 added list families and nesting; AD5 added
+ordered inline substitutions. These checkpoints establish useful conversion,
+not final language conformance: AD6-AD11 and the expected-ASG gate remain.

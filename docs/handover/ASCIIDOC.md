@@ -63,7 +63,8 @@ Status: **Complete.** `src/AsciiDoc.h` defines format-specific document, block,
 inline, source-range and attribute structures independently of rendering.
 Parsing normalizes CRLF/lone CR, replaces embedded NUL with U+FFFD, preserves
 UTF-8 bytes and source positions, rejects inputs above 64 MiB, owns no global
-state and performs no IO. The public AsciiDoc conversion path is now enabled.
+state and performs no IO. Recursive container/list nesting is capped at 64 and
+the public AsciiDoc conversion path is now enabled.
 
 ## AD2 - Document header, attributes and sections
 

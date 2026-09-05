@@ -6,8 +6,8 @@ Markup++ has three intentionally separate layers:
 
 1. `include/markup/Markup.h` defines formats, options and the string conversion
    contract.
-2. `src/Markup.cpp` owns format dispatch and conversion. The Markdown block and
-   inline parsers are private implementation details.
+2. `src/Markup.cpp` owns format dispatch and standalone wrapping. Markdown and
+   AsciiDoc parsing remain isolated format implementations.
 3. `cli/main.cpp` owns argument parsing, extension inference, streams and atomic
    file replacement.
 
@@ -16,9 +16,10 @@ filesystem behavior.
 
 ## Format dispatch
 
-`markup::Format` already represents Markdown, AsciiDoc and reStructuredText.
-`format_for_extension` recognizes all planned extensions, while `is_supported`
-and `convert` truthfully reject converters that have not landed. This avoids
+`markup::Format` represents Markdown, AsciiDoc and reStructuredText.
+`format_for_extension` recognizes all extensions, while `is_supported` and
+`convert` truthfully reject converters that have not landed. Markdown and
+AsciiDoc are enabled; reStructuredText is not. This avoids
 redesigning the API while preventing placeholder formats from silently producing
 incorrect HTML.
 
@@ -26,6 +27,14 @@ Each future converter should be isolated behind the same dispatch boundary.
 Avoid a single parser with format conditionals scattered through tokenization.
 Shared HTML escaping/output utilities are appropriate; shared source syntax
 assumptions are not.
+
+## AsciiDoc pipeline
+
+`src/AsciiDoc.h` defines a format-specific neutral document model with source
+ranges, document attributes, block nodes and inline nodes. `src/AsciiDoc.cpp`
+normalizes and bounds input, parses document structure before inline content,
+and renders stable HTML fragments. Keep future AD work in this pipeline rather
+than adding AsciiDoc cases to the Markdown engine or CLI.
 
 ## Markdown pipeline
 

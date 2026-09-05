@@ -225,7 +225,7 @@ struct ListInfo {
 bool list_info(const std::string& value, ListInfo& info) {
     std::size_t count = 0;
     while (count < value.size() && value[count] == '*') ++count;
-    if (count && count < value.size() && value[count] == ' ') {
+    if (count && count <= 64 && count < value.size() && value[count] == ' ') {
         info.kind = BlockKind::UnorderedList;
         info.depth = count;
         info.marker = value.substr(0, count);
@@ -234,7 +234,7 @@ bool list_info(const std::string& value, ListInfo& info) {
     }
     count = 0;
     while (count < value.size() && value[count] == '.') ++count;
-    if (count && count < value.size() && value[count] == ' ') {
+    if (count && count <= 64 && count < value.size() && value[count] == ' ') {
         info.kind = BlockKind::OrderedList;
         info.depth = count;
         info.marker = value.substr(0, count);
@@ -243,7 +243,7 @@ bool list_info(const std::string& value, ListInfo& info) {
     }
     std::size_t digits = 0;
     while (digits < value.size() && std::isdigit(static_cast<unsigned char>(value[digits]))) ++digits;
-    if (digits && digits + 1 < value.size() && value[digits] == '.' && value[digits + 1] == ' ') {
+    if (digits && digits <= 9 && digits + 1 < value.size() && value[digits] == '.' && value[digits + 1] == ' ') {
         info.kind = BlockKind::OrderedList;
         info.depth = 1;
         info.start = static_cast<unsigned>(std::stoul(value.substr(0, digits)));
@@ -329,7 +329,7 @@ void parse_list(const std::vector<std::string>& lines, std::size_t& line,
 void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
                   unsigned parent_level, std::vector<Block>& blocks,
                   const std::map<std::string, std::string>& attributes,
-                  const std::string& end_delimiter = {}) {
+                  const std::string& end_delimiter = {}, std::size_t nesting = 0) {
     std::string pending_title;
     std::string pending_style;
     while (line < lines.size()) {
@@ -359,7 +359,7 @@ void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
             section.level = level;
             section.title = substitute_attributes(title, attributes);
             section.source.begin = {first + 1, 1};
-            parse_blocks(lines, line, level, section.blocks, attributes, end_delimiter);
+            parse_blocks(lines, line, level, section.blocks, attributes, end_delimiter, nesting);
             const std::size_t last = line ? line - 1 : first;
             section.source.end = {last + 1, lines[last].size()};
             section.title = substitute_attributes(section.title, attributes);
@@ -404,8 +404,14 @@ void parse_blocks(const std::vector<std::string>& lines, std::size_t& line,
                     block.inlines.push_back(std::move(literal));
                 }
                 if (line < lines.size()) ++line;
+            } else if (nesting < 64) {
+                parse_blocks(lines, line, parent_level, block.blocks, attributes, delimiter, nesting + 1);
             } else {
-                parse_blocks(lines, line, parent_level, block.blocks, attributes, delimiter);
+                while (line < lines.size() && lines[line] != delimiter) {
+                    if (!block.text.empty()) block.text += '\n';
+                    block.text += lines[line++];
+                }
+                if (line < lines.size()) ++line;
             }
             const std::size_t last = line ? line - 1 : first;
             block.source.end = {last + 1, lines[last].size()};

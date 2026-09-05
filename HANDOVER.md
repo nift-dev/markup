@@ -13,9 +13,8 @@ claims, Nift synchronization or product boundaries change.
 - Public API version: `markup::api_version == 2`.
 - Language/toolchain: self-contained C++17/C99 and Make; cmark source is
   vendored under BSD 2-Clause with no system-library dependency.
-- Implemented format: Markdown.
-- Planned formats already represented in the API: AsciiDoc and
-  reStructuredText.
+- Implemented formats: Markdown and the AD0-AD5 AsciiDoc development profile.
+- Planned format already represented in the API: reStructuredText.
 
 Current source and tests define behavior. README and ReleaseNotes describe the
 public checkpoint. These handovers preserve rationale and future constraints.
@@ -58,6 +57,11 @@ The immutable release evidence is recorded in
 `docs/handover/COMMONMARK-RELEASE.md`. Do not broaden the versioned claim into
 “all Markdown,” and do not conflate the optional extension profile with core
 CommonMark. `docs/handover/COMMONMARK.md` remains the maintenance plan.
+
+AsciiDoc is implemented through AD5 against immutable but unreleased Eclipse
+specification/TCK snapshots. Do not call it conformant yet: AD6-AD11, the ASG
+adapter oracle and the final language gate remain. `docs/handover/ASCIIDOC.md`
+is authoritative for its completed behavior and limitations.
 
 Run:
 

@@ -76,6 +76,8 @@ int main() {
     expect("----\n*not strong* (C)\n----\n",
            "<div class=\"listingblock\">\n<pre>*not strong* (C)</pre>\n</div>\n");
     expect("== *Strong* section\n", "<div class=\"sect1\">\n<h2><strong>Strong</strong> section</h2>\n</div>\n");
+    expect("9999999999. not an ordered marker\n",
+           "<div class=\"paragraph\">\n<p>9999999999. not an ordered marker</p>\n</div>\n");
 
     std::string output, error;
     if (!markup::is_supported(markup::Format::AsciiDoc) ||

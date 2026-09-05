@@ -142,6 +142,8 @@ test-sanitize:
 	ASAN_OPTIONS=$(ASAN_OPTIONS) UBSAN_OPTIONS=$(UBSAN_OPTIONS) ./$(BUILD_DIR)/commonmark-regressions-san
 	$(CXX) $(CPPFLAGS) -std=c++17 -Wall -Wextra -pedantic $(SANITIZER_FLAGS) tests/profile_matrix.cpp $(LIBSRC) $(CMARK_SAN_OBJ) -o $(BUILD_DIR)/profile-matrix-san
 	ASAN_OPTIONS=$(ASAN_OPTIONS) UBSAN_OPTIONS=$(UBSAN_OPTIONS) ./$(BUILD_DIR)/profile-matrix-san
+	$(CXX) $(CPPFLAGS) -std=c++17 -Wall -Wextra -pedantic $(SANITIZER_FLAGS) tests/asciidoc.cpp $(LIBSRC) $(CMARK_SAN_OBJ) -o $(BUILD_DIR)/asciidoc-san
+	ASAN_OPTIONS=$(ASAN_OPTIONS) UBSAN_OPTIONS=$(UBSAN_OPTIONS) ./$(BUILD_DIR)/asciidoc-san
 
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET)

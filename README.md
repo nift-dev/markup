@@ -7,9 +7,11 @@ formats to HTML. It is designed to work standalone and, after its format
 implementations mature, to be embedded by Nift behind the same kind of narrow
 library boundary used for Minify++ and Jsonic++.
 
-The first development checkpoint implements Markdown. AsciiDoc and
-reStructuredText are recognized by the format-neutral API and CLI but return a
-clear not-implemented error until their converters land.
+Markdown is CommonMark 0.31.2 compliant. AsciiDoc conversion is implemented
+through checkpoints AD0-AD5 against pinned Eclipse language/TCK development
+snapshots; links, media, tables, macros, includes and the final conformance gate
+remain. reStructuredText is recognized but still returns a clear
+not-implemented error.
 
 The strict CommonMark engine vendors cmark source under its BSD 2-Clause
 license. There is no separately installed library or runtime dependency.
@@ -23,6 +25,7 @@ make test
 ./markup --standalone --title "My document" README.md -o document.html
 printf '# Hello\n' | ./markup --format markdown -
 ./markup --extensions notes.md # opt into tables/tasks/strikethrough
+./markup guide.adoc -o guide.html
 ```
 
 By default, `markup` writes an HTML fragment to standard output. `-o` writes a
@@ -89,3 +92,14 @@ make test-sanitize ASAN_OPTIONS=detect_leaks=0:halt_on_error=1
 
 See [HANDOVER.md](HANDOVER.md) for the living development contract and
 `docs/handover/` for architecture, decisions, testing and roadmap detail.
+
+## AsciiDoc checkpoint
+
+The current AsciiDoc profile includes document metadata and attributes, nested
+sections, structural and verbatim blocks, unordered/ordered/description/
+checklist lists, and constrained/unconstrained inline substitutions.
+
+The target pins Eclipse specification commit `68ed0b22` and TCK commit
+`cdfada9c`. The TCK is an unreleased alpha with 13 inputs and an ASG oracle, so
+this checkpoint is not advertised as fully AsciiDoc conformant. See
+`docs/handover/ASCIIDOC.md` for the exact evidence and remaining work.

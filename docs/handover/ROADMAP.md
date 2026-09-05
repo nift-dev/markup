@@ -17,7 +17,7 @@
 - Add pathological-input complexity guards, coverage-guided fuzzing and
   cross-platform CI before publishing the compliance claim.
 
-## M2 - AsciiDoc
+## M2 - AsciiDoc (AD0-AD5 complete)
 
 - Complete the versioned language/TCK checkpoints AD0 through AD11 in
   `ASCIIDOC.md`.
