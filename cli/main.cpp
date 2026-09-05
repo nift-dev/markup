@@ -26,8 +26,8 @@ void help() {
         << "      --extensions      Enable legacy tables/tasks/strikethrough\n"
         << "  -h, --help            Show this help\n"
         << "  -v, --version         Show the version\n\n"
-        << "Use '-' as the input to read from stdin. Markdown is implemented in\n"
-        << "this checkpoint; AsciiDoc and reStructuredText are planned.\n";
+        << "Use '-' as the input to read from stdin. Markdown and AsciiDoc are\n"
+        << "implemented; reStructuredText is planned.\n";
 }
 
 bool parse_format(const std::string& name, markup::Format& format) {

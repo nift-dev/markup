@@ -15,7 +15,7 @@ set(CMARK_SOURCES
     vendor/cmark/node.c vendor/cmark/references.c vendor/cmark/render.c
     vendor/cmark/scanners.c vendor/cmark/utf8.c)
 
-add_library(markup_core STATIC src/Markup.cpp ${CMARK_SOURCES})
+add_library(markup_core STATIC src/Markup.cpp src/AsciiDoc.cpp ${CMARK_SOURCES})
 target_include_directories(markup_core PUBLIC include PRIVATE vendor/cmark)
 if(MSVC)
     target_compile_options(markup_core PRIVATE /W4)
@@ -39,6 +39,9 @@ if(BUILD_TESTING)
     add_executable(markup-fuzz-smoke tests/fuzz_smoke.cpp)
     target_link_libraries(markup-fuzz-smoke PRIVATE markup_core)
     add_test(NAME fuzz_smoke COMMAND markup-fuzz-smoke 10000)
+    add_executable(markup-asciidoc tests/asciidoc.cpp)
+    target_link_libraries(markup-asciidoc PRIVATE markup_core)
+    add_test(NAME asciidoc COMMAND markup-asciidoc)
 
     set(COMMONMARK_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated)
     set(COMMONMARK_GENERATED_CASES ${COMMONMARK_GENERATED_DIR}/commonmark_cases.inc)

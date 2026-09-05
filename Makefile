@@ -6,7 +6,7 @@ CPPFLAGS ?= -Iinclude -Ivendor/cmark
 LDFLAGS ?=
 
 TARGET := markup
-LIBSRC := src/Markup.cpp
+LIBSRC := src/Markup.cpp src/AsciiDoc.cpp
 BUILD_DIR := .build
 CMARK_DIR := vendor/cmark
 CMARK_NAMES := blocks buffer cmark cmark_ctype houdini_href_e houdini_html_e houdini_html_u html inlines iterator node references render scanners utf8
@@ -19,6 +19,7 @@ ADVERSARIAL := $(BUILD_DIR)/markup-adversarial
 FUZZ := $(BUILD_DIR)/markup-fuzz
 COMMONMARK_REGRESSIONS := $(BUILD_DIR)/commonmark-regressions
 PROFILE_MATRIX := $(BUILD_DIR)/profile-matrix
+ASCIIDOC := $(BUILD_DIR)/asciidoc
 CMARK_REFERENCE := $(BUILD_DIR)/cmark-reference
 SANITIZER_FLAGS ?= -O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined
 ASAN_OPTIONS ?= detect_leaks=1:halt_on_error=1
@@ -59,6 +60,9 @@ $(COMMONMARK_REGRESSIONS): tests/commonmark_regressions.cpp $(LIBSRC) include/ma
 $(PROFILE_MATRIX): tests/profile_matrix.cpp $(LIBSRC) include/markup/Markup.h $(CMARK_OBJ) | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/profile_matrix.cpp $(LIBSRC) $(CMARK_OBJ) -o $@
 
+$(ASCIIDOC): tests/asciidoc.cpp $(LIBSRC) include/markup/Markup.h src/AsciiDoc.h $(CMARK_OBJ) | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) tests/asciidoc.cpp $(LIBSRC) $(CMARK_OBJ) -o $@
+
 $(CMARK_REFERENCE): tests/cmark_reference.c $(CMARK_OBJ) | $(BUILD_DIR)
 	$(CC) -I$(CMARK_DIR) $(CFLAGS) tests/cmark_reference.c $(CMARK_OBJ) -o $@
 
@@ -80,7 +84,10 @@ test-commonmark-regressions: $(COMMONMARK_REGRESSIONS)
 test-profile-matrix: $(PROFILE_MATRIX)
 	./$(PROFILE_MATRIX)
 
-test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix
+test-asciidoc: $(ASCIIDOC)
+	./$(ASCIIDOC)
+
+test: test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc
 	python3 tests/asciidoc_fixture_inventory.py
 
 commonmark-report: $(TARGET)
@@ -139,4 +146,4 @@ test-sanitize:
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET)
 
-.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 test-commonmark-cm8 test-commonmark-cm9 test-performance fuzz-libfuzzer test-release-local clean
+.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 test-commonmark-cm8 test-commonmark-cm9 test-performance fuzz-libfuzzer test-release-local clean

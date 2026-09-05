@@ -98,9 +98,5 @@ int main() {
         markup::format_for_extension(".txt", format)) return 2;
     ++checks;
 
-    std::string output = "old", error;
-    if (markup::convert(markup::Format::AsciiDoc, "= Title", output, error) || !output.empty() ||
-        error != "AsciiDoc conversion is not implemented yet") return 3;
-    ++checks;
     std::cout << checks << " Markdown smoke checks passed\n";
 }

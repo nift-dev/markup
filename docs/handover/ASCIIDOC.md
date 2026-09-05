@@ -59,6 +59,12 @@ with renderer-specific expectations.
 
 Exit: empty, Unicode, malformed and deeply nested inputs have bounded behavior.
 
+Status: **Complete.** `src/AsciiDoc.h` defines format-specific document, block,
+inline, source-range and attribute structures independently of rendering.
+Parsing normalizes CRLF/lone CR, replaces embedded NUL with U+FFFD, preserves
+UTF-8 bytes and source positions, rejects inputs above 64 MiB, owns no global
+state and performs no IO. The public AsciiDoc conversion path is now enabled.
+
 ## AD2 - Document header, attributes and sections
 
 - Implement document title, author/revision lines and header boundaries.
@@ -153,7 +159,7 @@ conformance claim.
 | Checkpoint | Status | Evidence |
 |---|---|---|
 | AD0 - Target/TCK harness | Complete | 13/13 upstream inputs inventoried at immutable spec/TCK commits |
-| AD1 - Model/invariants | Pending | - |
+| AD1 - Model/invariants | Complete | Neutral model; LF/CRLF/CR, NUL, UTF-8, escaping, determinism and 64 MiB boundary |
 | AD2 - Header/attributes/sections | Pending | - |
 | AD3 - Paragraphs/blocks | Pending | - |
 | AD4 - Lists | Pending | - |

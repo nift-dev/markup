@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "../vendor/cmark/cmark.h"
+#include "AsciiDoc.h"
 
 namespace markup {
 namespace {
@@ -585,7 +586,7 @@ const char* format_name(Format format) {
 }
 
 bool is_supported(Format format) {
-    return format == Format::Markdown;
+    return format == Format::Markdown || format == Format::AsciiDoc;
 }
 
 bool convert(Format format, const std::string& input, std::string& output,
@@ -597,7 +598,14 @@ bool convert(Format format, const std::string& input, std::string& output,
         return false;
     }
 
-    std::string fragment = markdown_fragment(input, options);
+    std::string fragment;
+    if (format == Format::Markdown) {
+        fragment = markdown_fragment(input, options);
+    } else {
+        asciidoc::Document document;
+        if (!asciidoc::parse(input, document, error)) return false;
+        fragment = asciidoc::render_html(document, options);
+    }
     if (!options.standalone) {
         output = std::move(fragment);
         return true;

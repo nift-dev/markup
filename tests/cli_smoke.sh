@@ -34,8 +34,7 @@ if ln -s target "$tmp/link.html" 2>/dev/null; then
     grep -F 'refusing to replace a symbolic link' "$tmp/error" >/dev/null
 fi
 
-if "$bin" --format asciidoc "$tmp/input.md" >"$tmp/bad" 2>"$tmp/error"; then exit 1; fi
-grep -F 'AsciiDoc conversion is not implemented yet' "$tmp/error" >/dev/null
+printf 'CLI paragraph\n' | "$bin" --format asciidoc - | grep -F '<p>CLI paragraph</p>' >/dev/null
 "$bin" --version | grep -Fx 'Markup++ 0.1.0' >/dev/null
 "$bin" --help | grep -F 'convert markup formats to HTML' >/dev/null
 echo 'CLI smoke checks passed'
