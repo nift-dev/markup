@@ -27,6 +27,8 @@ int main(){
  expect(".. _home: https://example.test\n\nVisit home_.\n","<p>Visit <a href=\"https://example.test\">home</a>.</p>\n");
  expect("Text [1]_.\n\n.. [1] Note.\n","<p>Text <a class=\"footnote-reference\" href=\"#footnote-1\">[1]</a>.</p>\n<aside class=\"footnote\" id=\"footnote-1\"><span>[1]</span> Note.</aside>\n");
  expect("See [CITE]_.\n\n.. [CITE] Source.\n","<p>See <a class=\"footnote-reference\" href=\"#footnote-CITE\">[CITE]</a>.</p>\n<aside class=\"citation\" id=\"footnote-CITE\"><span>[CITE]</span> Source.</aside>\n");
+ expect("Hello |name|.\n\n.. |name| replace:: world\n","<p>Hello world.</p>\n");
+ expect(".. hidden comment\n   continued\n\nVisible.\n","<p>Visible.</p>\n");
  std::string o,e;if(!markup::is_supported(markup::Format::ReStructuredText)||!markup::convert(markup::Format::ReStructuredText,"repeat",o,e))return 2;auto first=o;if(!markup::convert(markup::Format::ReStructuredText,"repeat",o,e)||o!=first)return 3;checks+=2;
  std::cout<<checks<<" reStructuredText checks passed\n";
 }

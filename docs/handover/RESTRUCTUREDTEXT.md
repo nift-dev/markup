@@ -131,6 +131,12 @@ Docutils-profile differences.
 
 Exit: substitution transforms and malformed explicit markup match the profile.
 
+Status: **Complete for text substitutions and comments.** Replacement
+definitions resolve after parsing, unresolved uses remain visible, and comments
+including indented continuation never render. Definitions are bounded by the
+document-size limit; recursive image/directive substitutions remain outside the
+declared text-only subset.
+
 ## RST8 - Tables
 
 - Implement simple and grid tables, spans and nested block content where specified.
