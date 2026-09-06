@@ -38,12 +38,17 @@ echo "Markup++ packaging negative checks passed"
 
 # Safe staged replacement: overwriting an existing executable succeeds, an
 # existing destination symlink is replaced as a directory entry (referent
-# unchanged), and no staged installer file remains.
+# unchanged), a stale candidate staging file is never followed or
+# overwritten, and no staged installer file remains.
 printf 'old\n' > "$tmp/referent"
 ln -s "$tmp/referent" "$tmp/bin/markup"
+printf 'stale-referent\n' > "$tmp/stale-referent"
+ln -s "$tmp/stale-referent" "$tmp/bin/.markup-install.zzzzzz"
 MARKUP_VERSION="$version" MARKUP_RELEASE_BASE="file://$tmp/release" MARKUP_INSTALL_DIR="$tmp/bin" sh "$root/packaging/install.sh"
 test ! -L "$tmp/bin/markup"
 test "$(cat "$tmp/referent")" = "old"
+test -L "$tmp/bin/.markup-install.zzzzzz"
+test "$(cat "$tmp/stale-referent")" = "stale-referent"
 test "$("$tmp/bin/markup" --version)" = "Markup++ $version"
-test -z "$(find "$tmp/bin" -name '.markup-install.*' -print -quit)"
+test "$(find "$tmp/bin" -name '.markup-install.*' ! -name '.markup-install.zzzzzz' | wc -l)" -eq 0
 echo "Markup++ safe staged replacement passed"
