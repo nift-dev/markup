@@ -21,3 +21,17 @@ MARKUP_VERSION="$version" MARKUP_RELEASE_BASE="file://$tmp/release" MARKUP_INSTA
 test "$("$tmp/bin/markup" --version)" = "Markup++ $version"
 MARKUP_INSTALL_DIR="$tmp/bin" sh "$root/packaging/uninstall.sh"; test ! -e "$tmp/bin/markup"
 echo "Markup++ packaging smoke passed"
+
+# Negative coverage: a tampered or missing checksum must fail closed.
+mkdir -p "$tmp/badrelease/markup-$version-$platform"
+cp "$root/markup" "$tmp/badrelease/markup-$version-$platform/markup"
+tar -czf "$tmp/badrelease/$archive" -C "$tmp/badrelease" "markup-$version-$platform"
+printf '0' > "$tmp/badrelease/SHA256SUMS"
+if MARKUP_VERSION="$version" MARKUP_RELEASE_BASE="file://$tmp/badrelease" MARKUP_INSTALL_DIR="$tmp/bin" sh "$root/packaging/install.sh" >/dev/null 2>&1; then
+  echo "install must reject a missing checksum entry" >&2; exit 1
+fi
+printf '%s  %s\n' "0000000000000000000000000000000000000000000000000000000000000000" "$archive" > "$tmp/badrelease/SHA256SUMS"
+if MARKUP_VERSION="$version" MARKUP_RELEASE_BASE="file://$tmp/badrelease" MARKUP_INSTALL_DIR="$tmp/bin" sh "$root/packaging/install.sh" >/dev/null 2>&1; then
+  echo "install must reject a checksum mismatch" >&2; exit 1
+fi
+echo "Markup++ packaging negative checks passed"
