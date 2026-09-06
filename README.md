@@ -3,19 +3,42 @@
 **Executable:** `markup`
 
 Markup++ is a small, self-contained C++17 library and CLI for converting markup
-formats to HTML. It is designed to work standalone and, after its format
-implementations mature, to be embedded by Nift behind the same kind of narrow
-library boundary used for Minify++ and Jsonic++.
+formats to HTML. It works standalone and is embedded by Nift behind the same
+kind of narrow library boundary used for Minify++ and Jsonic++.
 
 Markdown is CommonMark 0.31.2 compliant. AsciiDoc conversion is implemented
 through checkpoints AD0-AD11 against pinned Eclipse language/TCK development
 snapshots, with the independent Asciidoctor 2.0.26 profile implemented through
 AC9. reStructuredText is implemented through RST14 against a frozen Docutils
-0.23 oracle. The exact processor-compatibility claims remain gated on a pushed
-Linux/macOS/Windows candidate run.
+0.23 oracle. The bounded processor-compatibility gates have passed on
+Linux, macOS and Windows; their documented differences remain part of the
+contract.
 
 The strict CommonMark engine vendors cmark source under its BSD 2-Clause
 license. There is no separately installed library or runtime dependency.
+
+## Install
+
+Linux x86-64 and macOS arm64/x86-64:
+
+```bash
+curl -fsSL https://nift-dev.github.io/markup-website/install | sh
+```
+
+The installer verifies the archive against the release's `SHA256SUMS` and
+installs `markup` to `~/.local/bin` without `sudo`. Set `MARKUP_INSTALL_DIR` to
+choose another directory or `MARKUP_VERSION=0.1.0` to pin a release.
+
+```bash
+curl -fsSL https://nift-dev.github.io/markup-website/download | sh
+curl -fsSL https://nift-dev.github.io/markup-website/update | sh
+curl -fsSL https://nift-dev.github.io/markup-website/uninstall | sh
+```
+
+Windows x86-64 users can download and checksum-verify the `.zip` archive from
+[GitHub releases](https://github.com/nift-dev/markup/releases).
+
+## Build from source
 
 ```sh
 make

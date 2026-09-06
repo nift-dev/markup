@@ -167,6 +167,9 @@ fuzz-libfuzzer: $(CMARK_FUZZ_OBJ)
 test-release-local: test test-commonmark-cm9 test-performance test-asciidoc-release
 	python3 tests/commonmark_complexity.py --program ./$(TARGET) --family all
 
+test-packaging: $(TARGET)
+	bash tests/packaging_smoke.sh
+
 test-sanitize:
 	mkdir -p $(BUILD_DIR)
 	$(MAKE) $(CMARK_SAN_OBJ)
@@ -189,4 +192,4 @@ clean:
 	rm -rf $(BUILD_DIR) $(TARGET) tests/__pycache__
 	find tests -type f -name '*.pyc' -delete 2>/dev/null || true
 
-.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-compat test-asciidoctor-release test-rst test-rst-robustness test-rst-release test-difference-gates test-sanitize commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 test-commonmark-cm8 test-commonmark-cm9 test-performance fuzz-libfuzzer test-release-local check-nift-sync clean
+.PHONY: all test test-smoke test-adversarial test-cli test-fuzz test-commonmark-regressions test-profile-matrix test-asciidoc test-asciidoc-release test-asciidoctor-compat test-asciidoctor-release test-rst test-rst-robustness test-rst-release test-difference-gates test-sanitize test-packaging commonmark-report test-commonmark test-commonmark-cm2 test-commonmark-cm3 test-commonmark-cm4 test-commonmark-cm5 test-commonmark-cm6 test-commonmark-cm7 test-commonmark-cm8 test-commonmark-cm9 test-performance fuzz-libfuzzer test-release-local check-nift-sync clean

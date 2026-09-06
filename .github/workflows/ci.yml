@@ -35,6 +35,7 @@ jobs:
           make test-commonmark-cm6
           make test-commonmark-cm7
           make test-performance
+          make test-packaging
       - name: Sanitizers
         if: runner.os == 'Linux'
         env:

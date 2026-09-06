@@ -116,6 +116,12 @@ website deployment or push. Keep those actions explicit. Never describe a
 development checkpoint as production-ready or standards-complete without the
 corresponding evidence.
 
+The operational release checklist is `RELEASE.md`. Its order is mandatory:
+deploy and byte-verify all four public scripts, pass the non-publishing
+cross-platform rehearsal at the exact candidate SHA, obtain release approval,
+then push the annotated tag and require publication plus public-installer
+smokes. Never repair an already published asset in place.
+
 ## Deeper handovers
 
 - `docs/handover/ARCHITECTURE.md`

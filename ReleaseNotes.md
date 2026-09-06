@@ -2,6 +2,9 @@
 
 ## Development checkpoint 0.1.0
 
+- Added checksum-verifying curl install, download, update and uninstall scripts,
+  cross-platform release archives, release rehearsals and public installer smoke
+  tests.
 - Established the standalone C++17 library and `markup` CLI.
 - Added a format-neutral API prepared for Markdown, AsciiDoc and
   reStructuredText converters.
