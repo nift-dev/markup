@@ -30,6 +30,12 @@ else echo "markup installer: sha256sum or shasum is required" >&2; exit 1; fi
 [ "$actual" = "$expected" ] || { echo "markup installer: checksum verification failed for $archive" >&2; exit 1; }
 tar -xzf "$tmp/$archive" -C "$tmp"
 [ -f "$tmp/$root/markup" ] || { echo "markup installer: archive did not contain markup" >&2; exit 1; }
-mkdir -p "$install_dir"; cp "$tmp/$root/markup" "$install_dir/markup"; chmod 0755 "$install_dir/markup"
+mkdir -p "$install_dir"
+# Stage inside install_dir so the final rename is on the same filesystem and
+# atomic. rename(2) replaces an existing destination directory entry, so a
+# pre-existing symlink at the target is replaced rather than followed.
+stage="$install_dir/.markup-install.$$"
+trap 'rm -f -- "$stage"; rm -rf "$tmp"' EXIT HUP INT TERM
+cp "$tmp/$root/markup" "$stage"; chmod 0755 "$stage"; mv -f -- "$stage" "$install_dir/markup"
 printf 'Installed Markup++ %s to %s/markup\n' "$version" "$install_dir"
 case ":${PATH:-}:" in *":$install_dir:"*) ;; *) printf 'Add %s to PATH to run markup from any directory.\n' "$install_dir";; esac

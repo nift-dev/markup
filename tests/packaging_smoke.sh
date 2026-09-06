@@ -35,3 +35,15 @@ if MARKUP_VERSION="$version" MARKUP_RELEASE_BASE="file://$tmp/badrelease" MARKUP
   echo "install must reject a checksum mismatch" >&2; exit 1
 fi
 echo "Markup++ packaging negative checks passed"
+
+# Safe staged replacement: overwriting an existing executable succeeds, an
+# existing destination symlink is replaced as a directory entry (referent
+# unchanged), and no staged installer file remains.
+printf 'old\n' > "$tmp/referent"
+ln -s "$tmp/referent" "$tmp/bin/markup"
+MARKUP_VERSION="$version" MARKUP_RELEASE_BASE="file://$tmp/release" MARKUP_INSTALL_DIR="$tmp/bin" sh "$root/packaging/install.sh"
+test ! -L "$tmp/bin/markup"
+test "$(cat "$tmp/referent")" = "old"
+test "$("$tmp/bin/markup" --version)" = "Markup++ $version"
+test -z "$(find "$tmp/bin" -name '.markup-install.*' -print -quit)"
+echo "Markup++ safe staged replacement passed"
